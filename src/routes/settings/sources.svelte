@@ -15,20 +15,20 @@
  import type { z } from "zod";
  import { type FormSchema, schema } from "./schema";
 
- let temporarySource = $state<Types.Source>();
+ let temporarySource = $state<Types.Source | null>(null);
 
  const { form, errors } = createForm<z.infer<FormSchema>>({
-  onSubmit: async ({ url }) => {
-   const response = await fetch(url);
+  onSubmit: async values => {
+   const response = await fetch(values.url);
 
    if (response.ok) {
-    if ($sourcesStore.find(source => source.url == url)) {
+    if ($sourcesStore.find(source => source.url == values.url)) {
      throw "Source already added!";
     }
 
     return await response
      .json()
-     .then(source => ({ ...source, url }))
+     .then(source => ({ ...source, url: values.url }))
      .catch(() => {
       throw "Not a valid JSON file";
      });
@@ -94,6 +94,7 @@
        class={buttonVariants()}
        onclick={() => {
         sourcesStore.addSource(temporarySource!);
+        temporarySource = null;
        }}>Import</Dialog.Close
       >
      </div>
@@ -108,10 +109,8 @@
   {#each $sourcesStore as source, index (source.name)}
    <li
     class="space-y-2 rounded-lg border p-4 shadow-sm transition-[position]"
-    out:fly|global
+    out:fly
    >
-    <h1 class="text-lg font-bold">{source.name}</h1>
-    <small>{source.downloads.length} download options</small>
     <p class="text-sm text-muted-foreground">Download Source URL</p>
     <div class="flex justify-between gap-4">
      <Input value={source.url} readonly />
