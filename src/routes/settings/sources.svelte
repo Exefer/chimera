@@ -1,0 +1,128 @@
+<script lang="ts">
+ import { Button, buttonVariants } from "@/components/ui/button";
+ import * as Dialog from "@/components/ui/dialog";
+ import { Input } from "@/components/ui/input";
+ import { Label } from "@/components/ui/label";
+ import { Separator } from "@/components/ui/separator";
+ import { sourcesStore } from "@/store/sources.store";
+ import * as Types from "@/types";
+ import { validator } from "@felte/validator-zod";
+ import { createForm } from "felte";
+ import CircleMinus from "lucide-svelte/icons/circle-minus";
+ import CirclePlus from "lucide-svelte/icons/circle-plus";
+ import RefreshCcw from "lucide-svelte/icons/refresh-ccw";
+ import { fly } from "svelte/transition";
+ import type { z } from "zod";
+ import { type FormSchema, schema } from "./schema";
+
+ let temporarySource = $state<Types.Source>();
+
+ const { form, errors } = createForm<z.infer<FormSchema>>({
+  onSubmit: async ({ url }) => {
+   const response = await fetch(url);
+
+   if (response.ok) {
+    if ($sourcesStore.find(source => source.url == url)) {
+     throw "Source already added!";
+    }
+
+    return await response
+     .json()
+     .then(source => ({ ...source, url }))
+     .catch(() => {
+      throw "Not a valid JSON file";
+     });
+   }
+  },
+  onSuccess: response => {
+   temporarySource = response as Types.Source;
+  },
+  onError(error, context) {
+   context.setErrors(
+    "url",
+    error instanceof Error ? error.message : (error as string),
+   );
+  },
+  extend: [validator({ schema })],
+ });
+</script>
+
+<h1 class="text-2xl font-bold">Sources</h1>
+
+<p>
+ Chimera will fetch the download links from these sourcesUrls. The source URL
+ must be a direct link to a .json file containing the download links.
+</p>
+
+<div class="flex justify-between">
+ <Button
+  variant="outline"
+  disabled={!$sourcesStore.length}
+  onclick={async () => {
+   await sourcesStore.refreshSources();
+  }}><RefreshCcw />Sync Sources</Button
+ >
+ <Dialog.Root>
+  <Dialog.Trigger class={buttonVariants({ variant: "outline" })}
+   ><CirclePlus />Add source</Dialog.Trigger
+  >
+  <Dialog.Content>
+   <Dialog.Header>
+    <Dialog.Title>Add Source</Dialog.Title>
+    <Dialog.Description>Insert the URL of the .json file</Dialog.Description>
+   </Dialog.Header>
+   <Separator />
+   <div class="space-y-4">
+    <form class="space-y-2" use:form>
+     <Label class="text-muted-foreground" for="url">Download Source URL</Label>
+     <div class="flex gap-4">
+      <Input type="url" name="url" autocomplete="off" />
+      <Button type="submit" variant="outline">Validate</Button>
+     </div>
+     {#if $errors.url}
+      <span class="mt-1 text-sm text-red-500">{$errors.url}</span>
+     {/if}
+    </form>
+
+    {#if temporarySource}
+     <div class="flex items-center justify-between">
+      <div>
+       <p>{temporarySource.name}</p>
+       <small>Found {temporarySource.downloads.length} download options</small>
+      </div>
+      <Dialog.Close
+       class={buttonVariants()}
+       onclick={() => {
+        sourcesStore.addSource(temporarySource!);
+       }}>Import</Dialog.Close
+      >
+     </div>
+    {/if}
+   </div>
+  </Dialog.Content>
+ </Dialog.Root>
+</div>
+
+{#if $sourcesStore.length}
+ <ul class="space-y-4">
+  {#each $sourcesStore as source, index (source.name)}
+   <li
+    class="space-y-2 rounded-lg border p-4 shadow-sm transition-[position]"
+    out:fly|global
+   >
+    <h1 class="text-lg font-bold">{source.name}</h1>
+    <small>{source.downloads.length} download options</small>
+    <p class="text-sm text-muted-foreground">Download Source URL</p>
+    <div class="flex justify-between gap-4">
+     <Input value={source.url} readonly />
+     <Button
+      variant="outline"
+      onclick={() => {
+       sourcesStore.removeSource(index);
+      }}><CircleMinus />Remove</Button
+     >
+    </div>
+   </li>
+  {/each}
+ </ul>
+{/if}

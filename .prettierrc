@@ -1,0 +1,14 @@
+{
+ "tabWidth": 1,
+ "useTabs": false,
+ "arrowParens": "avoid",
+ "overrides": [
+  {
+   "files": "*.svelte",
+   "options": {
+    "parser": "svelte"
+   }
+  }
+ ],
+ "plugins": ["prettier-plugin-svelte", "prettier-plugin-tailwindcss"]
+}
