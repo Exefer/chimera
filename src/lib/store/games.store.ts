@@ -5,9 +5,9 @@ import { writable } from "svelte/store";
 function createGamesStore() {
  const store = writable<Types.Game[]>();
 
- Persistent.settings.get().then(settings => {
-  if (settings) store.update(state => ({ ...state, ...settings }));
-  store.subscribe(async settings => await Persistent.games.set(settings));
+ Persistent.games.get().then(games => {
+  if (games) store.set(games);
+  store.subscribe(async games => await Persistent.games.set(games));
  });
 
  const addGame = (
