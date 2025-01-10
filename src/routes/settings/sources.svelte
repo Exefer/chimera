@@ -50,8 +50,8 @@
 <h1 class="text-2xl font-bold">Sources</h1>
 
 <p>
- Chimera will fetch the download links from these sourcesUrls. The source URL
- must be a direct link to a .json file containing the download links.
+ Chimera will fetch the download links from these sources. The source URL must
+ be a direct link to a .json file containing the download links.
 </p>
 
 <div class="flex justify-between">
