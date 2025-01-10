@@ -1,6 +1,6 @@
+import * as Persistent from "@/store/persistent";
 import * as Types from "@/types";
 import { get, writable } from "svelte/store";
-import * as Persistent from "./persistent";
 
 function createSourcesStore() {
  const store = writable<Types.Source[]>([]);
