@@ -11,7 +11,7 @@
  import CircleMinus from "lucide-svelte/icons/circle-minus";
  import CirclePlus from "lucide-svelte/icons/circle-plus";
  import RefreshCcw from "lucide-svelte/icons/refresh-ccw";
- import { fly } from "svelte/transition";
+ import { slide } from "svelte/transition";
  import type { z } from "zod";
  import { type FormSchema, schema } from "./schema";
 
@@ -109,8 +109,10 @@
   {#each $sourcesStore as source, index (source.name)}
    <li
     class="space-y-2 rounded-lg border p-4 shadow-sm transition-[position]"
-    out:fly
+    out:slide
    >
+    <h1 class="text-lg font-bold">{source.name}</h1>
+    <small>{source.downloads.length} download options</small>
     <p class="text-sm text-muted-foreground">Download Source URL</p>
     <div class="flex justify-between gap-4">
      <Input value={source.url} readonly />
