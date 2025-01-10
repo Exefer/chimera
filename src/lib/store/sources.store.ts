@@ -15,11 +15,10 @@ function createSourcesStore() {
     ),
    ).then(sources => {
     store.set(sources);
-    store.subscribe(
-     async sources =>
-      await Persistent.sources.set(sources.map(source => source.url)),
-    );
    });
+  store.subscribe(async sources => {
+   await Persistent.sources.set(sources.map(source => source.url));
+  });
  });
 
  const addSource = (
