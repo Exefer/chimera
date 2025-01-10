@@ -3,7 +3,7 @@ import * as Types from "@/types";
 import { writable } from "svelte/store";
 
 function createGamesStore() {
- const store = writable<Types.Game[]>();
+ const store = writable<Types.Game[]>([]);
 
  Persistent.games.get().then(games => {
   if (games) store.set(games);
