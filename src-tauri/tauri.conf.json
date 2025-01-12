@@ -12,7 +12,7 @@
  "app": {
   "windows": [
    {
-    "title": "ChimeraLauncher",
+    "title": "Chimera",
     "width": 1200,
     "height": 720,
     "minWidth": 1024,

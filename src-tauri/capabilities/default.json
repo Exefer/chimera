@@ -31,7 +31,6 @@
     "fs:scope-download",
     "fs:allow-open",
     "fs:scope-appdata",
-    "dialog:default",
     "store:default"
   ]
 }
