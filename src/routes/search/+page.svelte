@@ -1,5 +1,6 @@
 <script lang="ts">
  import * as Pagination from "@/components/ui/pagination";
+ import { ITEMS_PER_PAGE } from "@/constants";
  import { appsList, isTyping, search } from "@/store/state.store";
  import uFuzzy from "@leeoniya/ufuzzy";
  import { get } from "svelte/store";
