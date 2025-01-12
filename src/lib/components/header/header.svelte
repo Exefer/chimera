@@ -2,6 +2,7 @@
  import { goto } from "$app/navigation";
  import { page } from "$app/state";
  import { Input } from "@/components/ui/input";
+ import { GAME_SEARCH_DEBOUNCE } from "@/constants";
  import { isTyping, search } from "@/store/state.store";
 
  const title = () => {
@@ -25,7 +26,7 @@
   }
  };
 
- let timeout: number | null = null;
+ let timeout: NodeJS.Timeout | null = null;
 </script>
 
 <header
@@ -54,10 +55,10 @@
     if (timeout) clearTimeout(timeout);
 
     isTyping.set(true);
-    setTimeout(() => {
+    timeout = setTimeout(() => {
      isTyping.set(false);
      search.set(currentSearch);
-    }, 750);
+    }, GAME_SEARCH_DEBOUNCE);
    }}
   />
  </div>
