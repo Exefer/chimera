@@ -1,3 +1,38 @@
+import * as Types from "@/types";
+
+export const SEARCH_DEBOUNCE = 250;
+
+export const ITEMS_PER_PAGE = 20;
+
+export const DEFAULT_APP_SETTINGS: Types.AppSettings = {
+ // General
+ downloadsPath: "",
+ theme: "system",
+ // General - Notifications
+ notifyOnDownloadComplete: false,
+ // Behavior
+ launchMinimized: false,
+ launchOnStartup: false,
+ minimizeToTray: false,
+};
+import * as Types from "@/types";
+
+export const SEARCH_DEBOUNCE = 250;
+
+export const ITEMS_PER_PAGE = 20;
+
+export const DEFAULT_APP_SETTINGS: Types.AppSettings = {
+ // General
+ downloadsPath: "",
+ theme: "system",
+ // General - Notifications
+ notifyOnDownloadComplete: false,
+ // Behavior
+ launchMinimized: false,
+ launchOnStartup: false,
+ minimizeToTray: false,
+};
+
 export const CHAR_MAP: Record<string, string> = {
  À: "A",
  Á: "A",
