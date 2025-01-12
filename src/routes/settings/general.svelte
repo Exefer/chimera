@@ -20,7 +20,7 @@
   <Input
    type="text"
    name="downloads-path"
-   bind:value={$settingsStore.downloadsPath}
+   value={$settingsStore.downloadsPath}
    readonly
   />
   <Button
@@ -58,12 +58,31 @@
  </Select.Root>
 </div>
 
+<div>
+ <Label for="theme">Language</Label>
+ <Select.Root
+  type="single"
+  name="theme"
+  bind:value={() => $locale!,
+  locale => {
+   $settingsStore.locale = (locale || "en") as Types.Locale;
+  }}
+ >
+  <Select.Trigger class="w-[180px]">{$locale!}</Select.Trigger>
+  <Select.Content>
+   {#each $locales as locale}
+    <Select.Item value={locale}>{locale}</Select.Item>
+   {/each}
+  </Select.Content>
+ </Select.Root>
+</div>
+
 <h2 class="text-lg font-bold">Notifications</h2>
 
 <div class="flex items-center gap-2">
  <Checkbox
-  id="download-complete"
+  id="notify-on-download-complete"
   bind:checked={$settingsStore.notifyOnDownloadComplete}
  />
- <Label for="download-complete">When a download is complete</Label>
+ <Label for="notify-on-download-complete">When a download is complete</Label>
 </div>

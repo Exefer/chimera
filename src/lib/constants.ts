@@ -8,6 +8,7 @@ export const DEFAULT_APP_SETTINGS: Types.AppSettings = {
  // General
  downloadsPath: "",
  theme: "system",
+ locale: "en",
  // General - Notifications
  notifyOnDownloadComplete: false,
  // Behavior
