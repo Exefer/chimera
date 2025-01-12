@@ -5,12 +5,17 @@
  import * as Dialog from "@/components/ui/dialog";
  import { Input } from "@/components/ui/input";
  import { Separator } from "@/components/ui/separator";
- import { getSteamAppDetails } from "@/steam/api";
- import { steamImageBuilder } from "@/steam/url-builders";
+ import { getSteamAppDetails, steamImageBuilder } from "@/services/steam";
+ import { commands } from "@/specta-bindings";
  import { gamesStore } from "@/store/games.store";
  import * as Steam from "@/types/steam.types";
  import { open } from "@tauri-apps/plugin-dialog";
- import { formatDistanceToNow } from "date-fns";
+ import {
+  formatDistanceToNow,
+  formatDuration,
+  intervalToDuration,
+ } from "date-fns";
+ import CirclePause from "lucide-svelte/icons/circle-pause";
  import CirclePlay from "lucide-svelte/icons/circle-play";
  import CirclePlus from "lucide-svelte/icons/circle-plus";
  import Download from "lucide-svelte/icons/download";
@@ -18,26 +23,30 @@
  import Settings from "lucide-svelte/icons/settings";
  import { t } from "svelte-i18n";
 
- let appDetails = $state<Steam.AppDetails>();
+ const gameTitle = $derived<string>(page.url.searchParams.get("name")!);
+ const gameId = $derived<string>(page.url.searchParams.get("id")!);
+ const localGame = $derived($gamesStore.find(game => game.remoteId == gameId));
+ const isPlayable = $derived<boolean>(
+  !!localGame! && !!localGame.executablePath,
+ );
+ const noExecutable = $derived<boolean>(
+  localGame! && !localGame?.executablePath!,
+ );
+
+ // TODO: Implement lazy loading with skeleton
+ let appDetails = $state<Steam.AppDetails | null>(null);
  let selectedRequirements =
   $state<keyof Steam.AppDetails["pc_requirements"]>("minimum");
 
- const remoteId = +page.url.searchParams.get("id")!;
-
- onMount(async () => {
-  appDetails = await getSteamAppDetails(remoteId);
+ $effect(() => {
+  getSteamAppDetails(gameId).then(data => (appDetails = data));
  });
-
- const localGame = $derived(
-  $gamesStore.find(game => game.remoteId == remoteId),
- );
- $inspect(localGame);
 </script>
 
 <div class="flex flex-col">
  <img
-  src={steamImageBuilder.libraryHero(remoteId)}
-  alt={appDetails?.name}
+  src={steamImageBuilder.libraryHero(gameId)}
+  alt={gameTitle}
   class="max-h-[300px] min-h-[300px] min-w-full object-cover xl:max-h-[350px]"
   fetchpriority="high"
  />
@@ -46,43 +55,65 @@
 <div
  class="sticky top-[72px] flex justify-between border-y bg-background p-4 text-sm"
 >
- <div>
-  <p>
-   {localGame
-    ? `Played for ${localGame.playtimeInSeconds} minutes`
-    : `Updated ${new Intl.DateTimeFormat("en-GB").format(Date.now())}`}
-  </p>
-  <p>
-   {localGame
-    ? localGame.lastPlayedAt
-      ? `Last played ${formatDistanceToNow(localGame.lastPlayedAt!)}`
-      : `You haven't played ${appDetails?.name} yet`
-    : `69 download options`}
-  </p>
+ <div class="flex flex-col justify-center">
+  {#if localGame?.running}
+   <p>Playing now</p>
+  {:else}
+   {#if localGame?.playtimeInSeconds}
+    <p>
+     Played for {formatDuration(
+      intervalToDuration({
+       start: 0,
+       end: localGame.playtimeInSeconds * 1000,
+      }),
+      { format: ["seconds", "minutes", "hours"] },
+     )}
+    </p>
+   {/if}
+   <p>
+    {localGame
+     ? localGame.lastPlayedAt != 0
+       ? `Last played ${formatDistanceToNow(localGame.lastPlayedAt!, { addSuffix: true })}`
+       : `You haven't played ${gameTitle} yet`
+     : `69 download options`}
+   </p>
+  {/if}
  </div>
 
  <div class="flex gap-4">
+  <!-- For now disable the stop button, backend can't kill started process yet -->
   <Button
    variant="outline"
-   onclick={() => {
-    if (!localGame)
+   disabled={localGame?.running}
+   onclick={async () => {
+    if (!localGame) {
      gamesStore.addGame({
-      title: appDetails?.name!,
-      remoteId,
+      title: gameTitle,
+      remoteId: gameId,
      });
-    else {
-     toast("Should open game...");
+    } else if (localGame.executablePath && !localGame.running) {
+     await commands.runExecutable(localGame.executablePath!);
+    } else if (localGame.running) {
+     // Should close
     }
    }}
   >
-   {#if localGame && localGame.executablePath}
+   {#if localGame?.running}
+    <CirclePause />
+   {:else if isPlayable}
     <CirclePlay />
-   {:else if localGame && !localGame?.executablePath}
+   {:else if noExecutable}
     <Download />
    {:else}
     <CirclePlus />
    {/if}
-   {localGame ? "Play" : "Add to Library"}</Button
+   {localGame?.running
+    ? "Stop"
+    : isPlayable
+      ? "Play"
+      : noExecutable
+        ? "Download"
+        : "Add to Library"}</Button
   >
   {#if localGame}
    <Separator orientation="vertical" />
@@ -93,20 +124,25 @@
      ? "Options"
      : "Open download options"}</Dialog.Trigger
    >
-   <Dialog.Content>
+   <Dialog.Content class="max-w-2xl">
     <Dialog.Header>
-     <Dialog.Title>{appDetails?.name}</Dialog.Title>
+     <Dialog.Title>{gameTitle}</Dialog.Title>
     </Dialog.Header>
     <Separator />
     <div class="space-y-4">
      <div class="space-y-2">
-      <h2 class="text-xl text-muted-foreground">Executable</h2>
+      <h2 class="text-xl font-bold text-muted-foreground">Executable</h2>
       <p class="text-sm text-muted-foreground">
        Path of the executable that will run when "Play" is clicked
       </p>
      </div>
-     <div class="flex gap-4">
-      <Input type="text" readonly />
+     <div class="flex gap-2">
+      <Input
+       type="text"
+       placeholder="No executable selected"
+       value={localGame?.executablePath}
+       readonly
+      />
       <Button
        variant="outline"
        onclick={async () => {
@@ -118,15 +154,109 @@
           },
          ],
         });
-
         if (!executable) return;
-
-        gamesStore.updateGame(remoteId, { executablePath: executable });
+        gamesStore.updateGame(["remoteId", gameId], game => ({
+         ...game,
+         executablePath: executable,
+        }));
        }}
       >
        <File />
        Select
       </Button>
+      {#if localGame?.executablePath}
+       <Button
+        variant="outline"
+        onclick={() => {
+         gamesStore.updateGame(["remoteId", gameId], game => ({
+          ...game,
+          executablePath: "",
+         }));
+        }}>{$t("clear")}</Button
+       >
+      {/if}
+     </div>
+     <div class="space-y-2">
+      <h2 class="text-xl font-bold text-muted-foreground">Downloads</h2>
+      <p class="text-sm text-muted-foreground">
+       Check out updates or other versions of this game
+      </p>
+     </div>
+     <!-- For now disabled, since there's no download handler on the backend -->
+     <Dialog.Root>
+      <Dialog.Trigger class={buttonVariants({ variant: "outline" })} disabled
+       >Open download options</Dialog.Trigger
+      >
+      <Dialog.Content>
+       <Dialog.Header>
+        <Dialog.Title>Download options</Dialog.Title>
+        <Dialog.Description>
+         Choose the game version you want to download
+        </Dialog.Description>
+       </Dialog.Header>
+      </Dialog.Content>
+     </Dialog.Root>
+
+     <div class="space-y-2">
+      <h2 class="text-xl font-bold text-muted-foreground">Danger Zone</h2>
+      <p class="text-sm text-muted-foreground">
+       Remove this game from your library or it's files
+      </p>
+     </div>
+
+     <div class="flex gap-2">
+      <Dialog.Root>
+       <Dialog.Trigger class={buttonVariants({ variant: "destructive" })}
+        >Remove from library</Dialog.Trigger
+       >
+       <Dialog.Content>
+        <Dialog.Header>
+         <Dialog.Title>Are you sure?</Dialog.Title>
+         <Dialog.Description>
+          This will remove {gameTitle} from your library
+         </Dialog.Description>
+        </Dialog.Header>
+        <Separator />
+        <div class="flex justify-end gap-2">
+         <Dialog.Close
+          class={buttonVariants({ variant: "outline" })}
+          onclick={() => gamesStore.removeGame(gameId)}>Confirm</Dialog.Close
+         >
+         <Dialog.Close class={buttonVariants()}>Cancel</Dialog.Close>
+        </div>
+       </Dialog.Content>
+      </Dialog.Root>
+      <!-- For now disabled, since there's no download handler on the backend -->
+      <!-- disabled={noExecutable} -->
+      <Dialog.Root>
+       <Dialog.Trigger
+        class={[buttonVariants({ variant: "destructive" })]}
+        disabled
+        onclick={() => {
+         // Should remove files
+        }}>Remove files</Dialog.Trigger
+       >
+       <Dialog.Content>
+        <Dialog.Header>
+         <Dialog.Title>Are you sure absolutely sure?</Dialog.Title>
+         <Dialog.Description>
+          This will remove all the installation files for this game from your
+          computer
+         </Dialog.Description>
+        </Dialog.Header>
+        <Separator />
+        <div class="flex justify-end gap-2">
+         <Dialog.Close
+          class={buttonVariants({ variant: "outline" })}
+          disabled
+          onclick={() => {
+           // Should delete installation files
+          }}>Confirm</Dialog.Close
+         >
+         <Dialog.Close class={buttonVariants()}>Cancel</Dialog.Close>
+        </div>
+       </Dialog.Content>
+      </Dialog.Root>
      </div>
     </div>
    </Dialog.Content>
@@ -178,8 +308,6 @@
       {#if appDetails?.pc_requirements}
        {@html appDetails?.pc_requirements[selectedRequirements] ??
         `No ${selectedRequirements} requirements`}
-      {:else}
-       <p>Loading...</p>
       {/if}
      </div>
     </Accordion.Content>
