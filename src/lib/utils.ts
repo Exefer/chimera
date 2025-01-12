@@ -57,13 +57,16 @@ export const formatName = pipe<string>(
  str => str.trim(),
 );
 
-export const debounce = <T>(func: () => T, delay: number) => {
- let timeout: number | null = null;
+export const debounce = <T extends (...args: any[]) => any>(
+ func: T,
+ delay: number,
+) => {
+ let timeout: NodeJS.Timeout | null = null;
 
- return (...args: any) => {
+ return (...args: Parameters<T>) => {
   if (timeout) clearTimeout(timeout);
 
-  setTimeout(() => {
+  timeout = setTimeout(() => {
    func.apply(this, args);
   }, delay);
  };
