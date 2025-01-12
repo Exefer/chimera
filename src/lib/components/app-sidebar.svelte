@@ -2,6 +2,7 @@
  import { page } from "$app/state";
  import { Input } from "@/components/ui/input";
  import * as Sidebar from "@/components/ui/sidebar";
+ import { gamesStore } from "@/store/games.store";
  import Download from "lucide-svelte/icons/download";
  import House from "lucide-svelte/icons/house";
  import Settings from "lucide-svelte/icons/settings";
@@ -53,6 +54,13 @@
    <Sidebar.GroupLabel>My Library</Sidebar.GroupLabel>
    <Sidebar.GroupContent>
     <Input type="text" placeholder="Filter Library" bind:value />
+    <div class="mt-2 flex flex-col px-1">
+     {#each $gamesStore as game}
+      <a href="/game?id={game.remoteId}&name={game.title}">
+       {game.title}
+      </a>
+     {/each}
+    </div>
    </Sidebar.GroupContent>
   </Sidebar.Group>
  </Sidebar.Content>
