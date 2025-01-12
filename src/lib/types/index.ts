@@ -1,8 +1,11 @@
 export type AppTheme = "light" | "dark" | "system";
 
+export type Locale = "en";
+
 export interface AppSettings {
  downloadsPath: string;
  theme: AppTheme;
+ locale: Locale;
  notifyOnDownloadComplete: boolean;
  launchOnStartup: boolean;
  launchMinimized: boolean;
