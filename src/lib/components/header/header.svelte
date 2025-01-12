@@ -2,7 +2,7 @@
  import { beforeNavigate, goto } from "$app/navigation";
  import { page } from "$app/state";
  import { Input } from "@/components/ui/input";
- import { GAME_SEARCH_DEBOUNCE } from "@/constants";
+ import { SEARCH_DEBOUNCE } from "@/constants";
  import { isTyping, search } from "@/store/state.store";
 
  let currentSearch = $state<string>("");
