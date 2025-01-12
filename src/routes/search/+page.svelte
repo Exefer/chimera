@@ -5,8 +5,6 @@
  import uFuzzy from "@leeoniya/ufuzzy";
  import { get } from "svelte/store";
 
- const ITEMS_PER_PAGE = 20;
-
  const uf = new uFuzzy({
   intraMode: 0,
   intraIns: 1,
@@ -21,9 +19,9 @@
  });
 
  let currentPage = $state<number>(1);
- const haystack = $appsList.map(entry => entry.name);
+ const haystack = get(appsList).map(entry => entry.name);
 
- let searchResults = $derived.by(() => {
+ const searchResults = $derived.by(() => {
   if (!$search) return [];
   const apps = get(appsList);
   const [idxs] = uf.search(haystack, $search);
