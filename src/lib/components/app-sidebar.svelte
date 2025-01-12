@@ -25,7 +25,7 @@
   },
  ];
 
- let value = $state<string>();
+ let search = $state<string>("");
 </script>
 
 <Sidebar.Root>
@@ -53,9 +53,11 @@
   <Sidebar.Group>
    <Sidebar.GroupLabel>My Library</Sidebar.GroupLabel>
    <Sidebar.GroupContent>
-    <Input type="text" placeholder="Filter Library" bind:value />
+    <Input type="text" placeholder="Filter Library" bind:value={search} />
     <div class="mt-2 flex flex-col px-1">
-     {#each $gamesStore as game}
+     {#each $gamesStore.filter(game => game.title
+       .toLowerCase()
+       .includes(search.toLowerCase())) as game (game.title)}
       <a href="/game?id={game.remoteId}&name={game.title}">
        {game.title}
       </a>
