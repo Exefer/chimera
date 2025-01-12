@@ -21,9 +21,8 @@
  import CircleMinus from "lucide-svelte/icons/circle-minus";
  import CirclePlus from "lucide-svelte/icons/circle-plus";
  import RefreshCcw from "lucide-svelte/icons/refresh-ccw";
+ import { toast } from "svelte-sonner";
  import { slide } from "svelte/transition";
- import type { z } from "zod";
- import { type FormSchema, schema } from "./schema";
 
  let temporarySource = $state<Types.Source | null>(null);
 
@@ -70,6 +69,7 @@
   disabled={!$sourcesStore.length}
   onclick={async () => {
    await sourcesStore.refreshSources();
+   toast.success("All download sources are synced!");
   }}><RefreshCcw />Sync Sources</Button
  >
  <Dialog.Root>
@@ -105,6 +105,7 @@
        onclick={() => {
         sourcesStore.addSource(temporarySource!);
         temporarySource = null;
+        toast.success("Added download source");
        }}>Import</Dialog.Close
       >
      </div>
@@ -130,6 +131,7 @@
       variant="outline"
       onclick={() => {
        sourcesStore.removeSource(index);
+       toast.success("Removed download source");
       }}><CircleMinus />Remove</Button
      >
     </div>
