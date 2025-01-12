@@ -43,7 +43,7 @@
   name="theme"
   bind:value={() => $settingsStore.theme,
   theme => {
-   theme == "system" ? resetMode() : setMode(theme as Types.AppTheme);
+   theme == "system" ? resetMode() : setMode(theme);
    settingsStore.updateSettings({ theme });
   }}
  >
