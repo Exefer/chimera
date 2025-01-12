@@ -144,3 +144,10 @@ export interface AppDetails {
  background_raw: string;
  ratings: Ratings;
 }
+
+export interface AppDetailsResponse {
+ [key: string]: {
+  success: boolean;
+  data: AppDetails;
+ };
+}
