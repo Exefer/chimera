@@ -9,6 +9,7 @@
  import { capitalize } from "@/utils";
  import { open } from "@tauri-apps/plugin-dialog";
  import { resetMode, setMode } from "mode-watcher";
+ import { locale, locales } from "svelte-i18n";
 </script>
 
 <h1 class="text-2xl font-bold">General</h1>

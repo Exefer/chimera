@@ -1,4 +1,5 @@
 <script lang="ts">
+ import "$lib/i18n";
  import { appsList } from "@/store/state.store";
 
  import { onMount } from "svelte";

@@ -16,8 +16,7 @@
  import Download from "lucide-svelte/icons/download";
  import File from "lucide-svelte/icons/file";
  import Settings from "lucide-svelte/icons/settings";
- import { onMount } from "svelte";
- import { toast } from "svelte-sonner";
+ import { t } from "svelte-i18n";
 
  let appDetails = $state<Steam.AppDetails>();
  let selectedRequirements =
