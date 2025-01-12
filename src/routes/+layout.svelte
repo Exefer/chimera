@@ -1,30 +1,38 @@
 <script lang="ts">
+ import { dev } from "$app/environment";
  import AppSidebar from "@/components/app-sidebar.svelte";
  import Header from "@/components/header";
  import * as Sidebar from "@/components/ui/sidebar";
  import { events } from "@/specta-bindings";
- import { isTauri } from "@tauri-apps/api/core";
+ import { gamesStore } from "@/store/games.store";
+ import { settingsStore } from "@/store/settings.store";
  import { ModeWatcher } from "mode-watcher";
  import { onMount } from "svelte";
- import { toast, Toaster } from "svelte-sonner";
+ import { Toaster } from "svelte-sonner";
  import "../app.css";
 
  let { children } = $props();
 
  onMount(async () => {
   events.executableStarted.listen(event => {
-   toast.info(`${event.payload.path} was opened!`);
+   gamesStore.updateGame(["executablePath", event.payload.path], state => ({
+    ...state,
+    running: true,
+   }));
   });
 
   events.executableFinished.listen(event => {
-   toast.info(
-    `${event.payload.path} was closed! Process ran for ${event.payload.execution_time} seconds`,
-   );
+   gamesStore.updateGame(["executablePath", event.payload.path], state => ({
+    ...state,
+    lastPlayedAt: Date.now(),
+    playtimeInSeconds: state.playtimeInSeconds + event.payload.execution_time,
+    running: false,
+   }));
   });
  });
 </script>
 
-<Toaster />
+<Toaster theme={$settingsStore.theme} />
 <ModeWatcher />
 
 <Sidebar.Provider>
@@ -38,7 +46,7 @@
 <svelte:window
  on:contextmenu|preventDefault
  on:keydown={event => {
-  if (!isTauri()) return;
+  if (dev) return;
   if (
    event.key === "F5" ||
    (event.ctrlKey && event.key === "r") ||
