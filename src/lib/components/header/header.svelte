@@ -65,7 +65,7 @@
     timeout = setTimeout(() => {
      isTyping.set(false);
      search.set(currentSearch);
-    }, GAME_SEARCH_DEBOUNCE);
+    }, SEARCH_DEBOUNCE);
    }}
   />
  </div>
