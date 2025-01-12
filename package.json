@@ -12,7 +12,8 @@
   "tauri": "tauri",
   "format": "prettier --write .",
   "lint": "prettier --check .",
-  "prepare": "husky"
+  "prepare": "husky",
+  "lint-staged": "lint-staged"
  },
  "license": "MIT",
  "dependencies": {
@@ -42,6 +43,7 @@
   "autoprefixer": "^10.4.20",
   "clsx": "^2.1.1",
   "husky": "^9.1.7",
+  "lint-staged": "^15.3.0",
   "lucide-svelte": "^0.469.0",
   "mode-watcher": "^0.5.0",
   "prettier": "^3.3.2",
@@ -57,5 +59,13 @@
   "typescript": "~5.6.2",
   "vite": "^6.0.7",
   "vite-plugin-comlink": "^5.1.0"
+ },
+ "lint-staged": {
+  "*.{js,ts,json,svelte,md,css}": [
+   "prettier --write"
+  ],
+  "*.rs": [
+   "cargo fmt"
+  ]
  }
 }

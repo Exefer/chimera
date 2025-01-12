@@ -1,2 +1,2 @@
 bun test
-bun run format
+bun run lint-staged
