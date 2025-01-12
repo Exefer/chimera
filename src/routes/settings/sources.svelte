@@ -1,3 +1,13 @@
+<script lang="ts" module>
+ import { z } from "zod";
+
+ export const schema = z.object({
+  url: z.string().url(),
+ });
+
+ export type FormSchema = typeof schema;
+</script>
+
 <script lang="ts">
  import { Button, buttonVariants } from "@/components/ui/button";
  import * as Dialog from "@/components/ui/dialog";
