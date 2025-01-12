@@ -22,25 +22,21 @@ export interface SourceDownload {
  uploadDate: string;
 }
 
-export interface LibraryItem {
+export interface Game {
  title: string;
- id: number;
+ remoteId: string;
+ iconUrl?: string;
+ executablePath?: string;
+ launchOptions?: string;
+ playtimeInSeconds: number;
+ lastPlayedAt: number;
+ createdAt: number;
+ size?: number;
+ running: boolean;
 }
 
 export enum Downloader {
  Torrent,
  Gofile,
-}
-
-export interface Game {
- title: string;
- remoteId: number;
- iconUrl?: string | null;
- executablePath?: string;
- launchOptions?: string;
- playtimeInSeconds?: number;
- lastPlayedAt?: number;
- createdAt?: number;
- updatedAt?: number;
- size?: number;
+ None,
 }
