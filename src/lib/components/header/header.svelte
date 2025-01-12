@@ -30,7 +30,7 @@
 </script>
 
 <header
- class="sticky top-0 z-10 flex justify-between border-b border-b-border bg-sidebar px-4 py-4"
+ class="sticky top-0 z-10 flex justify-between border-b border-b-border bg-header px-4 py-4"
 >
  <h1 class="self-center text-lg font-bold">
   {title()}
