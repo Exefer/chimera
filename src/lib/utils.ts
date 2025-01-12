@@ -72,22 +72,11 @@ export const debounce = <T extends (...args: any[]) => any>(
  };
 };
 
-export const getDownloadersFromUrl = (url: string) => {
- if (url.startsWith("https://gofile.io")) return [Types.Downloader.Gofile];
- if (url.startsWith("magnet:")) return [Types.Downloader.Torrent];
+export const getDownloaderFromUrl = (url: string) => {
+ if (url.startsWith("https://gofile.io")) return Types.Downloader.Gofile;
+ if (url.startsWith("magnet:")) return Types.Downloader.Torrent;
 
- return [];
-};
-
-export const getDownloadersFromUrls = (urls: string[]) => {
- const downloadersSet = urls.reduce<Set<Types.Downloader>>((prev, next) => {
-  const downloaders = getDownloadersFromUrl(next);
-  downloaders.forEach(downloader => prev.add(downloader));
-
-  return prev;
- }, new Set());
-
- return Array.from(downloadersSet);
+ return Types.Downloader.None;
 };
 
 export const formatBytes = (size: number) => {
