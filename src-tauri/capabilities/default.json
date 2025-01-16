@@ -8,6 +8,9 @@
   "permissions": [
     "core:default",
     "fs:default",
+    "store:default",
+    "log:default",
+    "dialog:default",
     {
       "identifier": "http:default",
       "allow": [
@@ -18,19 +21,6 @@
           "url": "https://api.steampowered.com/ISteamApps/GetAppList/v2/"
         }
       ]
-    },
-    "fs:allow-read-file",
-    "fs:allow-write-file",
-    "fs:allow-read-dir",
-    "fs:allow-copy-file",
-    "fs:allow-mkdir",
-    "fs:allow-remove",
-    "fs:allow-rename",
-    "fs:allow-exists",
-    "fs:allow-write-text-file",
-    "fs:scope-download",
-    "fs:allow-open",
-    "fs:scope-appdata",
-    "store:default"
+    }
   ]
 }
