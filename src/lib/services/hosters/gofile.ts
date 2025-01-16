@@ -22,10 +22,12 @@ export class GoFileAPI {
  private static token: string;
 
  public static async authorize() {
-  const response = await ky<{
-   status: string;
-   data: GoFileAccountsResponse;
-  }>("https://api.gofile.io/accounts").json();
+  const response = await ky
+   .post<{
+    status: string;
+    data: GoFileAccountsResponse;
+   }>("https://api.gofile.io/accounts")
+   .json();
 
   if (response.status == "ok") {
    this.token = response.data.token;
