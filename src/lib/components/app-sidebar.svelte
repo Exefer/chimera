@@ -2,7 +2,7 @@
  import { page } from "$app/state";
  import { Input } from "@/components/ui/input";
  import * as Sidebar from "@/components/ui/sidebar";
- import { gamesStore } from "@/store/games.store";
+ import { games } from "@/stores";
  import Download from "lucide-svelte/icons/download";
  import House from "lucide-svelte/icons/house";
  import Settings from "lucide-svelte/icons/settings";
@@ -55,10 +55,13 @@
    <Sidebar.GroupContent>
     <Input type="text" placeholder="Filter Library" bind:value={search} />
     <div class="mt-2 flex flex-col px-1">
-     {#each $gamesStore.filter(game => game.title
+     {#each $games.filter(game => game.title
        .toLowerCase()
        .includes(search.toLowerCase())) as game (game.title)}
-      <a href="/game?id={game.remoteId}&name={game.title}">
+      <a
+       class={{ "font-semibold": !!game.executablePath }}
+       href="/game?id={game.remoteId}&name={game.title}"
+      >
        {game.title}
       </a>
      {/each}
