@@ -3,7 +3,7 @@
  import { page } from "$app/state";
  import { Input } from "@/components/ui/input";
  import { SEARCH_DEBOUNCE } from "@/constants";
- import { isTyping, search } from "@/store/state.store";
+ import { isTyping, search } from "@/stores";
 
  let currentSearch = $state<string>("");
 

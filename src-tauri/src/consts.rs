@@ -1,0 +1,1 @@
+pub const PROGRESS_EVENT_SKIP: u64 = 2_500;
