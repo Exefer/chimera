@@ -7,7 +7,7 @@
  import { Separator } from "@/components/ui/separator";
  import { getSteamAppDetails, steamImageBuilder } from "@/services/steam";
  import { commands } from "@/specta-bindings";
- import { gamesStore } from "@/store/games.store";
+ import { games } from "@/stores";
  import * as Steam from "@/types/steam.types";
  import { open } from "@tauri-apps/plugin-dialog";
  import {
@@ -23,9 +23,9 @@
  import Settings from "lucide-svelte/icons/settings";
  import { t } from "svelte-i18n";
 
- const gameTitle = $derived<string>(page.url.searchParams.get("name")!);
- const gameId = $derived<string>(page.url.searchParams.get("id")!);
- const localGame = $derived($gamesStore.find(game => game.remoteId == gameId));
+ const title = $derived<string>(page.url.searchParams.get("name")!);
+ const remoteId = $derived<string>(page.url.searchParams.get("id")!);
+ const localGame = $derived($games.find(game => game.remoteId == remoteId));
  const isPlayable = $derived<boolean>(
   !!localGame! && !!localGame.executablePath,
  );
@@ -39,14 +39,14 @@
   $state<keyof Steam.AppDetails["pc_requirements"]>("minimum");
 
  $effect(() => {
-  getSteamAppDetails(gameId).then(data => (appDetails = data));
+  getSteamAppDetails(remoteId).then(data => (appDetails = data));
  });
 </script>
 
 <div class="flex flex-col">
  <img
-  src={steamImageBuilder.libraryHero(gameId)}
-  alt={gameTitle}
+  src={steamImageBuilder.libraryHero(remoteId)}
+  alt={title}
   class="max-h-[300px] min-h-[300px] min-w-full object-cover xl:max-h-[350px]"
   fetchpriority="high"
  />
@@ -66,7 +66,7 @@
        start: 0,
        end: localGame.playtimeInSeconds * 1000,
       }),
-      { format: ["seconds", "minutes", "hours"] },
+      { format: ["minutes", "hours"] },
      )}
     </p>
    {/if}
@@ -74,7 +74,7 @@
     {localGame
      ? localGame.lastPlayedAt != 0
        ? `Last played ${formatDistanceToNow(localGame.lastPlayedAt!, { addSuffix: true })}`
-       : `You haven't played ${gameTitle} yet`
+       : `You haven't played ${title} yet`
      : `69 download options`}
    </p>
   {/if}
@@ -87,14 +87,15 @@
    disabled={localGame?.running}
    onclick={async () => {
     if (!localGame) {
-     gamesStore.addGame({
-      title: gameTitle,
-      remoteId: gameId,
+     games.addGame({
+      title,
+      remoteId,
      });
     } else if (localGame.executablePath && !localGame.running) {
      await commands.runExecutable(localGame.executablePath!);
     } else if (localGame.running) {
      // Should close
+    } else {
     }
    }}
   >
@@ -126,7 +127,7 @@
    >
    <Dialog.Content class="max-w-2xl">
     <Dialog.Header>
-     <Dialog.Title>{gameTitle}</Dialog.Title>
+     <Dialog.Title>{title}</Dialog.Title>
     </Dialog.Header>
     <Separator />
     <div class="space-y-4">
@@ -155,7 +156,7 @@
          ],
         });
         if (!executable) return;
-        gamesStore.updateGame(["remoteId", gameId], game => ({
+        games.updateGame(["remoteId", remoteId], game => ({
          ...game,
          executablePath: executable,
         }));
@@ -168,7 +169,7 @@
        <Button
         variant="outline"
         onclick={() => {
-         gamesStore.updateGame(["remoteId", gameId], game => ({
+         games.updateGame(["remoteId", remoteId], game => ({
           ...game,
           executablePath: "",
          }));
@@ -183,19 +184,7 @@
       </p>
      </div>
      <!-- For now disabled, since there's no download handler on the backend -->
-     <Dialog.Root>
-      <Dialog.Trigger class={buttonVariants({ variant: "outline" })} disabled
-       >Open download options</Dialog.Trigger
-      >
-      <Dialog.Content>
-       <Dialog.Header>
-        <Dialog.Title>Download options</Dialog.Title>
-        <Dialog.Description>
-         Choose the game version you want to download
-        </Dialog.Description>
-       </Dialog.Header>
-      </Dialog.Content>
-     </Dialog.Root>
+     <Button variant="outline" disabled>Open download options</Button>
 
      <div class="space-y-2">
       <h2 class="text-xl font-bold text-muted-foreground">Danger Zone</h2>
@@ -213,29 +202,32 @@
         <Dialog.Header>
          <Dialog.Title>Are you sure?</Dialog.Title>
          <Dialog.Description>
-          This will remove {gameTitle} from your library
+          This will remove {title} from your library
          </Dialog.Description>
         </Dialog.Header>
         <Separator />
         <div class="flex justify-end gap-2">
          <Dialog.Close
           class={buttonVariants({ variant: "outline" })}
-          onclick={() => gamesStore.removeGame(gameId)}>Confirm</Dialog.Close
+          onclick={() => games.removeGame(remoteId)}>Confirm</Dialog.Close
          >
          <Dialog.Close class={buttonVariants()}>Cancel</Dialog.Close>
         </div>
        </Dialog.Content>
       </Dialog.Root>
-      <!-- For now disabled, since there's no download handler on the backend -->
-      <!-- disabled={noExecutable} -->
       <Dialog.Root>
-       <Dialog.Trigger
-        class={[buttonVariants({ variant: "destructive" })]}
-        disabled
-        onclick={() => {
-         // Should remove files
-        }}>Remove files</Dialog.Trigger
-       >
+       <Dialog.Trigger>
+        {#snippet child({ props })}
+         <Button
+          variant="destructive"
+          disabled={noExecutable}
+          onclick={() => {
+           // Should remove files
+          }}
+          {...props}>Remove files</Button
+         >
+        {/snippet}
+       </Dialog.Trigger>
        <Dialog.Content>
         <Dialog.Header>
          <Dialog.Title>Are you sure absolutely sure?</Dialog.Title>
@@ -274,7 +266,7 @@
    <div>
     <div class="border-r p-4">
      <div class="flex xl:justify-center">
-      <article class="xl:max-w-[750px]">
+      <article class="pb-[34px] xl:max-w-[750px]">
        {@html appDetails?.about_the_game}
       </article>
      </div>
