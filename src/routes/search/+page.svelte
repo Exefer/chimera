@@ -1,15 +1,16 @@
 <script lang="ts">
  import * as Pagination from "@/components/ui/pagination";
  import { ITEMS_PER_PAGE } from "@/constants";
- import { appsList, isTyping, search } from "@/store/state.store";
+ import { appsList, isTyping, search } from "@/stores";
  import uFuzzy from "@leeoniya/ufuzzy";
  import { get } from "svelte/store";
 
+ // See https://github.com/leeoniya/uFuzzy#options
  const uf = new uFuzzy({
   intraMode: 0,
   intraIns: 1,
   interIns: Infinity,
-  intraChars: "[a-z\d']",
+  intraChars: "[a-z\d\' ]",
   interChars: ".",
   interLft: 0,
   interRgt: 0,
@@ -17,17 +18,16 @@
   intraTrn: 1,
   intraDel: 1,
  });
-
- let currentPage = $state<number>(1);
- const haystack = get(appsList).map(entry => entry.name);
-
+ const apps = get(appsList);
+ const haystack = apps.map(entry => entry.name);
  const searchResults = $derived.by(() => {
   if (!$search) return [];
-  const apps = get(appsList);
-  const [idxs] = uf.search(haystack, $search);
+  const idxs = uf.filter(haystack, $search);
 
   return idxs?.map(index => apps[index]);
  });
+
+ let currentPage = $state<number>(1);
 </script>
 
 <div class="p-4">
