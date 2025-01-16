@@ -4,7 +4,7 @@
  import { Input } from "@/components/ui/input";
  import { Label } from "@/components/ui/label";
  import * as Select from "@/components/ui/select";
- import { settingsStore } from "@/store/settings.store";
+ import { settings } from "@/stores";
  import * as Types from "@/types";
  import { capitalize } from "@/utils";
  import { open } from "@tauri-apps/plugin-dialog";
@@ -20,17 +20,15 @@
   <Input
    type="text"
    name="downloads-path"
-   value={$settingsStore.downloadsPath}
+   value={$settings.downloadsPath}
    readonly
   />
   <Button
    variant="outline"
    onclick={async () => {
     const folder = await open({ multiple: false, directory: true });
-
     if (!folder) return;
-
-    settingsStore.updateSettings({ downloadsPath: folder });
+    settings.updateSettings({ downloadsPath: folder });
    }}>Update</Button
   >
  </div>
@@ -41,14 +39,14 @@
  <Select.Root
   type="single"
   name="theme"
-  bind:value={() => $settingsStore.theme,
+  bind:value={() => $settings.theme,
   theme => {
    theme == "system" ? resetMode() : setMode(theme);
-   settingsStore.updateSettings({ theme });
+   settings.updateSettings({ theme });
   }}
  >
   <Select.Trigger class="w-[180px]"
-   >{capitalize($settingsStore.theme)}</Select.Trigger
+   >{capitalize($settings.theme)}</Select.Trigger
   >
   <Select.Content>
    <Select.Item value="light">Light</Select.Item>
@@ -65,7 +63,7 @@
   name="theme"
   bind:value={() => $locale!,
   locale => {
-   $settingsStore.locale = (locale || "en") as Types.Locale;
+   $settings.locale = (locale || "en") as Types.Locale;
   }}
  >
   <Select.Trigger class="w-[180px]">{$locale!}</Select.Trigger>
@@ -82,7 +80,7 @@
 <div class="flex items-center gap-2">
  <Checkbox
   id="notify-on-download-complete"
-  bind:checked={$settingsStore.notifyOnDownloadComplete}
+  bind:checked={$settings.notifyOnDownloadComplete}
  />
  <Label for="notify-on-download-complete">When a download is complete</Label>
 </div>

@@ -14,7 +14,7 @@
  import { Input } from "@/components/ui/input";
  import { Label } from "@/components/ui/label";
  import { Separator } from "@/components/ui/separator";
- import { sourcesStore } from "@/store/sources.store";
+ import { sources } from "@/stores";
  import * as Types from "@/types";
  import { validator } from "@felte/validator-zod";
  import { createForm } from "felte";
@@ -31,10 +31,9 @@
    const response = await fetch(values.url);
 
    if (response.ok) {
-    if ($sourcesStore.find(source => source.url == values.url)) {
+    if ($sources.find(source => source.url == values.url)) {
      throw "Source already added!";
     }
-
     return await response
      .json()
      .then(source => ({ ...source, url: values.url }))
@@ -66,9 +65,9 @@
 <div class="flex justify-between">
  <Button
   variant="outline"
-  disabled={!$sourcesStore.length}
+  disabled={!$sources.length}
   onclick={async () => {
-   await sourcesStore.refreshSources();
+   await sources.refreshSources();
    toast.success("All download sources are synced!");
   }}><RefreshCcw />Sync Sources</Button
  >
@@ -103,7 +102,7 @@
       <Dialog.Close
        class={buttonVariants()}
        onclick={() => {
-        sourcesStore.addSource(temporarySource!);
+        sources.addSource(temporarySource!);
         temporarySource = null;
         toast.success("Added download source");
        }}>Import</Dialog.Close
@@ -115,27 +114,22 @@
  </Dialog.Root>
 </div>
 
-{#if $sourcesStore.length}
- <ul class="space-y-4">
-  {#each $sourcesStore as source, index (source.name)}
-   <li
-    class="space-y-2 rounded-lg border p-4 shadow-sm transition-[position]"
-    out:slide
-   >
-    <h1 class="text-lg font-bold">{source.name}</h1>
-    <small>{source.downloads.length} download options</small>
-    <p class="text-sm text-muted-foreground">Download Source URL</p>
-    <div class="flex justify-between gap-4">
-     <Input value={source.url} readonly />
-     <Button
-      variant="outline"
-      onclick={() => {
-       sourcesStore.removeSource(index);
-       toast.success("Removed download source");
-      }}><CircleMinus />Remove</Button
-     >
-    </div>
-   </li>
-  {/each}
- </ul>
-{/if}
+<ul class="space-y-4">
+ {#each $sources as source, index (source.name)}
+  <li class="space-y-2 rounded-lg border p-4 shadow-sm" out:slide>
+   <h1 class="text-lg font-bold">{source.name}</h1>
+   <small>{source.downloads.length} download options</small>
+   <p class="text-sm text-muted-foreground">Download Source URL</p>
+   <div class="flex justify-between gap-4">
+    <Input value={source.url} readonly />
+    <Button
+     variant="outline"
+     onclick={() => {
+      sources.removeSource(index);
+      toast.success("Removed download source");
+     }}><CircleMinus />Remove</Button
+    >
+   </div>
+  </li>
+ {/each}
+</ul>
