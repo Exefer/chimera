@@ -15,44 +15,45 @@ export const pipe =
  (arg: T) =>
   fns.reduce((prev, fn) => fn(prev), arg);
 
-export const removeReleaseYearFromName = (name: string) =>
- name.replace(/\([0-9]{4}\)/g, "");
+export const removeReleaseYearFromTitle = (title: string) =>
+ title.replace(/\([0-9]{4}\)/g, "");
 
-export const removeSymbolsFromName = (name: string) =>
- name.replace(/[^A-Za-z 0-9]/g, "");
+export const removeSymbolsFromTitle = (title: string) =>
+ title.replace(/[^A-Za-z 0-9]/g, "");
 
-export const removeSpecialEditionFromName = (name: string) =>
- name.replace(
+export const removeSpecialEditionFromTitle = (title: string) =>
+ title.replace(
   /(The |Digital )?(GOTY|Deluxe|Standard|Ultimate|Definitive|Enhanced|Collector's|Premium|Digital|Limited|Game of the Year|Reloaded|[0-9]{4}) Edition\w /gi,
   "",
  );
 
-export const removeDuplicateSpaces = (name: string) =>
- name.replace(/\s{2,}/g, " ");
+export const removeDuplicateSpaces = (title: string) =>
+ title.replace(/\s{2,}/g, " ");
 
-export const replaceDotsWithSpace = (name: string) => name.replace(/\./g, " ");
+export const replaceDotsWithSpace = (title: string) =>
+ title.replace(/\./g, " ");
 
-export const replaceNbspWithSpace = (name: string) =>
- name.replace(new RegExp(String.fromCharCode(160), "g"), " ");
+export const replaceNbspWithSpace = (title: string) =>
+ title.replace(new RegExp(String.fromCharCode(160), "g"), " ");
 
-export const replaceUnderscoreWithSpace = (name: string) =>
- name.replace(/_/g, " ");
+export const replaceUnderscoreWithSpace = (title: string) =>
+ title.replace(/_/g, " ");
 
-export const formatName = pipe<string>(
+export const formatTitle = pipe<string>(
  str =>
   str.replace(
    new RegExp(Object.keys(CHAR_MAP).join("|"), "g"),
    match => CHAR_MAP[match],
   ),
  str => str.toLowerCase(),
- removeReleaseYearFromName,
- removeSpecialEditionFromName,
+ removeReleaseYearFromTitle,
+ removeSpecialEditionFromTitle,
  replaceUnderscoreWithSpace,
  replaceDotsWithSpace,
  replaceNbspWithSpace,
  str => str.replace(/DIRECTOR'S CUT/gi, ""),
  str => str.replace(/Friend's Pass/gi, ""),
- removeSymbolsFromName,
+ removeSymbolsFromTitle,
  removeDuplicateSpaces,
  str => str.trim(),
 );
