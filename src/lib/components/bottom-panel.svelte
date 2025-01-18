@@ -17,7 +17,7 @@
      start: 0,
      end: (download.eta! || 1) * 1000,
     }),
-    { format: ["seconds", "minutes", "hours", "days", "weeks"] },
+    { format: ["minutes", "seconds", "hours", "days", "weeks"] },
    )} - {(download.download_speed! / BYTES_TO_MEGABYTES).toFixed(1)}MB/S
   {:else}
    No downloads in progress
