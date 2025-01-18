@@ -99,13 +99,12 @@
        <p>{temporarySource.name}</p>
        <small>Found {temporarySource.downloads.length} download options</small>
       </div>
-      <Dialog.Close
-       class={buttonVariants()}
+      <Button
        onclick={() => {
         sources.addSource(temporarySource!);
         temporarySource = null;
         toast.success("Added download source");
-       }}>Import</Dialog.Close
+       }}>Import</Button
       >
      </div>
     {/if}
