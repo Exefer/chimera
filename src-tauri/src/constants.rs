@@ -1,0 +1,1 @@
+pub const PROGRESS_EVENT_SKIP: u32 = 2_500;
