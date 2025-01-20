@@ -21,12 +21,21 @@ interface Download extends Partial<DownloadProgressEvent> {
 function createDownloadsStore() {
  const store = writable<Download[]>([]);
 
- const addDownload = (url: string, remoteId: string, title: string) => {
+ const addDownload = (
+  url: string,
+  remoteId: string,
+  title: string,
+  filename: string,
+ ) => {
   store.update(state => {
    if (state.find(download => download.url == url)) {
     return state;
    }
-   commands.download(url, get(settings).downloadsPath + "/test.zip", null);
+   commands.download(
+    url,
+    get(settings).downloadsPath.replace(/\\/g, "/") + `/${filename}`,
+    null,
+   );
    events.downloadStartedEvent.once(({ payload }) => {
     state.push({
      ...payload,
