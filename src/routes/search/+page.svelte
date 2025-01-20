@@ -1,7 +1,7 @@
 <script lang="ts">
  import * as Pagination from "@/components/ui/pagination";
  import { ITEMS_PER_PAGE } from "@/constants";
- import { appsList, isTyping, search } from "@/stores";
+ import { appList, isTyping, search } from "@/stores";
  import uFuzzy from "@leeoniya/ufuzzy";
  import { get } from "svelte/store";
 
@@ -18,7 +18,7 @@
   intraTrn: 1,
   intraDel: 1,
  });
- const apps = get(appsList);
+ const apps = get(appList);
  const haystack = apps.map(entry => entry.name);
  const searchResults = $derived.by(() => {
   if (!$search) return [];

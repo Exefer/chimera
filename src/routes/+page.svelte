@@ -1,7 +1,7 @@
 <script lang="ts">
  import "$lib/i18n";
  import { Button } from "@/components/ui/button";
- import { appsList, downloads } from "@/stores";
+ import { appList, downloads } from "@/stores";
  import * as Steam from "@/types/steam.types";
  import { formatBytes } from "@/utils";
  import ky from "ky";
@@ -19,7 +19,7 @@
    ),
   )
    .then(response => response.json())
-   .then(data => appsList.set(data));
+   .then(data => appList.set(data));
  });
 </script>
 
