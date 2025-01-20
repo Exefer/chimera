@@ -81,7 +81,7 @@ function createDownloadsStore() {
   store.update(state => {
    const index = state.findIndex(download => download.url == payload.url);
    const download = state[index];
-   delete download["remaining_bytes"];
+   delete download["downloaded_bytes"];
    delete download["download_speed"];
    delete download["progress"];
    delete download["eta"];

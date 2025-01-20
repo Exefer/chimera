@@ -1,4 +1,4 @@
-mod consts;
+mod constants;
 mod exec_handler;
 mod http_downloader;
 use serde::{Deserialize, Serialize};
@@ -100,12 +100,11 @@ pub struct DownloadStartedEvent {
     content_length: u64,
 }
 
-// TODO: Pass downloaded_bytes instead of remaining_bytes to frontend
 #[derive(Serialize, Deserialize, Debug, Clone, specta::Type, tauri_specta::Event)]
 pub struct DownloadProgressEvent {
     url: String,
     progress: f64,
-    remaining_bytes: u64,
+    downloaded_bytes: u64,
     download_speed: u64,
     eta: u64,
 }

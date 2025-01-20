@@ -1,4 +1,4 @@
-use crate::consts::PROGRESS_EVENT_SKIP;
+use crate::constants::PROGRESS_EVENT_SKIP;
 use crate::{
     AppState, DownloadAbortedEvent, DownloadCompletedEvent, DownloadPausedEvent,
     DownloadProgressEvent, DownloadStartedEvent, Error,
@@ -23,22 +23,10 @@ fn parse_headers(custom_headers: Option<Vec<(&str, &str)>>) -> HeaderMap {
 
     if let Some(custom_headers) = custom_headers {
         for (key, value) in custom_headers {
-            #[cfg(debug_assertions)]
-            {
-                println!("{key}: {value}");
-            }
             headers.insert(key.parse::<HeaderName>().unwrap(), value.parse().unwrap());
         }
     }
     headers
-}
-
-fn calculate_remaining_bytes(content_length: u64, downloaded_bytes: u64) -> u64 {
-    if downloaded_bytes > content_length {
-        0 // Prevents underflow
-    } else {
-        content_length - downloaded_bytes
-    }
 }
 
 #[specta::specta]
@@ -57,6 +45,38 @@ pub async fn download(
         tokio::fs::create_dir_all(parent).await?;
     }
 
+    let response = ReqwestClient::new()
+        .redirect(Policy::limited(3))
+        .build()?
+        .get(url)
+        .headers(headers.clone())
+        .send()
+        .await?;
+    let content_length = response
+        .content_length()
+        .ok_or_else(|| Error::Other("Unable to parse content length".to_string()))?;
+    let mut downloaded_bytes = if let Some(range) = headers.get("Range") {
+        info!("Download resumed for {url}");
+        range.to_str().unwrap()[6..range.len() - 1]
+            .parse::<u64>()
+            .unwrap_or(0)
+    } else {
+        0
+    };
+    let content_length = downloaded_bytes + content_length;
+    let _ = DownloadStartedEvent {
+        url: url.to_string(),
+        path: dest_path.display().to_string(),
+        content_length,
+    }
+    .emit(&app);
+
+    let start_time = Instant::now();
+    let mut current_iteration: u32 = 0;
+    // Track the offset at the start of the session, used for resumed requests
+    let session_start_offset = downloaded_bytes;
+    let mut download_aborted = false;
+    let mut download_paused = false;
     let mut writer = BufWriter::new(
         tokio::fs::OpenOptions::new()
             .create(true)
@@ -64,42 +84,6 @@ pub async fn download(
             .open(&dest_path)
             .await?,
     );
-
-    let response = ReqwestClient::new()
-        .cookie_store(true)
-        .redirect(Policy::limited(3))
-        .build()?
-        .get(url)
-        .headers(headers.clone())
-        .send()
-        .await?;
-
-    let content_length = response
-        .content_length()
-        .ok_or_else(|| Error::Other("Unable to parse content length".to_string()))?;
-    let mut downloaded_bytes = if let Some(range) = headers.get("Range") {
-        range.to_str().unwrap()[6..range.len() - 1]
-            .parse::<u64>()
-            .unwrap_or(0)
-    } else {
-        0
-    };
-
-    let total_length = downloaded_bytes + content_length;
-
-    let _ = DownloadStartedEvent {
-        url: url.to_string(),
-        path: dest_path.display().to_string(),
-        content_length: total_length,
-    }
-    .emit(&app);
-
-    let start_time = Instant::now();
-    // Track the offset at the start of the session, used for resumed requests
-    let session_start_offset = downloaded_bytes;
-    let mut current_iteration: u64 = 0;
-    let mut download_aborted = false;
-    let mut download_paused = false;
     let mut stream = response.bytes_stream();
 
     while let Some(chunk) = stream.next().await {
@@ -122,32 +106,28 @@ pub async fn download(
                     break;
                 }
             }
-
             let elapsed = start_time.elapsed().as_secs();
             // Use session-specific downloaded bytes to avoid incorrect ETA and download speed on resume
             let session_downloaded_bytes = downloaded_bytes - session_start_offset;
-            let remaining_bytes = calculate_remaining_bytes(total_length, downloaded_bytes);
             let download_speed = if elapsed > 0 {
                 session_downloaded_bytes / elapsed
             } else {
                 0
             };
             let eta = if download_speed > 0 {
-                remaining_bytes / download_speed
+                (content_length - downloaded_bytes) / download_speed
             } else {
                 0
             };
-
-            let progress = downloaded_bytes as f64 / total_length as f64 * 100.0;
+            let progress = downloaded_bytes as f64 / content_length as f64 * 100.0;
             let _ = DownloadProgressEvent {
                 url: url.to_string(),
                 progress,
-                remaining_bytes,
+                downloaded_bytes,
                 download_speed,
                 eta,
             }
             .emit(&app);
-
             if let Some(pause_download) = &state.pause_download {
                 if pause_download == url {
                     writer.shutdown().await?;
@@ -163,16 +143,13 @@ pub async fn download(
         }
         current_iteration += 1;
     }
-
     writer.flush().await?;
-
     if !download_aborted && !download_paused {
         let _ = DownloadCompletedEvent {
             url: url.to_string(),
         }
         .emit(&app);
     }
-
     info!(
         "Download {} for {url}",
         if download_aborted {
@@ -183,7 +160,6 @@ pub async fn download(
             "completed"
         }
     );
-
     Ok(())
 }
 
