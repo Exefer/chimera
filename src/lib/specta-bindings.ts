@@ -97,7 +97,7 @@ export type DownloadPausedEvent = { url: string };
 export type DownloadProgressEvent = {
  url: string;
  progress: number;
- remaining_bytes: number;
+ downloaded_bytes: number;
  download_speed: number;
  eta: number;
 };
