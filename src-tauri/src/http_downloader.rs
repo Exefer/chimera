@@ -5,8 +5,7 @@
 //! - Pausing/resuming downloads
 //! - Aborting downloads
 //! - Custom headers
-use crate::constants::DEFAULT_USER_AGENT;
-use crate::{constants::PROGRESS_EVENT_SKIP, AppState, Error};
+use crate::{constants::DEFAULT_USER_AGENT, constants::PROGRESS_EVENT_SKIP, AppState, Error};
 use futures::StreamExt;
 use serde::{Deserialize, Serialize};
 use specta::Type;
