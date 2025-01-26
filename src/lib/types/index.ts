@@ -25,6 +25,11 @@ export interface SourceDownload {
  uploadDate: string;
 }
 
+export interface GamePack extends SourceDownload {
+ packer: string;
+ remoteIds: string[];
+}
+
 export interface Game {
  title: string;
  remoteId: string;
@@ -41,5 +46,6 @@ export interface Game {
 export enum Downloader {
  Torrent,
  Gofile,
- None,
+ RealDebrid,
+ Unknown,
 }
