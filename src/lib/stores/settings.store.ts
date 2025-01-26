@@ -1,4 +1,4 @@
-import { DEFAULT_APP_SETTINGS } from "@/constants";
+import { DEFAULT_APP_SETTINGS } from "@/constants/";
 import * as Persistent from "@/stores/persistent";
 import * as Types from "@/types";
 import { writable } from "svelte/store";
