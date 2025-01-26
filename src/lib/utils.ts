@@ -1,4 +1,4 @@
-import { CHAR_MAP } from "@/constants";
+import { CHAR_MAP } from "@/constants/";
 import * as Types from "@/types";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
@@ -27,24 +27,18 @@ export const removeSpecialEditionFromTitle = (title: string) =>
   "",
  );
 
-export const removeDuplicateSpaces = (title: string) =>
- title.replace(/\s{2,}/g, " ");
+export const removeDuplicateSpaces = (title: string) => title.replace(/\s{2,}/g, " ");
 
-export const replaceDotsWithSpace = (title: string) =>
- title.replace(/\./g, " ");
+export const replaceDotsWithSpace = (title: string) => title.replace(/\./g, " ");
 
 export const replaceNbspWithSpace = (title: string) =>
  title.replace(new RegExp(String.fromCharCode(160), "g"), " ");
 
-export const replaceUnderscoreWithSpace = (title: string) =>
- title.replace(/_/g, " ");
+export const replaceUnderscoreWithSpace = (title: string) => title.replace(/_/g, " ");
 
 export const formatTitle = pipe<string>(
  str =>
-  str.replace(
-   new RegExp(Object.keys(CHAR_MAP).join("|"), "g"),
-   match => CHAR_MAP[match],
-  ),
+  str.replace(new RegExp(Object.keys(CHAR_MAP).join("|"), "g"), match => CHAR_MAP[match]),
  str => str.toLowerCase(),
  removeReleaseYearFromTitle,
  removeSpecialEditionFromTitle,
@@ -58,10 +52,7 @@ export const formatTitle = pipe<string>(
  str => str.trim(),
 );
 
-export const debounce = <T extends (...args: any[]) => any>(
- func: T,
- delay: number,
-) => {
+export const debounce = <T extends (...args: any[]) => any>(func: T, delay: number) => {
  let timeout: NodeJS.Timeout | null = null;
 
  return (...args: Parameters<T>) => {
@@ -76,8 +67,9 @@ export const debounce = <T extends (...args: any[]) => any>(
 export const getDownloaderFromUrl = (url: string) => {
  if (url.startsWith("https://gofile.io")) return Types.Downloader.Gofile;
  if (url.startsWith("magnet:")) return Types.Downloader.Torrent;
+ if (url.startsWith("https://1fichier.com")) return Types.Downloader.RealDebrid;
 
- return Types.Downloader.None;
+ return Types.Downloader.Unknown;
 };
 
 export const formatBytes = (size: number) => {
