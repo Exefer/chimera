@@ -3,4 +3,5 @@ import { writable } from "svelte/store";
 
 export const isTyping = writable<boolean>(false);
 export const search = writable<string>("");
-export const appList = writable<Steam.App[]>();
+export const apps = writable<Steam.App[]>();
+export const appsByLetter = writable<Record<string, { name: string; id: number }[]>>({});
