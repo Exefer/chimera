@@ -15,11 +15,7 @@ function createGamesStore() {
  const addGame = (
   game: Omit<
    Types.Game,
-   | "createdAt"
-   | "playtimeInSeconds"
-   | "lastPlayedAt"
-   | "running"
-   | "executablePath"
+   "createdAt" | "playtimeInSeconds" | "lastPlayedAt" | "running" | "executablePath"
   >,
  ) =>
   store.update(state => {
