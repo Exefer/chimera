@@ -21,10 +21,7 @@ function createSourcesStore() {
   });
  });
 
- const addSource = (
-  source: Types.Source,
-  callback?: (sources: Types.Source[]) => void,
- ) =>
+ const addSource = (source: Types.Source, callback?: (sources: Types.Source[]) => void) =>
   store.update(state => {
    state.push(source);
 
@@ -33,10 +30,7 @@ function createSourcesStore() {
    return state;
   });
 
- const removeSource = (
-  index: number,
-  callback?: (sources: Types.Source[]) => void,
- ) =>
+ const removeSource = (index: number, callback?: (sources: Types.Source[]) => void) =>
   store.update(state => {
    state.splice(index, 1);
 
