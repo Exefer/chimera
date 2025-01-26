@@ -1,9 +1,6 @@
 <script lang="ts" module>
  import type { WithElementRef } from "bits-ui";
- import type {
-  HTMLAnchorAttributes,
-  HTMLButtonAttributes,
- } from "svelte/elements";
+ import type { HTMLAnchorAttributes, HTMLButtonAttributes } from "svelte/elements";
  import { type VariantProps, tv } from "tailwind-variants";
 
  export const buttonVariants = tv({
@@ -12,8 +9,7 @@
   variants: {
    variant: {
     default: "bg-primary text-primary-foreground hover:bg-primary/90",
-    destructive:
-     "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+    destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
     outline:
      "border-input bg-background hover:bg-accent hover:text-accent-foreground border",
     secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",

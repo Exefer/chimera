@@ -33,11 +33,7 @@
 <script lang="ts">
  import * as Tooltip from "$lib/components/ui/tooltip/index.js";
  import { cn } from "$lib/utils.js";
- import {
-  mergeProps,
-  type WithElementRef,
-  type WithoutChildrenOrChild,
- } from "bits-ui";
+ import { mergeProps, type WithElementRef, type WithoutChildrenOrChild } from "bits-ui";
  import type { ComponentProps, Snippet } from "svelte";
  import type { HTMLAttributes } from "svelte/elements";
  import { useSidebar } from "./context.svelte.js";
@@ -58,9 +54,7 @@
   variant?: SidebarMenuButtonVariant;
   size?: SidebarMenuButtonSize;
   tooltipContent?: Snippet;
-  tooltipContentProps?: WithoutChildrenOrChild<
-   ComponentProps<typeof Tooltip.Content>
-  >;
+  tooltipContentProps?: WithoutChildrenOrChild<ComponentProps<typeof Tooltip.Content>>;
   child?: Snippet<[{ props: Record<string, unknown> }]>;
  } = $props();
 
