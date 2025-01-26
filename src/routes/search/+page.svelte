@@ -1,10 +1,8 @@
 <script lang="ts">
  import * as Pagination from "@/components/ui/pagination";
- import { ITEMS_PER_PAGE } from "@/constants";
- import { appList, isTyping, search } from "@/stores";
+ import { ITEMS_PER_PAGE } from "@/constants/";
+ import { apps, isTyping, search } from "@/stores";
  import uFuzzy from "@leeoniya/ufuzzy";
- import { get } from "svelte/store";
-
  // See https://github.com/leeoniya/uFuzzy#options
  const uf = new uFuzzy({
   intraMode: 0,
@@ -18,29 +16,27 @@
   intraTrn: 1,
   intraDel: 1,
  });
- const apps = get(appList);
- const haystack = apps.map(entry => entry.name);
+
+ const haystack = $apps.map(entry => entry.name);
  const searchResults = $derived.by(() => {
   if (!$search) return [];
-  const idxs = uf.filter(haystack, $search);
+  const idxs = uf.filter(haystack, $search)!;
 
-  return idxs?.map(index => apps[index]);
+  return idxs.map(index => $apps[index]);
  });
 
  let currentPage = $state<number>(1);
 </script>
 
 <div class="p-4">
- {#if searchResults && searchResults.length && !$isTyping}
+ {#if searchResults && searchResults.length > 0 && !$isTyping}
   {@const totalPages = Math.ceil(searchResults.length / ITEMS_PER_PAGE)}
   {@const startIndex = (currentPage - 1) * ITEMS_PER_PAGE}
   {@const end =
-   currentPage == totalPages
-    ? searchResults.length
-    : startIndex + ITEMS_PER_PAGE}
+   currentPage == totalPages ? searchResults.length : startIndex + ITEMS_PER_PAGE}
   <div class="flex flex-col">
    {#each searchResults.slice(startIndex, end) as item}
-    <a href="/game/?id={item.id}&name={item.name}">
+    <a href="/game/?id={item.id}&title={item.name}">
      {item.name}
     </a>
    {/each}
@@ -78,9 +74,11 @@
     </Pagination.Content>
    {/snippet}
   </Pagination.Root>
+ {:else if searchResults.length == 0 && !$isTyping}
+  <div class="flex h-full flex-col items-center justify-center gap-4">
+   <p class="text-muted-foreground">No results found</p>
+  </div>
  {:else if $isTyping}
   Typing...
- {:else if !searchResults?.length}
-  No Results
  {/if}
 </div>
