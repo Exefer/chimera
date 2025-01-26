@@ -2,6 +2,8 @@
  "tabWidth": 1,
  "useTabs": false,
  "arrowParens": "avoid",
+ "printWidth": 90,
+ "endOfLine": "lf",
  "overrides": [
   {
    "files": "*.svelte",
