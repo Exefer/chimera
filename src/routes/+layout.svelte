@@ -4,7 +4,6 @@
  import BottomPanel from "@/components/bottom-panel.svelte";
  import Header from "@/components/header";
  import * as Sidebar from "@/components/ui/sidebar";
- import { GoFileAPI } from "@/services/hosters/gofile";
  import { events } from "@/specta-bindings";
  import { games, settings } from "@/stores";
  import { ModeWatcher } from "mode-watcher";
@@ -15,24 +14,25 @@
  let { children } = $props();
 
  onMount(async () => {
-  events.executableStartedEvent.listen(async ({ payload }) => {
-   GoFileAPI.authorize().then(token => {
-    GoFileAPI.getDownloadLink("4ZInBP").then(url => {});
-   });
-
-   games.updateGame(["executablePath", payload.path], state => ({
-    ...state,
-    running: true,
-   }));
-  });
-
-  events.executableFinishedEvent.listen(({ payload }) => {
-   games.updateGame(["executablePath", payload.path], state => ({
-    ...state,
-    lastPlayedAt: Date.now(),
-    playtimeInSeconds: state.playtimeInSeconds + payload.execution_time,
-    running: false,
-   }));
+  events.executableEvent.listen(async ({ payload: { data, type } }) => {
+   switch (type) {
+    case "started": {
+     games.updateGame(["executablePath", data.path], state => ({
+      ...state,
+      running: true,
+     }));
+     break;
+    }
+    case "finished": {
+     games.updateGame(["executablePath", data.path], state => ({
+      ...state,
+      lastPlayedAt: Date.now(),
+      playtimeInSeconds: state.playtimeInSeconds + data.execution_time,
+      running: false,
+     }));
+     break;
+    }
+   }
   });
  });
 </script>
@@ -41,9 +41,7 @@
 <ModeWatcher />
 
 <BottomPanel />
-<Sidebar.Provider
- style="--sidebar-width: 14rem; --sidebar-width-mobile: 20rem;"
->
+<Sidebar.Provider style="--sidebar-width: 14rem; --sidebar-width-mobile: 20rem;">
  <AppSidebar />
  <main class="w-full">
   <Header />
