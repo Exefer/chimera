@@ -2,7 +2,7 @@
  import { beforeNavigate, goto } from "$app/navigation";
  import { page } from "$app/state";
  import { Input } from "@/components/ui/input";
- import { SEARCH_DEBOUNCE } from "@/constants";
+ import { SEARCH_DEBOUNCE } from "@/constants/";
  import { isTyping, search } from "@/stores";
 
  let currentSearch = $state<string>("");
@@ -22,7 +22,7 @@
    case "/settings":
     return "Settings";
    case "/game":
-    return page.url.searchParams.get("name")!;
+    return page.url.searchParams.get("title")!;
    default:
     return document.title;
   }

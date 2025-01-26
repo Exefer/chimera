@@ -35,9 +35,7 @@
     <Sidebar.Menu>
      {#each items as item (item.title)}
       <Sidebar.MenuItem>
-       <Sidebar.MenuButton
-        class={{ "bg-accent": page.url.pathname == item.href }}
-       >
+       <Sidebar.MenuButton class={{ "bg-accent": page.url.pathname == item.href }}>
         {#snippet child({ props })}
          <a href={item.href} {...props}>
           <item.icon />
@@ -60,7 +58,7 @@
        .includes(search.toLowerCase())) as game (game.title)}
       <a
        class={{ "font-semibold": !!game.executablePath }}
-       href="/game?id={game.remoteId}&name={game.title}"
+       href="/game?id={game.remoteId}&title={game.title}"
       >
        {game.title}
       </a>
