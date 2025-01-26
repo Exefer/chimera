@@ -17,12 +17,7 @@
 <div class="space-y-1">
  <Label for="downloads-path">Downloads Path</Label>
  <div class="flex gap-4">
-  <Input
-   type="text"
-   name="downloads-path"
-   value={$settings.downloadsPath}
-   readonly
-  />
+  <Input type="text" name="downloads-path" value={$settings.downloadsPath} readonly />
   <Button
    variant="outline"
    onclick={async () => {
@@ -45,9 +40,7 @@
    settings.updateSettings({ theme });
   }}
  >
-  <Select.Trigger class="w-[180px]"
-   >{capitalize($settings.theme)}</Select.Trigger
-  >
+  <Select.Trigger class="w-[180px]">{capitalize($settings.theme)}</Select.Trigger>
   <Select.Content>
    <Select.Item value="light">Light</Select.Item>
    <Select.Item value="dark">Dark</Select.Item>
