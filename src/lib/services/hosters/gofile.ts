@@ -18,7 +18,7 @@ export interface GoFileContentsResponse {
 
 export const WT = "4fd6sg89d7s6";
 
-export class GoFileAPI {
+export class GoFileApi {
  private static token: string;
 
  public static async authorize() {
