@@ -1,55 +1,133 @@
-import {
- type DownloadProgressEvent,
- commands,
- events,
-} from "@/specta-bindings";
+import { GoFileApi } from "@/services/hosters/gofile";
+import { type DownloadEvent, commands, events } from "@/specta-bindings";
 import * as Types from "@/types";
 import { getDownloaderFromUrl } from "@/utils";
 import { get, writable } from "svelte/store";
-import { settings } from "./settings.store";
 
-interface Download extends Partial<DownloadProgressEvent> {
+type StatusValues = Exclude<
+ DownloadEvent extends { type: infer T } ? T : never,
+ "started"
+>;
+type ProgressEvent = Extract<DownloadEvent, { type: "progress" }>;
+type Download = Partial<ProgressEvent["data"]> & {
  title: string;
  url: string;
  remote_id: string;
  downloader: Types.Downloader;
  content_length: number;
- status: "progress" | "paused" | "completed" | "aborted";
+ status: StatusValues;
  path?: string;
-}
+};
 
 function createDownloadsStore() {
  const store = writable<Download[]>([]);
 
- const addDownload = (
+ const addDownload = async (
   url: string,
   remoteId: string,
   title: string,
-  filename: string,
+  path: string,
  ) => {
-  store.update(state => {
-   if (state.find(download => download.url == url)) {
-    return state;
-   }
-   commands.download(
-    url,
-    get(settings).downloadsPath.replace(/\\/g, "/") + `/${filename}`,
-    null,
-   );
-   events.downloadStartedEvent.once(({ payload }) => {
-    state.push({
-     ...payload,
-     title,
-     url,
-     remote_id: remoteId,
-     downloader: getDownloaderFromUrl(url),
-     status: "progress",
-    });
-   });
+  const state = get(store);
+  if (state.find(download => download.url == url)) return;
 
-   return state;
+  const downloader = getDownloaderFromUrl(url);
+
+  const listener = events.downloadEvent.listen(({ payload }) => {
+   switch (payload.type) {
+    case "started": {
+     store.update(state => {
+      console.log("Payload: ", payload.data);
+      state.push({
+       ...payload.data,
+       title,
+       downloader,
+       remote_id: remoteId,
+       status: "progress",
+      });
+
+      return state;
+     });
+     listener.then(unlisten => unlisten());
+     break;
+    }
+   }
   });
+
+  switch (downloader) {
+   case Types.Downloader.Torrent: {
+    // TODO: Implement torrent download
+    break;
+   }
+   case Types.Downloader.Gofile: {
+    const token = await GoFileApi.authorize();
+    const link = await GoFileApi.getDownloadLink(url.split("/").pop()!);
+    const filename = link.split("/").pop()!;
+    console.log(`${path}/${filename}`);
+    commands.download(link, `${path}/${filename}`, [["Cookie", `accountToken=${token}`]]);
+
+    break;
+   }
+   case Types.Downloader.RealDebrid: {
+    // TODO: Implement RealDebrid download
+    break;
+   }
+   case Types.Downloader.Unknown: {
+    // TODO: Implement unknown download
+    break;
+   }
+  }
  };
+
+ events.downloadEvent.listen(({ payload: { type, data } }) => {
+  switch (type) {
+   case "progress": {
+    store.update(state => {
+     const index = state.findIndex(download => download.url == data.url);
+     state.splice(index, 1, { ...state[index], ...data });
+
+     return state;
+    });
+    break;
+   }
+   case "completed": {
+    store.update(state => {
+     const index = state.findIndex(download => download.url == data.url);
+     const download = state[index];
+     delete download["downloaded_bytes"];
+     delete download["download_speed"];
+     delete download["progress_percentage"];
+     delete download["eta"];
+     state.splice(index, 1, {
+      ...download,
+      ...data,
+      status: type,
+     });
+
+     return state;
+    });
+    break;
+   }
+   case "paused": {
+    store.update(state => {
+     const index = state.findIndex(download => download.url == data.url);
+     state.splice(index, 1, { ...state[index], ...data, status: type });
+
+     return state;
+    });
+    break;
+   }
+   case "aborted": {
+    store.update(state => {
+     const index = state.findIndex(download => download.url == data.url);
+     state.splice(index, 1);
+
+     return state;
+    });
+    break;
+   }
+  }
+ });
 
  const pauseDownload = commands.pauseDownload;
 
@@ -65,63 +143,18 @@ function createDownloadsStore() {
   });
  };
 
- const resumeDownload: (
-  ...args: Parameters<typeof commands.resumeDownload>
- ) => void = (url, path, downloadedBytes) => {
-  commands.resumeDownload(url, path, downloadedBytes);
+ const resumeDownload = (url: string) => {
   store.update(state => {
    const index = state.findIndex(download => download.url == url);
-   state.splice(index, 1, { ...state[index], status: "progress" });
+   const download = state[index];
+   commands.download(url, download.path!, [
+    ["Range", `bytes=${download.downloaded_bytes}-`],
+   ]);
+   state.splice(index, 1, { ...download, status: "progress" });
 
    return state;
   });
  };
-
- events.downloadProgressEvent.listen(({ payload }) => {
-  store.update(state => {
-   const index = state.findIndex(download => download.url == payload.url);
-   state.splice(index, 1, { ...state[index], ...payload });
-
-   return state;
-  });
- });
-
- events.downloadCompletedEvent.listen(({ payload }) => {
-  store.update(state => {
-   const index = state.findIndex(download => download.url == payload.url);
-   const download = state[index];
-   delete download["downloaded_bytes"];
-   delete download["download_speed"];
-   delete download["progress"];
-   delete download["eta"];
-
-   state.splice(index, 1, {
-    ...download,
-    ...payload,
-    status: "completed",
-   });
-
-   return state;
-  });
- });
-
- events.downloadPausedEvent.listen(({ payload }) => {
-  store.update(state => {
-   const index = state.findIndex(download => download.url == payload.url);
-   state.splice(index, 1, { ...state[index], ...payload, status: "paused" });
-
-   return state;
-  });
- });
-
- events.downloadAbortedEvent.listen(({ payload }) => {
-  store.update(state => {
-   const index = state.findIndex(download => download.url == payload.url);
-   state.splice(index, 1);
-
-   return state;
-  });
- });
 
  return {
   ...store,
