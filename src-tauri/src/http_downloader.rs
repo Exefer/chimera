@@ -5,10 +5,11 @@
 //! - Pausing/resuming downloads
 //! - Aborting downloads
 //! - Custom headers
-use crate::{constants::DEFAULT_USER_AGENT, constants::PROGRESS_EVENT_SKIP, AppState, Error};
+use crate::{AppState, Error};
 use futures::StreamExt;
 use serde::{Deserialize, Serialize};
 use specta::Type;
+use std::time::Duration;
 use std::{path::Path, time::Instant};
 use tauri::State;
 use tauri::{http::HeaderName, AppHandle};
@@ -58,6 +59,10 @@ fn parse_headers(custom_headers: Option<Vec<(String, String)>>) -> HeaderMap {
     }
     headers
 }
+/// The interval at which progress events are emitted
+const PROGRESS_EVENT_EMISSION_INTERVAL: Duration = Duration::from_secs(2);
+/// The default user agent used for HTTP requests.
+const DEFAULT_USER_AGENT: &str = "chimera";
 
 #[specta::specta]
 #[tauri::command]
