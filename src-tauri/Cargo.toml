@@ -25,3 +25,9 @@ tauri-plugin-single-instance = { version = "2" }
 futures = "0.3.31"
 tokio = "1.43.0"
 thiserror = "2.0.11"
+
+[profile.release]
+panic = "abort"   # Strip expensive panic clean-up logic
+codegen-units = 1 # Compile crates one after another so the compiler can optimize better
+lto = true        # Enables link to optimizations
+opt-level = "s"   # Optimize for binary size
