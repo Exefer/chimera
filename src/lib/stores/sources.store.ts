@@ -1,25 +1,27 @@
-import * as Persistent from "@/stores/persistent";
 import * as Types from "@/types";
 import { get, writable } from "svelte/store";
+import * as Persistent from "./persistent";
 
 function createSourcesStore() {
- const store = writable<Types.Source[]>([]);
+  const store = writable<Types.Source[]>([]);
 
- Persistent.sources.get().then(sources => {
-  if (sources)
-   Promise.all(
-    sources.map(url =>
-     fetch(url)
-      .then(response => response.json())
-      .then(data => ({ ...data, url })),
-    ),
-   ).then(sources => {
-    store.set(sources);
-   });
-  store.subscribe(async sources => {
-   await Persistent.sources.set(sources.map(source => source.url));
-  });
- });
+  Persistent.sources
+    .get()
+    .then(sources =>
+      Promise.all(
+        sources!.map(url =>
+          fetch(url)
+            .then(response => response.json())
+            .then(data => ({ ...data, url }))
+        )
+      )
+    )
+    .then(sources => store.set(sources))
+    .then(() =>
+      store.subscribe(sources =>
+        Persistent.sources.set(sources.map(source => source.url))
+      )
+    );
 
   /**
    * Adds a source to the store.
