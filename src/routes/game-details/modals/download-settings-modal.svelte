@@ -1,0 +1,99 @@
+<script lang="ts">
+  import { Button } from "@/components/ui/button";
+  import * as Dialog from "@/components/ui/dialog";
+  import { Input } from "@/components/ui/input";
+  import { Separator } from "@/components/ui/separator";
+  import { Downloader, DOWNLOADER_NAME } from "@/constants/";
+  import { getGameDetailsContext } from "@/context";
+  import { downloads, settings } from "@/stores";
+  import * as Types from "@/types";
+  import { getDownloaderFromUrl } from "@/utils";
+  import { open as openDialog } from "@tauri-apps/plugin-dialog";
+  import CircleCheck from "lucide-svelte/icons/circle-check-big";
+  import DownloadIcon from "lucide-svelte/icons/download";
+  import { t } from "svelte-i18n";
+
+  interface DownloadSettingsModalProps {
+    selectedPackDownload: Types.Pack | null;
+  }
+
+  let { selectedPackDownload }: DownloadSettingsModalProps = $props();
+  const gameDetailsContext = getGameDetailsContext();
+  const { title, remoteId } = $derived(gameDetailsContext);
+  let selectedUri = $derived<string | null>(selectedPackDownload?.uris?.[0] ?? null);
+  let downloadPath = $state($settings.general.downloads_path);
+</script>
+
+<Dialog.Root
+  open={selectedPackDownload != null}
+  onOpenChange={open => !open && (selectedPackDownload = null)}
+>
+  <Dialog.Content>
+    <Dialog.Header>
+      <Dialog.Title>{$t("game_details.download_settings")}</Dialog.Title>
+      <Dialog.Description>{$t("game_details.choose_pack_to_download")}</Dialog.Description
+      >
+    </Dialog.Header>
+    <Separator />
+    <div class="flex flex-col gap-4">
+      <div class="space-y-2">
+        <p class="text-sm text-muted-foreground">{$t("game_details.downloader")}</p>
+        <div class="flex flex-row gap-2">
+          {#each selectedPackDownload?.uris! as uri}
+            {@const downloader = getDownloaderFromUrl(uri)}
+            <Button
+              variant={selectedUri == uri ? "default" : "outline"}
+              class="flex-1"
+              disabled={downloader == Downloader.RealDebrid}
+            >
+              {#if selectedUri == uri}
+                <CircleCheck />
+              {/if}
+              {DOWNLOADER_NAME[downloader]}
+            </Button>
+          {/each}
+        </div>
+      </div>
+      <div class="space-y-2">
+        <p class="text-sm text-muted-foreground">{$t("game_details.download_path")}</p>
+        <div class="flex flex-row gap-2">
+          <Input
+            type="text"
+            value={downloadPath}
+            placeholder={$t("game_details.download_path")}
+            readonly
+          />
+          <Button
+            variant="outline"
+            onclick={async () => {
+              const selected = await openDialog({
+                directory: true,
+                multiple: false,
+              });
+              if (!selected) return;
+              downloadPath = selected;
+            }}>{$t("game_details.select_executable")}</Button
+          >
+        </div>
+
+        <p class="text-xs text-muted-foreground">
+          {@html $t("game_details.change_default_download_path", {
+            values: {
+              settings: text =>
+                `<a href="/settings" class="text-primary underline">${text}</a>`,
+            },
+          })}
+        </p>
+      </div>
+      <Button
+        disabled={!selectedUri || !downloadPath}
+        onclick={() => {
+          downloads.addDownload(selectedUri!, remoteId, title, downloadPath);
+          gameDetailsContext.showDownloadOptionsModal = false;
+          gameDetailsContext.showGameOptionsModal = false;
+          selectedPackDownload = null;
+        }}><DownloadIcon />{$t("game_details.download_now")}</Button
+      >
+    </div>
+  </Dialog.Content>
+</Dialog.Root>
