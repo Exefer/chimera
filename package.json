@@ -10,8 +10,8 @@
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "tauri": "tauri",
-    "format": "prettier --write .",
-    "lint": "prettier --check .",
+    "format": "prettier --write . && cargo fmt --manifest-path ./src-tauri/Cargo.toml",
+    "format:check": "prettier --check . && cargo fmt --manifest-path ./src-tauri/Cargo.toml -- --check",
     "prepare": "husky",
     "lint-staged": "lint-staged"
   },
