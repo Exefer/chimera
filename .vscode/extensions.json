@@ -1,7 +1,7 @@
 {
- "recommendations": [
-  "lokalise.i18n-ally",
-  "esbenp.prettier-vscode",
-  "rust-lang.rust-analyzer"
- ]
+  "recommendations": [
+    "lokalise.i18n-ally",
+    "esbenp.prettier-vscode",
+    "rust-lang.rust-analyzer"
+  ]
 }
