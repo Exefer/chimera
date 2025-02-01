@@ -1,62 +1,72 @@
-import * as Persistent from "@/stores/persistent";
 import * as Types from "@/types";
 import { writable } from "svelte/store";
+import * as Persistent from "./persistent";
 
 function createGamesStore() {
- const store = writable<Types.Game[]>([]);
+  const store = writable<Types.Game[]>([]);
 
- Persistent.games.get().then(games => {
-  if (games) store.set(games.map(game => ({ ...game, running: false })));
-  store.subscribe(async games => {
-   await Persistent.games.set(games);
-  });
- });
-
- const addGame = (
-  game: Omit<
-   Types.Game,
-   "createdAt" | "playtimeInSeconds" | "lastPlayedAt" | "running" | "executablePath"
-  >,
- ) =>
-  store.update(state => {
-   state.push({
-    ...game,
-    createdAt: Date.now(),
-    playtimeInSeconds: 0,
-    lastPlayedAt: 0,
-    running: false,
-   });
-
-   return state;
+  Persistent.games.get().then(games => {
+    if (games) store.set(games.map(game => ({ ...game, running: false })));
+    store.subscribe(async games => {
+      await Persistent.games.set(games);
+    });
   });
 
- const removeGame = (remoteId: string) =>
-  store.update(state => {
-   state.splice(
-    state.findIndex(game => game.remoteId == remoteId),
-    1,
-   );
+  /**
+   * Adds a game to the store.
+   */
+  const addGame = (
+    game: Omit<
+      Types.Game,
+      "created_at" | "playtime_in_seconds" | "last_played_at" | "running"
+    >
+  ) =>
+    store.update(state => {
+      state.push({
+        ...game,
+        created_at: Date.now(),
+        playtime_in_seconds: 0,
+        last_played_at: 0,
+        running: false,
+      });
 
-   return state;
-  });
+      return state;
+    });
 
- const updateGame = <T extends keyof Types.Game>(
-  [key, value]: [T, Types.Game[T]],
-  callback: (game: Types.Game) => Types.Game,
- ) =>
-  store.update(state => {
-   const index = state.findIndex(game => game[key] == value);
-   state[index] = callback(state[index]);
+  /**
+   * Removes a game from the store.
+   */
+  const removeGame = (remoteId: string) =>
+    store.update(state => {
+      state.splice(
+        state.findIndex(game => game.remote_id == remoteId),
+        1
+      );
 
-   return state;
-  });
+      return state;
+    });
 
- return {
-  ...store,
-  addGame,
-  removeGame,
-  updateGame,
- };
+  /**
+   * Searches for a game by a property and value and updates it.
+   */
+  const updateGame = <T extends keyof Types.Game>(
+    key: T,
+    value: Types.Game[T],
+    callback: (game: Types.Game) => Types.Game
+  ) =>
+    store.update(state => {
+      const index = state.findIndex(game => game[key] == value);
+      state[index] = callback(state[index]);
+
+      return state;
+    });
+
+  return {
+    ...store,
+    addGame,
+    removeGame,
+    updateGame,
+  };
 }
 
 export const games = createGamesStore();

@@ -21,42 +21,56 @@ function createSourcesStore() {
   });
  });
 
- const addSource = (source: Types.Source, callback?: (sources: Types.Source[]) => void) =>
-  store.update(state => {
-   state.push(source);
+  /**
+   * Adds a source to the store.
+   */
+  const addSource = (
+    source: Types.Source,
+    callback?: (sources: Types.Source[]) => void
+  ) =>
+    store.update(state => {
+      state.push(source);
 
-   if (callback) callback(state);
+      if (callback) callback(state);
 
-   return state;
-  });
+      return state;
+    });
 
- const removeSource = (index: number, callback?: (sources: Types.Source[]) => void) =>
-  store.update(state => {
-   state.splice(index, 1);
+  /**
+   * Removes a source from the store.
+   */
+  const removeSource = (index: number, callback?: (sources: Types.Source[]) => void) =>
+    store.update(state => {
+      state.splice(index, 1);
 
-   if (callback) callback(state);
+      if (callback) callback(state);
 
-   return state;
-  });
+      return state;
+    });
 
- const refreshSources = async () => {
-  const sources = await Promise.all(
-   get(store).map(async ({ url }) =>
-    fetch(url)
-     .then(response => response.json())
-     .then(data => ({ ...data, url })),
-   ),
-  );
+  /**
+   * Refreshes the sources in the store.
+   *
+   * NOTE: This will change soon
+   */
+  const refreshSources = async () => {
+    const sources = await Promise.all(
+      get(store).map(async ({ url }) =>
+        fetch(url)
+          .then(response => response.json())
+          .then(data => ({ ...data, url }))
+      )
+    );
 
-  store.set(sources);
- };
+    store.set(sources);
+  };
 
- return {
-  ...store,
-  addSource,
-  removeSource,
-  refreshSources,
- };
+  return {
+    ...store,
+    addSource,
+    removeSource,
+    refreshSources,
+  };
 }
 
 export const sources = createSourcesStore();
