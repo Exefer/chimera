@@ -13,10 +13,18 @@
 
  let { children } = $props();
 
- onMount(async () => {
-  events.executableEvent.listen(async ({ payload: { data, type } }) => {
-   switch (type) {
-    case "started": {
+  $effect.pre(() => {
+    register("en", () => import("../locales/en.json"));
+    register("it", () => import("../locales/it.json"));
+
+    init({
+      fallbackLocale: "en",
+      initialLocale: $settings.general.locale,
+      ignoreTag: false,
+    });
+
+    untrack(() => locale.set($settings.general.locale));
+  });
      games.updateGame(["executablePath", data.path], state => ({
       ...state,
       running: true,
