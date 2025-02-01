@@ -64,8 +64,8 @@ const PROGRESS_EVENT_EMISSION_INTERVAL: Duration = Duration::from_secs(2);
 /// The default user agent used for HTTP requests.
 const DEFAULT_USER_AGENT: &str = "chimera";
 
-#[specta::specta]
 #[tauri::command]
+#[specta::specta]
 pub async fn download(
     state: State<'_, Mutex<AppState>>,
     app: AppHandle,
@@ -99,17 +99,10 @@ pub async fn download(
         .content_length()
         .ok_or_else(|| Error::Other("Unable to parse content length".to_string()))?;
     let content_length = downloaded_bytes + content_length;
-    DownloadEvent::Started {
-        url: url.to_string(),
-        path: dest_path.display().to_string(),
-        content_length,
-    }
-    .emit(&app)
-    .ok();
 
     let start_time = Instant::now();
-    let mut current_iteration: u32 = 0;
-    // Track the offset at the start of the session, used for resumed requests
+    // Track the last time we emitted a progress event
+    let mut last_progress_emit = Instant::now();
     let session_start_offset = downloaded_bytes;
     let mut download_aborted = false;
     let mut download_paused = false;
@@ -122,13 +115,24 @@ pub async fn download(
     );
     let mut stream = response.bytes_stream();
 
+    DownloadEvent::Started {
+        url: url.to_string(),
+        path: dest_path.display().to_string(),
+        content_length,
+    }
+    .emit(&app)
+    .ok();
+
     while let Some(chunk) = stream.next().await {
         let chunk = chunk?;
         writer.write_all(&chunk).await?;
         downloaded_bytes += chunk.len() as u64;
 
-        if current_iteration % PROGRESS_EVENT_SKIP == 0 {
+        // Check if 5 seconds have passed since last progress event
+        if last_progress_emit.elapsed() >= PROGRESS_EVENT_EMISSION_INTERVAL {
             let mut state = state.lock().await;
+
+            // Abort check
             if let Some(abort_download) = &state.abort_download {
                 if abort_download == url {
                     writer.shutdown().await?;
@@ -143,6 +147,8 @@ pub async fn download(
                     break;
                 }
             }
+
+            // Progress calculation
             let elapsed = start_time.elapsed().as_secs();
             // Use session-specific downloaded bytes to avoid incorrect ETA and download speed on resume
             let session_downloaded_bytes = downloaded_bytes - session_start_offset;
@@ -157,6 +163,7 @@ pub async fn download(
                 0
             };
             let progress_percentage = downloaded_bytes as f64 / content_length as f64 * 100.0;
+
             DownloadEvent::Progress {
                 url: url.to_string(),
                 progress_percentage,
@@ -166,6 +173,11 @@ pub async fn download(
             }
             .emit(&app)
             .ok();
+
+            // Update last emit time
+            last_progress_emit = Instant::now();
+
+            // Pause check
             if let Some(pause_download) = &state.pause_download {
                 if pause_download == url {
                     writer.shutdown().await?;
@@ -180,8 +192,8 @@ pub async fn download(
                 }
             }
         }
-        current_iteration += 1;
     }
+
     writer.flush().await?;
     if !download_aborted && !download_paused {
         DownloadEvent::Completed {
