@@ -4,7 +4,7 @@
 //!
 //! This is the main entry point for the Tauri application.
 
-mod constants;
+mod commands;
 mod exec_handler;
 mod http_downloader;
 use tauri::Manager;
@@ -105,6 +105,8 @@ fn main() {
             http_downloader::download,
             http_downloader::abort_download,
             http_downloader::pause_download,
+            commands::fs::delete_file,
+            commands::fs::exists,
         ])
         .events(tauri_specta::collect_events![
             http_downloader::DownloadEvent,
