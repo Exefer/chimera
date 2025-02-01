@@ -1,51 +1,70 @@
+import type { Downloader } from "@/constants";
+import type { DownloadEvent } from "@/specta-bindings";
+
 export type AppTheme = "light" | "dark" | "system";
 
-export type Locale = "en";
+export type AppLocale = "en" | "it";
 
 export interface AppSettings {
- downloadsPath: string;
- theme: AppTheme;
- locale: Locale;
- notifyOnDownloadComplete: boolean;
- launchOnStartup: boolean;
- launchMinimized: boolean;
- minimizeToTray: boolean;
+  general: {
+    downloads_path: string;
+    theme: AppTheme;
+    locale: AppLocale;
+    notifications: {
+      when_download_complete: boolean;
+    };
+  };
+  behavior: {
+    launch_minimized: boolean;
+    launch_on_startup: boolean;
+    minimize_to_tray: boolean;
+    disable_nsfw_alert: boolean;
+  };
 }
 
 export interface Source {
- name: string;
- url: string;
- downloads: SourceDownload[];
+  name: string;
+  url: string;
+  downloads: SourceDownload[];
 }
 
 export interface SourceDownload {
- title: string;
- fileSize: string;
- uris: string[];
- uploadDate: string;
+  title: string;
+  fileSize: string;
+  uris: string[];
+  uploadDate: string;
 }
 
-export interface GamePack extends SourceDownload {
- packer: string;
- remoteIds: string[];
+export interface Pack extends SourceDownload {
+  packer: string;
+  remoteIds: string[];
 }
 
 export interface Game {
- title: string;
- remoteId: string;
- iconUrl?: string;
- executablePath?: string;
- launchOptions?: string;
- playtimeInSeconds: number;
- lastPlayedAt: number;
- createdAt: number;
- size?: number;
- running: boolean;
+  title: string;
+  remote_id: string;
+  executable_path?: string;
+  launch_options?: string;
+  icon_url?: string;
+  playtime_in_seconds: number;
+  last_played_at: number;
+  created_at: number;
+  size?: number;
+  running: boolean;
 }
 
-export enum Downloader {
- Torrent,
- Gofile,
- RealDebrid,
- Unknown,
+type StatusValues = Exclude<
+  DownloadEvent extends { type: infer T } ? T : never,
+  "started"
+>;
+type ProgressEvent = Extract<DownloadEvent, { type: "progress" }>;
+export interface Download extends Partial<ProgressEvent["data"]> {
+  title: string;
+  url: string;
+  original_url: string;
+  remote_id: string;
+  downloader: Downloader;
+  content_length: number;
+  status: StatusValues;
+  path?: string;
 }
