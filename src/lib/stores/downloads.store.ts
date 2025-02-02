@@ -192,8 +192,7 @@ function createDownloadsStore() {
     const download = get(store).find(download => download.url == url);
     if (!download) return;
 
-    const existsFile = await commands.exists(download.path!);
-    if (existsFile) {
+    if (await commands.exists(download.path!)) {
       await commands.deleteFile(download.path!);
     }
 
