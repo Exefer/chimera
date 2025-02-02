@@ -16,9 +16,10 @@
   interface DownloadGroupProps {
     title: string;
     items: Types.Download[];
+    openDeleteDownloadModal(download: Types.Download): void;
   }
 
-  let { title, items }: DownloadGroupProps = $props();
+  let { title, items, openDeleteDownloadModal }: DownloadGroupProps = $props();
 </script>
 
 {#if items.length > 0}
@@ -98,7 +99,7 @@
               <DropdownMenu.Item
                 onclick={async () => {
                   if (download.status === "completed") {
-                    downloads.removeDownload(download.url);
+                    openDeleteDownloadModal(download);
                   } else {
                     downloads.abortDownload(download.url);
                   }
@@ -106,7 +107,7 @@
               >
                 <CircleX />
                 {#if download.status === "completed"}
-                  <p>{$t("downloads.delete")}</p>
+                  <p>{$t("downloads.remove_installer")}</p>
                 {:else}
                   <p>{$t("downloads.abort")}</p>
                 {/if}

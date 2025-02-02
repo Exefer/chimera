@@ -1,7 +1,9 @@
 <script lang="ts">
   import { downloads } from "@/stores";
+  import * as Types from "@/types";
   import DownloadIcon from "lucide-svelte/icons/download";
   import { t } from "svelte-i18n";
+  import DeleteDownloadModal from "./delete-download-modal.svelte";
   import DownloadGroup from "./download-group.svelte";
 
   const downloadGroups = $derived([
@@ -18,6 +20,11 @@
       items: $downloads.filter(download => download.status === "completed"),
     },
   ]);
+  let downloadToDelete: Types.Download | null = $state(null);
+
+  const handleDownloadDelete = (download: Types.Download) => {
+    downloadToDelete = download;
+  };
 </script>
 
 <main
@@ -29,7 +36,7 @@
   {#if $downloads.length > 0}
     <div class="flex w-full flex-col gap-4">
       {#each downloadGroups as group}
-        <DownloadGroup {...group} />
+        <DownloadGroup {...group} openDeleteDownloadModal={handleDownloadDelete} />
       {/each}
     </div>
   {:else}
@@ -41,4 +48,15 @@
       </p>
     </div>
   {/if}
+
+  <DeleteDownloadModal
+    open={downloadToDelete !== null}
+    onCancel={() => {
+      downloadToDelete = null;
+    }}
+    onConfirm={() => {
+      downloads.removeDownload(downloadToDelete!.url);
+      downloadToDelete = null;
+    }}
+  />
 </main>
