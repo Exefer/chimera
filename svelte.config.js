@@ -13,6 +13,9 @@ const config = {
       "@": "./src/lib",
     },
   },
+  vitePlugin: {
+    inspector: true,
+  },
 };
 
 export default config;
