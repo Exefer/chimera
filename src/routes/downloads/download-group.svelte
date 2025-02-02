@@ -98,7 +98,7 @@
               <DropdownMenu.Item
                 onclick={async () => {
                   if (download.status == "completed") {
-                    downloads.deleteDownload(download.url);
+                    downloads.removeDownload(download.url);
                   } else {
                     downloads.abortDownload(download.url);
                   }

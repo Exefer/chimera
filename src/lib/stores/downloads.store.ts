@@ -188,8 +188,8 @@ function createDownloadsStore() {
     });
   };
 
-  const deleteDownload = async (url: string) => {
-    const download = get(store).find(download => download.url == url);
+  const removeDownload = async (url: string) => {
+    const download = get(store).find(download => download.url === url);
     if (!download) return;
 
     if (await commands.exists(download.path!)) {
