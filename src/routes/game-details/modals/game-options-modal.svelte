@@ -90,7 +90,7 @@
             if (result.status === "ok") {
               toast.success($t("game_details.create_desktop_shortcut:success"));
             } else {
-              toast.error("Failed to create shortcut");
+              toast.error($t("game_details.create_desktop_shortcut:error"));
             }
           }}>{$t("game_details.create_desktop_shortcut")}</Button
         >
