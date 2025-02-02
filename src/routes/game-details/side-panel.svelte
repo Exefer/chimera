@@ -22,14 +22,14 @@
         <button
           class={[
             "flex-1 py-2 transition-colors",
-            { "bg-accent": selectedRequirement == "minimum" },
+            { "bg-accent": selectedRequirement === "minimum" },
           ]}
           onclick={() => (selectedRequirement = "minimum")}
           >{$t("game_details.system_requirements:minimum")}</button
         ><button
           class={[
             "flex-1 py-2 transition-colors",
-            { "bg-accent": selectedRequirement == "recommended" },
+            { "bg-accent": selectedRequirement === "recommended" },
           ]}
           onclick={() => (selectedRequirement = "recommended")}
           >{$t("game_details.system_requirements:recommended")}</button

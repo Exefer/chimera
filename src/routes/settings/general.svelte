@@ -42,7 +42,7 @@
       name="theme"
       bind:value={() => $settings.general.theme,
       value => {
-        value == "system" ? resetMode() : setMode(value);
+        value === "system" ? resetMode() : setMode(value);
         $settings.general.theme = value;
       }}
     >

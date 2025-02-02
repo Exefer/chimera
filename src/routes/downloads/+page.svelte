@@ -7,15 +7,15 @@
   const downloadGroups = $derived([
     {
       title: $t("downloads.download_in_progress"),
-      items: $downloads.filter(download => download.status == "progress"),
+      items: $downloads.filter(download => download.status === "progress"),
     },
     {
       title: $t("downloads.queued_downloads"),
-      items: $downloads.filter(download => download.status == "paused"),
+      items: $downloads.filter(download => download.status === "paused"),
     },
     {
       title: $t("downloads.completed"),
-      items: $downloads.filter(download => download.status == "completed"),
+      items: $downloads.filter(download => download.status === "completed"),
     },
   ]);
 </script>
@@ -23,7 +23,7 @@
 <main
   class={[
     "flex min-h-[calc(100vh-99px)] p-4",
-    { "items-center justify-center": $downloads.length == 0 },
+    { "items-center justify-center": $downloads.length === 0 },
   ]}
 >
   {#if $downloads.length > 0}

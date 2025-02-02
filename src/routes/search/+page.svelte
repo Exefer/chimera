@@ -34,7 +34,7 @@
     {@const totalPages = Math.ceil(searchResults.length / ITEMS_PER_PAGE)}
     {@const startIndex = (currentPage - 1) * ITEMS_PER_PAGE}
     {@const end =
-      currentPage == totalPages ? searchResults.length : startIndex + ITEMS_PER_PAGE}
+      currentPage === totalPages ? searchResults.length : startIndex + ITEMS_PER_PAGE}
     <div class="flex flex-col">
       {#each searchResults.slice(startIndex, end) as item}
         <a href={getGameDetailsUrl(String(item.id), item.name)}>
@@ -75,7 +75,7 @@
         </Pagination.Content>
       {/snippet}
     </Pagination.Root>
-  {:else if searchResults.length == 0 && !$isTyping}
+  {:else if searchResults.length === 0 && !$isTyping}
     <div class="flex h-full flex-col items-center justify-center gap-4">
       <p class="text-muted-foreground">{$t("search.no_results")}</p>
     </div>

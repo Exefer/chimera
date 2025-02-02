@@ -48,7 +48,9 @@
         <Sidebar.Menu>
           {#each items as item (item.href)}
             <Sidebar.MenuItem>
-              <Sidebar.MenuButton class={{ "bg-accent": page.url.pathname == item.href }}>
+              <Sidebar.MenuButton
+                class={{ "bg-accent": page.url.pathname === item.href }}
+              >
                 {#snippet child({ props })}
                   <a href={item.href} {...props}>
                     <item.icon />

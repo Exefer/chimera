@@ -56,16 +56,16 @@
               {download.title}
             </a>
             <div class="text-sm text-muted-foreground">
-              {#if download.status == "progress"}
+              {#if download.status === "progress"}
                 <p>{download.progress_percentage?.toFixed(1)}%</p>
                 <p>
                   {formatBytes(download.downloaded_bytes!)} / {formatBytes(
                     download.content_length
                   )}
                 </p>
-              {:else if download.status == "paused"}
+              {:else if download.status === "paused"}
                 <p>{$t("downloads.paused")}</p>
-              {:else if download.status == "completed"}
+              {:else if download.status === "completed"}
                 <p>{$t("downloads.completed")}</p>
               {/if}
             </div>
@@ -78,18 +78,18 @@
             <DropdownMenu.Content side="bottom" align="end">
               <DropdownMenu.Item
                 onclick={() => {
-                  if (download.status == "paused") {
+                  if (download.status === "paused") {
                     downloads.resumeDownload(download.url);
-                  } else if (download.status == "progress") {
+                  } else if (download.status === "progress") {
                     downloads.pauseDownload(download.url);
                   } else {
                     toast.info($t("common.not_implemented"));
                   }
                 }}
               >
-                {#if download.status == "paused"}
+                {#if download.status === "paused"}
                   <CirclePlay /> {$t("downloads.resume")}
-                {:else if download.status == "progress"}
+                {:else if download.status === "progress"}
                   <Pause /> {$t("downloads.pause")}
                 {:else}
                   <DownloadIcon /> {$t("downloads.install")}
@@ -97,7 +97,7 @@
               </DropdownMenu.Item>
               <DropdownMenu.Item
                 onclick={async () => {
-                  if (download.status == "completed") {
+                  if (download.status === "completed") {
                     downloads.removeDownload(download.url);
                   } else {
                     downloads.abortDownload(download.url);
@@ -105,7 +105,7 @@
                 }}
               >
                 <CircleX />
-                {#if download.status == "completed"}
+                {#if download.status === "completed"}
                   <p>{$t("downloads.delete")}</p>
                 {:else}
                   <p>{$t("downloads.abort")}</p>

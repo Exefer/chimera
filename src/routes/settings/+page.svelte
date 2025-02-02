@@ -30,7 +30,7 @@
     <div class="flex gap-2">
       {#each tabs as tab}
         <Button
-          variant={tab.name() == selected.name() ? "default" : "outline"}
+          variant={tab.name() === selected.name() ? "default" : "outline"}
           onclick={() => {
             selected = tab;
           }}>{tab.name()}</Button

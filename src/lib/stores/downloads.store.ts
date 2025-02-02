@@ -22,7 +22,7 @@ function createDownloadsStore() {
     path: string
   ) => {
     const state = get(store);
-    const download = state.find(download => download.url == url);
+    const download = state.find(download => download.url === url);
     if (download) return;
 
     const downloader = getDownloaderFromUrl(url);
@@ -48,7 +48,6 @@ function createDownloadsStore() {
               return state;
             });
           });
-
           listener.then(unlisten => unlisten());
           break;
         }
@@ -80,7 +79,7 @@ function createDownloadsStore() {
     switch (type) {
       case "progress": {
         store.update(state => {
-          const index = state.findIndex(download => download.url == data.url);
+          const index = state.findIndex(download => download.url === data.url);
           state.splice(index, 1, { ...state[index], ...data });
 
           return state;
@@ -89,7 +88,7 @@ function createDownloadsStore() {
       }
       case "completed": {
         store.update(state => {
-          const index = state.findIndex(download => download.url == data.url);
+          const index = state.findIndex(download => download.url === data.url);
           const download = state[index];
           // Clean up progress-related fields on completion
           delete download["downloaded_bytes"];
@@ -108,7 +107,7 @@ function createDownloadsStore() {
       }
       case "paused": {
         store.update(state => {
-          const index = state.findIndex(download => download.url == data.url);
+          const index = state.findIndex(download => download.url === data.url);
           state.splice(index, 1, { ...state[index], ...data, status: type });
 
           return state;
@@ -117,7 +116,7 @@ function createDownloadsStore() {
       }
       case "aborted": {
         store.update(state => {
-          const index = state.findIndex(download => download.url == data.url);
+          const index = state.findIndex(download => download.url === data.url);
           state.splice(index, 1);
 
           return state;
@@ -145,7 +144,7 @@ function createDownloadsStore() {
   const abortDownload = (url: string) => {
     commands.abortDownload(url);
     store.update(state => {
-      const index = state.findIndex(download => download.url == url);
+      const index = state.findIndex(download => download.url === url);
       state.splice(index, 1);
 
       return state;
@@ -159,7 +158,7 @@ function createDownloadsStore() {
    * The download will restart with a "progress" status.
    */
   const resumeDownload = async (url: string) => {
-    const download = get(store).find(download => download.url == url);
+    const download = get(store).find(download => download.url === url);
     if (!download) return;
 
     switch (download.downloader) {
@@ -180,7 +179,7 @@ function createDownloadsStore() {
       }
     }
     store.update(state => {
-      const index = state.findIndex(download => download.url == url);
+      const index = state.findIndex(download => download.url === url);
       const download = state[index];
       state.splice(index, 1, { ...download, status: "progress" });
 
@@ -197,7 +196,7 @@ function createDownloadsStore() {
     }
 
     store.update(state => {
-      const index = state.findIndex(download => download.url == url);
+      const index = state.findIndex(download => download.url === url);
       state.splice(index, 1);
 
       return state;
@@ -210,7 +209,7 @@ function createDownloadsStore() {
     pauseDownload,
     resumeDownload,
     abortDownload,
-    deleteDownload,
+    removeDownload,
   };
 }
 

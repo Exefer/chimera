@@ -16,7 +16,7 @@
 
   const gameDetailsContext = getGameDetailsContext();
   const { game, packs, title, remoteId } = $derived(gameDetailsContext);
-  const download = $derived($downloads.find(download => download.remote_id == remoteId));
+  const download = $derived($downloads.find(download => download.remote_id === remoteId));
 </script>
 
 <div class="sticky top-[72px] flex justify-between border-y bg-background p-4 text-sm">
@@ -62,7 +62,7 @@
       <p>{$t("game_details.not_played_yet", { values: { title } })}</p>
     {/if}
 
-    {#if download && download.status == "progress"}
+    {#if download && download.status === "progress"}
       <div class="flex items-center gap-2 text-muted-foreground">
         <a href="/downloads" class="underline underline-offset-1">
           {$t("game_details.download_in_progress")}
@@ -76,7 +76,7 @@
     <!-- For now disable the stop button, backend can't kill started processes yet -->
     <Button
       variant="outline"
-      disabled={game?.running || (game && packs.length == 0) || !!download}
+      disabled={game?.running || (game && packs.length === 0) || !!download}
       onclick={() => {
         if (!game) {
           games.addGame({
@@ -84,7 +84,7 @@
             remote_id: remoteId,
             icon_url: steamImageBuilder.icon(
               remoteId,
-              $apps.find(app => app.id == Number(remoteId))?.clientIcon!
+              $apps.find(app => app.id === Number(remoteId))?.clientIcon!
             ),
           });
         } else if (!game.executable_path) {

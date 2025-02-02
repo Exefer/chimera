@@ -87,7 +87,7 @@
           disabled={!game?.executable_path}
           onclick={async () => {
             const result = await commands.createShortcut(game?.executable_path!);
-            if (result.status == "ok") {
+            if (result.status === "ok") {
               toast.success($t("game_details.create_desktop_shortcut:success"));
             } else {
               toast.error("Failed to create shortcut");
@@ -103,7 +103,7 @@
       </div>
       <Button
         variant="outline"
-        disabled={packs.length == 0}
+        disabled={packs.length === 0}
         onclick={() => {
           gameDetailsContext.showDownloadOptionsModal = true;
         }}>Open download options</Button

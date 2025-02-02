@@ -18,7 +18,7 @@
 
   const title = $derived(page.url.searchParams.get("title")!);
   const remoteId = $derived(page.url.searchParams.get("id")!);
-  const game = $derived($games.find(game => game.remote_id == remoteId));
+  const game = $derived($games.find(game => game.remote_id === remoteId));
 
   let selectedPackDownload = $state<Types.Pack | null>(null);
   let showDownloadOptionsModal = $state(false);

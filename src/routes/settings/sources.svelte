@@ -32,7 +32,7 @@
       validators: zodClient(schema),
       onSubmit: async () => {
         const url = $formData.url;
-        if ($sources.find(source => source.url == url)) {
+        if ($sources.find(source => source.url === url)) {
           $errors.url = ["Source already added!"];
           return;
         }
@@ -58,7 +58,7 @@
   <div class="flex justify-between">
     <Button
       variant="outline"
-      disabled={$sources.length == 0 || isRefreshing}
+      disabled={$sources.length === 0 || isRefreshing}
       onclick={async () => {
         isRefreshing = true;
         await sources.refreshSources();

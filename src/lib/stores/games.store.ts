@@ -39,7 +39,7 @@ function createGamesStore() {
   const removeGame = (remoteId: string) =>
     store.update(state => {
       state.splice(
-        state.findIndex(game => game.remote_id == remoteId),
+        state.findIndex(game => game.remote_id === remoteId),
         1
       );
 
@@ -55,7 +55,7 @@ function createGamesStore() {
     callback: (game: Types.Game) => Types.Game
   ) =>
     store.update(state => {
-      const index = state.findIndex(game => game[key] == value);
+      const index = state.findIndex(game => game[key] === value);
       state[index] = callback(state[index]);
 
       return state;

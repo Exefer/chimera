@@ -29,7 +29,7 @@ export class GoFileApi {
       }>("https://api.gofile.io/accounts")
       .json();
 
-    if (response.status == "ok") {
+    if (response.status === "ok") {
       this.token = response.data.token;
       return this.token;
     }

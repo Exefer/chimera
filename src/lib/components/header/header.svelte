@@ -54,7 +54,7 @@
           goto("/", { keepFocus: true });
           return;
         }
-        if (currentSearch == $search) return;
+        if (currentSearch === $search) return;
 
         if (page.url.pathname != "/search") {
           goto("/search", { keepFocus: true });

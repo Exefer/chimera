@@ -42,11 +42,11 @@
           {#each selectedPackDownload?.uris! as uri}
             {@const downloader = getDownloaderFromUrl(uri)}
             <Button
-              variant={selectedUri == uri ? "default" : "outline"}
+              variant={selectedUri === uri ? "default" : "outline"}
               class="flex-1"
-              disabled={downloader == Downloader.RealDebrid}
+              disabled={downloader === Downloader.RealDebrid}
             >
-              {#if selectedUri == uri}
+              {#if selectedUri === uri}
                 <CircleCheck />
               {/if}
               {DOWNLOADER_NAME[downloader]}
