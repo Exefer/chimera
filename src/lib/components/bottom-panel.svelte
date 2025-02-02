@@ -5,7 +5,9 @@
   import { t } from "svelte-i18n";
 
   const [currentDownload] = $derived(
-    $downloads.toSorted((a, b) => b.progress_percentage! - a.progress_percentage!)
+    $downloads
+      .filter(download => download.status === "progress")
+      .toSorted((a, b) => b.progress_percentage! - a.progress_percentage!)
   );
 </script>
 
