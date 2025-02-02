@@ -108,7 +108,7 @@ function createDownloadsStore() {
       case "paused": {
         store.update(state => {
           const index = state.findIndex(download => download.url === data.url);
-          state.splice(index, 1, { ...state[index], ...data, status: type });
+          state.splice(index, 1, { ...state[index], ...data, status: type, eta: 0 });
 
           return state;
         });
