@@ -71,9 +71,7 @@
       </div>
     {/if}
   </div>
-
   <div class="flex gap-4">
-    <!-- For now disable the stop button, backend can't kill started processes yet -->
     <Button
       variant="outline"
       disabled={game?.running || (game && packs.length === 0) || !!download}
@@ -112,6 +110,8 @@
     </Button>
     {#if game}
       <Separator orientation="vertical" />
+    {/if}
+    {#if game || packs.length > 0}
       <Button
         variant="outline"
         onclick={() => {

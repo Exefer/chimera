@@ -7,7 +7,7 @@
 <main class="p-4">
   <ul class="flex flex-row flex-wrap gap-4">
     {#each $games as game}
-      <li>
+      <li class="transition-transform hover:scale-105">
         <a href={getGameDetailsUrl(game.remote_id, game.title)}>
           <img
             class="relative rounded-md"

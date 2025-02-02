@@ -5,6 +5,7 @@
   import { getGameDetailsUrl } from "@/utils";
   import uFuzzy from "@leeoniya/ufuzzy";
   import { t } from "svelte-i18n";
+
   // See https://github.com/leeoniya/uFuzzy#options
   const uf = new uFuzzy({
     intraMode: 0,
@@ -48,10 +49,14 @@
       bind:page={currentPage}
     >
       {#snippet children({ pages, currentPage })}
-        <span
-          ><span class="font-bold">{startIndex === 0 ? 1 : startIndex}-{end}</span>
-          <span>of {searchResults.length}</span></span
-        >
+        <p>
+          {$t("search.displaying", {
+            values: {
+              range: `${startIndex === 0 ? 1 : startIndex}-${end}`,
+              total: searchResults.length,
+            },
+          })}
+        </p>
         <Pagination.Content class="mt-2">
           <Pagination.Item>
             <Pagination.PrevButton />

@@ -29,22 +29,24 @@
     <Separator />
     <div class="space-y-4">
       <div class="space-y-2">
-        <h2 class="text-xl font-bold text-muted-foreground">Executable</h2>
+        <h2 class="text-xl font-bold text-muted-foreground">
+          {$t("game_details.select_executable:title")}
+        </h2>
         <p class="text-sm text-muted-foreground">
-          Path of the executable that will run when "Play" is clicked
+          {$t("game_details.select_executable:description")}
         </p>
       </div>
       <div class="flex gap-2">
         <Input
           type="text"
-          placeholder="No executable selected"
+          placeholder={$t("game_details.select_executable:none_selected")}
           value={game?.executable_path}
           readonly
         />
         <Button
           variant="outline"
           onclick={async () => {
-            const executable = await openDialog({
+            const selected = await openDialog({
               filters: [
                 {
                   name: "Game executable",
@@ -52,15 +54,15 @@
                 },
               ],
             });
-            if (!executable) return;
+            if (!selected) return;
             games.updateGame("remote_id", remoteId, game => ({
               ...game,
-              executable_path: executable,
+              executable_path: selected,
             }));
           }}
         >
           <File />
-          Select
+          {$t("game_details.select_executable")}
         </Button>
         {#if game?.executable_path}
           <Button
@@ -74,7 +76,7 @@
           >
         {/if}
       </div>
-      <div>
+      <div class="flex gap-2">
         <Button
           variant="outline"
           disabled={!game?.executable_path}
@@ -96,9 +98,11 @@
         >
       </div>
       <div class="space-y-2">
-        <h2 class="text-xl font-bold text-muted-foreground">Downloads</h2>
+        <h2 class="text-xl font-bold text-muted-foreground">
+          {$t("game_details.downloads")}
+        </h2>
         <p class="text-sm text-muted-foreground">
-          Check out updates or other versions of this game
+          {$t("game_details.check_other_versions")}
         </p>
       </div>
       <Button
@@ -106,39 +110,43 @@
         disabled={packs.length === 0}
         onclick={() => {
           gameDetailsContext.showDownloadOptionsModal = true;
-        }}>Open download options</Button
+        }}>{$t("game_details.open_download_options")}</Button
       >
 
       <div class="space-y-2">
-        <h2 class="text-xl font-bold text-muted-foreground">Danger Zone</h2>
+        <h2 class="text-xl font-bold text-muted-foreground">
+          {$t("game_details.danger_zone")}
+        </h2>
         <p class="text-sm text-muted-foreground">
-          Remove this game from your library or it's files
+          {$t("game_details.remove_from_library_or_files")}
         </p>
       </div>
 
       <div class="flex gap-2">
         <Dialog.Root>
           <Dialog.Trigger class={buttonVariants({ variant: "destructive" })}
-            >Remove from library</Dialog.Trigger
+            >{$t("game_details.remove_from_library")}</Dialog.Trigger
           >
           <Dialog.Content>
             <Dialog.Header>
-              <Dialog.Title>Are you sure?</Dialog.Title>
+              <Dialog.Title>{$t("common.are_you_sure")}</Dialog.Title>
               <Dialog.Description>
-                This will remove {title} from your library
+                {$t("game_details.remove_from_library:description", {
+                  values: { title },
+                })}
               </Dialog.Description>
             </Dialog.Header>
             <Separator />
-            <div class="flex justify-end gap-2">
+            <Dialog.Footer>
               <Dialog.Close
                 class={buttonVariants({ variant: "outline" })}
                 onclick={() => {
                   games.removeGame(remoteId);
                   open = false;
-                }}>Confirm</Dialog.Close
+                }}>{$t("common.confirm")}</Dialog.Close
               >
-              <Dialog.Close class={buttonVariants()}>Cancel</Dialog.Close>
-            </div>
+              <Dialog.Close class={buttonVariants()}>{$t("common.cancel")}</Dialog.Close>
+            </Dialog.Footer>
           </Dialog.Content>
         </Dialog.Root>
         <Dialog.Root>
@@ -150,29 +158,29 @@
                 onclick={() => {
                   // Should remove files
                 }}
-                {...props}>Remove files</Button
+                {...props}>{$t("game_details.remove_files")}</Button
               >
             {/snippet}
           </Dialog.Trigger>
           <Dialog.Content>
             <Dialog.Header>
-              <Dialog.Title>Are you sure absolutely sure?</Dialog.Title>
+              <Dialog.Title>{$t("common.are_you_sure")}</Dialog.Title>
               <Dialog.Description>
-                This will remove all the installation files for this game from your
-                computer
+                {$t("game_details.remove_files:description", {
+                  values: { title },
+                })}
               </Dialog.Description>
             </Dialog.Header>
             <Separator />
-            <div class="flex justify-end gap-2">
+            <Dialog.Footer>
               <Dialog.Close
                 class={buttonVariants({ variant: "outline" })}
-                disabled
                 onclick={() => {
                   // Should delete installation files
-                }}>Confirm</Dialog.Close
+                }}>{$t("common.confirm")}</Dialog.Close
               >
-              <Dialog.Close class={buttonVariants()}>Cancel</Dialog.Close>
-            </div>
+              <Dialog.Close class={buttonVariants()}>{$t("common.cancel")}</Dialog.Close>
+            </Dialog.Footer>
           </Dialog.Content>
         </Dialog.Root>
       </div>

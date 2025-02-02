@@ -73,10 +73,9 @@
               });
               if (!selected) return;
               downloadPath = selected;
-            }}>{$t("game_details.select_executable")}</Button
+            }}>{$t("common.change")}</Button
           >
         </div>
-
         <p class="text-xs text-muted-foreground">
           {@html $t("game_details.change_default_download_path", {
             values: {

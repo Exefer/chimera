@@ -1,21 +1,19 @@
 {
-  "layout": {
-    "closing": "Chiudendo Chimera...",
-    "saving_downloads": "Salvando downloads...",
-    "pausing_download_for": "Mettendo in pausa il download per {title}..."
-  },
   "bottom_panel": {
     "calculating_eta": "Scaricando {title}… ({percentage}% completo) - Calcolando tempo rimanente…",
     "downloading": "Scaricando {title}… ({percentage}% completo) - Completamento in {eta} - {speed}MB/s",
     "no_downloads_in_progress": "Nessun download in corso"
   },
   "common": {
+    "are_you_sure": "Sei sicuro?",
+    "cancel": "Annulla",
+    "change": "Aggiorna",
+    "confirm": "Conferma",
     "not_implemented": "Non implementato"
   },
   "downloads": {
     "abort": "Annulla",
     "completed": "Completato",
-    "delete": "Rimuovi installer",
     "download_in_progress": "In corso",
     "install": "Installa",
     "no_downloads": "Nessun download",
@@ -23,18 +21,21 @@
     "pause": "Pausa",
     "paused": "In pausa",
     "queued_downloads": "In coda",
+    "remove_installer": "Rimuovi installer",
+    "remove_installer:description": "Questa operazione rimuoverà tutti i file di installazione per questo gioco dal tuo computer",
     "resume": "Riprendi"
   },
   "game_details": {
     "add_to_library": "Aggiungi alla libreria",
-    "change": "Cambia",
     "change_default_download_path": "Per cambiare il percorso di default, vai alla pagina <settings>Impostazioni</settings>",
+    "check_other_versions": "Scopri altre versioni o aggiornamenti di questo gioco",
     "choose_pack_to_download": "Scegli un pack da scaricare",
     "clear": "Clear",
     "count_download_options": "{count} opzioni di download",
     "create_desktop_shortcut": "Crea collegamento al desktop",
     "create_desktop_shortcut:error": "Impossibile creare il collegamento al desktop",
     "create_desktop_shortcut:success": "Collegamento al desktop creato con successo",
+    "danger_zone": "Zona di pericolo",
     "download": "Scarica",
     "download_in_progress": "Download in corso",
     "download_now": "Scarica ora",
@@ -42,6 +43,7 @@
     "download_path": "Percorso di download",
     "download_settings": "Impostazioni di download",
     "downloader": "Downloader",
+    "downloads": "Downloads",
     "filter_packs": "Filtra packs",
     "last_time_played": "Ultimo avvio {time}",
     "no_downloads": "Nessun download disponibile",
@@ -58,8 +60,16 @@
     "played_for_time": "Giocato per {time}",
     "playing_now": "In gioco",
     "published_by": "Pubblicato da {publisher}",
-    "release_on": "Rilasciato il {date}",
+    "released_on": "Rilasciato il {date}",
+    "remove_files": "Rimuovi files",
+    "remove_files:description": "Questa operazione rimuoverà tutti i file di installazione di {title} dal tuo computer",
+    "remove_from_library": "Rimuovi dalla libreria",
+    "remove_from_library:description": "Questo rimuoverà {title} dalla tua libreria",
+    "remove_from_library_or_files": "Rimuovi questo gioco dalla tua libreria o i suoi files",
     "select_executable": "Seleziona",
+    "select_executable:description": "Percorso del file eseguibile che verrà avviato quando si fa clic sulla voce \"Gioca\"",
+    "select_executable:none_selected": "Nessun eseguibile selezionato",
+    "select_executable:title": "Eseguibile",
     "stop": "Chiudi",
     "system_requirements": "Requisiti di sistema",
     "system_requirements:minimum": "Minimi",
@@ -74,6 +84,11 @@
     "search": "Cerca",
     "search_results": "Risultati della ricerca",
     "settings": "Impostazioni"
+  },
+  "layout": {
+    "closing": "Chiudendo Chimera...",
+    "pausing_download_for": "Mettendo in pausa il download per {title}...",
+    "saving_downloads": "Salvando downloads..."
   },
   "search": {
     "displaying": "{range} di {total}",
@@ -102,22 +117,23 @@
         "light": "Chiaro",
         "system": "Sistema"
       },
-      "theme:title": "Tema",
-      "update_downloads_path": "Aggiorna"
+      "theme:title": "Tema"
     },
     "general:title": "Generale",
     "sources": {
       "add_source": "Aggiungi fonte",
+      "already_added": "Fonte gia aggiunta!",
       "count_download_options": "{count} opzioni di download",
-      "description": "Chimera scaricherà i link di queste fonti. L'URL della fonte deve essere un link diretto a un file .json contenente i link di download.",
       "download_source_url": "URL della fonte",
+      "found_download_options": "Trovate {count} opzioni di download",
       "import": "Importa",
-      "insert_json_source_url": "Inserisci l'URL del file .json",
+      "insert_json_url": "Inserisci l'URL del file .json",
+      "invalid_json_url": "Non è un file .json valido",
       "remove": "Rimuovi",
       "sync_sources": "Sincronizza fonti",
-      "temporary_source_download_options": "Trovate {count} opzioni di download",
       "validate": "Convalida"
     },
+    "sources:description": "Chimera scaricherà i link di queste fonti. L'URL della fonte deve essere un link diretto a un file .json contenente i link di download.",
     "sources:title": "Fonti"
   },
   "sidebar": {

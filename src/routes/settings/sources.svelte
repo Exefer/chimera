@@ -33,7 +33,7 @@
       onSubmit: async () => {
         const url = $formData.url;
         if ($sources.find(source => source.url === url)) {
-          $errors.url = ["Source already added!"];
+          $errors.url = [$t("settings.sources.already_added")];
           return;
         }
         fetch(url)
@@ -42,7 +42,7 @@
             temporarySource = { ...source, url };
           })
           .catch(() => {
-            $errors.url = ["Not a valid JSON file"];
+            $errors.url = [$t("settings.sources.invalid_json_url")];
           });
       },
     }
@@ -53,7 +53,7 @@
 <div class="flex flex-col gap-4">
   <h1 class="text-2xl font-bold">{$t("settings.sources:title")}</h1>
 
-  <p>{$t("settings.sources.description")}</p>
+  <p>{$t("settings.sources:description")}</p>
 
   <div class="flex justify-between">
     <Button
@@ -75,7 +75,7 @@
       <Dialog.Content>
         <Dialog.Header>
           <Dialog.Title>{$t("settings.sources.add_source")}</Dialog.Title>
-          <Dialog.Description>{$t("settings.sources.description")}</Dialog.Description>
+          <Dialog.Description>{$t("settings.sources:description")}</Dialog.Description>
         </Dialog.Header>
         <Separator />
         <div class="space-y-4">
@@ -85,7 +85,12 @@
                 {#snippet children({ props })}
                   <Form.Label>{$t("settings.sources.download_source_url")}</Form.Label>
                   <div class="flex gap-2">
-                    <Input {...props} bind:value={$formData.url} autocomplete="off" />
+                    <Input
+                      placeholder={$t("settings.sources.insert_json_url")}
+                      bind:value={$formData.url}
+                      autocomplete="off"
+                      {...props}
+                    />
                     <Form.Button variant="outline"
                       >{$t("settings.sources.validate")}</Form.Button
                     >
@@ -101,7 +106,7 @@
               <div>
                 <p>{temporarySource.name}</p>
                 <small
-                  >{$t("settings.sources.temporary_source_download_options", {
+                  >{$t("settings.sources.found_download_options", {
                     values: { count: temporarySource.downloads.length },
                   })}</small
                 >

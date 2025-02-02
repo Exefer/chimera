@@ -1,21 +1,19 @@
 {
-  "layout": {
-    "closing": "Closing Chimera...",
-    "saving_downloads": "Saving downloads...",
-    "pausing_download_for": "Pausing download for {title}..."
-  },
   "bottom_panel": {
     "calculating_eta": "Downloading {title}… ({percentage}% complete) - Calculating remaining time…",
     "downloading": "Downloading {title}… ({percentage}% complete) - Completion in {eta} - {speed}MB/s",
     "no_downloads_in_progress": "No downloads in progress"
   },
   "common": {
+    "are_you_sure": "Are you sure?",
+    "cancel": "Cancel",
+    "change": "Change",
+    "confirm": "Confirm",
     "not_implemented": "Not implemented"
   },
   "downloads": {
     "abort": "Abort",
     "completed": "Completed",
-    "delete": "Remove installer",
     "download_in_progress": "In progress",
     "install": "Install",
     "no_downloads": "No downloads",
@@ -23,18 +21,21 @@
     "pause": "Pause",
     "paused": "Paused",
     "queued_downloads": "Queued downloads",
+    "remove_installer": "Remove installer",
+    "remove_installer:description": "This will remove all the installation files for this game from your computer",
     "resume": "Resume"
   },
   "game_details": {
     "add_to_library": "Add to library",
-    "change": "Change",
     "change_default_download_path": "To change the default path, go to the <settings>Settings</settings> page",
+    "check_other_versions": "Check out updates or other versions of this game",
     "choose_pack_to_download": "Choose the pack you want to download",
     "clear": "Clear",
     "count_download_options": "{count} download options",
     "create_desktop_shortcut": "Create desktop shortcut",
     "create_desktop_shortcut:error": "Failed to create desktop shortcut",
     "create_desktop_shortcut:success": "Shortcut created successfully",
+    "danger_zone": "Danger Zone",
     "download": "Download",
     "download_in_progress": "Download in progress",
     "download_now": "Download now",
@@ -42,6 +43,7 @@
     "download_path": "Download path",
     "download_settings": "Download settings",
     "downloader": "Downloader",
+    "downloads": "Downloads",
     "filter_packs": "Filter packs",
     "last_time_played": "Last played {time}",
     "no_downloads": "No downloads available",
@@ -58,8 +60,16 @@
     "played_for_time": "Played for {time}",
     "playing_now": "Playing now",
     "published_by": "Published by {publisher}",
-    "release_on": "Released on {date}",
+    "released_on": "Released on {date}",
+    "remove_files": "Remove files",
+    "remove_files:description": "This will remove all the installation files for {title} from your computer",
+    "remove_from_library": "Remove from library",
+    "remove_from_library:description": "This will remove {title} from your library",
+    "remove_from_library_or_files": "Remove this game from your library or it's files",
     "select_executable": "Select",
+    "select_executable:description": "Path of the executable that will run when \"Play\" is clicked",
+    "select_executable:none_selected": "No executable selected",
+    "select_executable:title": "Executable",
     "stop": "Stop",
     "system_requirements": "System Requirements",
     "system_requirements:minimum": "Minimum",
@@ -74,6 +84,11 @@
     "search": "Search",
     "search_results": "Search results",
     "settings": "Settings"
+  },
+  "layout": {
+    "closing": "Closing Chimera...",
+    "pausing_download_for": "Pausing download for {title}...",
+    "saving_downloads": "Saving downloads..."
   },
   "search": {
     "displaying": "{range} of {total}",
@@ -102,22 +117,23 @@
         "light": "Light",
         "system": "System"
       },
-      "theme:title": "Theme",
-      "update_downloads_path": "Update"
+      "theme:title": "Theme"
     },
     "general:title": "General",
     "sources": {
       "add_source": "Add source",
+      "already_added": "Source already added!",
       "count_download_options": "{count} download options",
-      "description": "Chimera will fetch the download links from these sources. The source URL must be a direct link to a .json file containing the download links.",
       "download_source_url": "Download Source URL",
+      "found_download_options": "Found {count} download options",
       "import": "Import",
-      "insert_json_source_url": "Insert the URL of the .json file",
+      "insert_json_url": "Insert the URL of the .json file",
+      "invalid_json_url": "Not a valid .json file",
       "remove": "Remove",
       "sync_sources": "Sync sources",
-      "temporary_source_download_options": "Found {count} download options",
       "validate": "Validate"
     },
+    "sources:description": "Chimera will fetch the download links from these sources. The source URL must be a direct link to a .json file containing the download links.",
     "sources:title": "Sources"
   },
   "sidebar": {

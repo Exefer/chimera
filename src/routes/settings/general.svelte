@@ -30,7 +30,7 @@
           const selected = await openDialog({ multiple: false, directory: true });
           if (!selected) return;
           $settings.general.downloads_path = selected;
-        }}>{$t("settings.general.update_downloads_path")}</Button
+        }}>{$t("common.change")}</Button
       >
     </div>
   </div>

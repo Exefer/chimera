@@ -33,7 +33,7 @@
     <div class="flex w-full flex-col">
       <div class="border-b border-r p-4 text-sm">
         <p>
-          {$t("game_details.release_on", {
+          {$t("game_details.released_on", {
             values: { date: appDetails?.release_date.date },
           })}
         </p>
