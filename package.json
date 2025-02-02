@@ -45,6 +45,7 @@
     "lucide-svelte": "^0.474.0",
     "mode-watcher": "^0.5.0",
     "prettier": "^3.3.2",
+    "prettier-plugin-sort-json": "^4.1.1",
     "prettier-plugin-svelte": "^3.2.6",
     "prettier-plugin-tailwindcss": "^0.6.9",
     "svelte": "5.19.0",

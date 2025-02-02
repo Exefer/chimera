@@ -12,6 +12,13 @@
       "options": {
         "parser": "svelte"
       }
+    },
+    {
+      "files": ["./src/locales/*.json"],
+      "options": {
+        "plugins": ["prettier-plugin-sort-json"],
+        "jsonRecursiveSort": true
+      }
     }
   ],
   "plugins": ["prettier-plugin-svelte", "prettier-plugin-tailwindcss"]
