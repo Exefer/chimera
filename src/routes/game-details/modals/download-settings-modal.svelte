@@ -5,7 +5,8 @@
   import { Separator } from "@/components/ui/separator";
   import { Downloader, DOWNLOADER_NAME } from "@/constants/";
   import { getGameDetailsContext } from "@/context";
-  import { downloads, settings } from "@/stores";
+  import { steamImageBuilder } from "@/services/steam";
+  import { apps, downloads, games, settings } from "@/stores";
   import * as Types from "@/types";
   import { getDownloaderFromUrl } from "@/utils";
   import { open as openDialog } from "@tauri-apps/plugin-dialog";
@@ -19,7 +20,7 @@
 
   let { selectedPackDownload }: DownloadSettingsModalProps = $props();
   const gameDetailsContext = getGameDetailsContext();
-  const { title, remoteId } = $derived(gameDetailsContext);
+  const { title, remoteId, game } = $derived(gameDetailsContext);
   let selectedUri = $derived<string | null>(selectedPackDownload?.uris?.[0] ?? null);
   let downloadPath = $state($settings.general.downloads_path);
 </script>
@@ -88,6 +89,16 @@
       <Button
         disabled={!selectedUri || !downloadPath}
         onclick={() => {
+          if (!game) {
+            games.addGame({
+              title,
+              remote_id: remoteId,
+              icon_url: steamImageBuilder.icon(
+                remoteId,
+                $apps.find(app => app.id === Number(remoteId))?.clientIcon!
+              ),
+            });
+          }
           downloads.addDownload(selectedUri!, remoteId, title, downloadPath);
           gameDetailsContext.showDownloadOptionsModal = false;
           gameDetailsContext.showGameOptionsModal = false;
