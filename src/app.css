@@ -71,14 +71,19 @@
 }
 
 @layer base {
+  ::-webkit-scrollbar {
+    display: none;
+  }
+  ::-webkit-progress-bar {
+    background-color: transparent;
+  }
+  ::-webkit-progress-value {
+    background-color: hsl(var(--foreground));
+  }
   * {
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply cursor-default bg-background text-foreground;
   }
-}
-
-::-webkit-scrollbar {
-  display: none;
 }
