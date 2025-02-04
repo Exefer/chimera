@@ -140,7 +140,7 @@ pub async fn download(
         writer.write_all(&chunk).await?;
         downloaded_bytes += chunk.len() as u64;
 
-        // Check if 5 seconds have passed since last progress event
+        // Check if the specified interval has elapsed since the last progress event
         if last_progress_emit.elapsed() >= PROGRESS_EVENT_EMISSION_INTERVAL {
             let mut state = state.lock().await;
 
