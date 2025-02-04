@@ -3,9 +3,7 @@ import { type ClassValue, clsx } from "clsx";
 import { addSeconds, differenceInHours, differenceInMinutes } from "date-fns";
 import { twMerge } from "tailwind-merge";
 
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}
+export const cn = (...inputs: ClassValue[]) => twMerge(clsx(inputs));
 
 export const capitalize = (string: string) =>
   string.charAt(0).toUpperCase() + string.slice(1);
@@ -58,8 +56,7 @@ export const formatTitle = pipe<string>(
 export const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 export const getDownloaderFromUrl = (url: string) => {
-  if (url.startsWith("https://gofile.io") || /https:\/\/store.*gofile.io/.test(url))
-    return Downloader.Gofile;
+  if (/https:\/\/.*gofile.io/.test(url)) return Downloader.Gofile;
   if (url.startsWith("magnet:")) return Downloader.Torrent;
   if (url.startsWith("https://1fichier.com")) return Downloader.RealDebrid;
 
@@ -88,5 +85,6 @@ export const formatSeconds = (seconds: number) => {
   if (hours > 0) {
     return `${hours} hour${hours !== 1 ? "s" : ""}`;
   }
+
   return `${minutes} minute${minutes !== 1 ? "s" : ""}`;
 };
