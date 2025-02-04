@@ -12,6 +12,17 @@ Chimera is a game launcher featuring an embedded BitTorrent client and supportin
 
 It's a work in progress and it's not ready for production.
 
+## Table of contents
+
+- [Features](#features)
+- [Contributing](#contributing)
+- [Roadmap](#roadmap)
+  - [Current goals](#current-goals)
+  - [Implemented](#implemented)
+  - [Planned](#planned)
+- [Join the community](#join-the-community)
+- [License](#license)
+
 ## Features
 
 - Support for 2 languages
