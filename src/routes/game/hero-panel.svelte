@@ -1,10 +1,10 @@
 <script lang="ts">
   import { Button } from "@/components/ui/button";
   import { Separator } from "@/components/ui/separator";
-  import { getGameDetailsContext } from "@/context";
+  import { getGameContext } from "@/context";
   import { steamImageBuilder } from "@/services/steam";
   import { commands } from "@/specta-bindings";
-  import { apps, downloads, games } from "@/stores";
+  import { apps, games } from "@/stores";
   import { formatSeconds } from "@/utils";
   import { formatDistanceToNow } from "date-fns";
   import CirclePause from "lucide-svelte/icons/circle-pause";
@@ -14,58 +14,57 @@
   import SettingsIcon from "lucide-svelte/icons/settings";
   import { t } from "svelte-i18n";
 
-  const gameDetailsContext = getGameDetailsContext();
-  const { game, packs, title, remoteId } = $derived(gameDetailsContext);
-  const download = $derived($downloads.find(download => download.remote_id === remoteId));
+  const gameContext = getGameContext();
+  const { local, packs, title, remoteId, download } = $derived(gameContext);
 </script>
 
 <div class="sticky top-[72px] flex justify-between border-y bg-background p-4 text-sm">
   <div class="flex flex-col justify-center">
-    {#if !game}
+    {#if !local}
       {@const [updatedAt] = packs
         .map(pack => new Date(pack.uploadDate))
         .toSorted((a, b) => b.valueOf() - a.valueOf())}
       {#if updatedAt}
         <p>
-          {$t("game_details.updated_at", {
+          {$t("game.updated_at", {
             values: { date: updatedAt.toLocaleDateString() },
           })}
         </p>
       {/if}
       {#if packs.length > 0}
         <p>
-          {$t("game_details.count_download_options", {
+          {$t("game.count_download_options", {
             values: { count: packs.length },
           })}
         </p>
       {:else}
-        <p>{$t("game_details.no_downloads")}</p>
+        <p>{$t("game.no_downloads")}</p>
       {/if}
-    {:else if game?.running}
-      <p>{$t("game_details.playing_now")}</p>
-    {:else if game?.playtime_in_seconds}
+    {:else if local?.running}
+      <p>{$t("game.playing_now")}</p>
+    {:else if local?.playtime_in_seconds}
       <p>
-        {$t("game_details.played_for_time", {
-          values: { time: formatSeconds(game.playtime_in_seconds) },
+        {$t("game.played_for_time", {
+          values: { time: formatSeconds(local.playtime_in_seconds) },
         })}
       </p>
-      {#if game.last_played_at && !game.running}
+      {#if local.last_played_at && !local.running}
         <p>
-          {$t("game_details.last_time_played", {
+          {$t("game.last_time_played", {
             values: {
-              time: formatDistanceToNow(game.last_played_at, { addSuffix: true }),
+              time: formatDistanceToNow(local.last_played_at, { addSuffix: true }),
             },
           })}
         </p>
       {/if}
-    {:else if !game?.running && !game?.playtime_in_seconds}
-      <p>{$t("game_details.not_played_yet", { values: { title } })}</p>
+    {:else if !local?.running && !local?.playtime_in_seconds}
+      <p>{$t("game.not_played_yet", { values: { title } })}</p>
     {/if}
 
     {#if download && download.status === "progress"}
       <div class="flex items-center gap-2 text-muted-foreground">
         <a href="/downloads" class="underline underline-offset-1">
-          {$t("game_details.download_in_progress")}
+          {$t("game.download_in_progress")}
         </a>
         <span class="text-xs">{download.progress_percentage?.toFixed(1)}%</span>
       </div>
@@ -74,9 +73,11 @@
   <div class="flex gap-4">
     <Button
       variant="outline"
-      disabled={game?.running || (game && packs.length === 0) || !!download}
+      disabled={local?.running ||
+        (local && packs.length === 0) ||
+        (download && download!.status === "progress")}
       onclick={() => {
-        if (!game) {
+        if (!local) {
           games.addGame({
             title,
             remote_id: remoteId,
@@ -85,50 +86,57 @@
               $apps.find(app => app.id === Number(remoteId))?.clientIcon!
             ),
           });
-        } else if (!game.executable_path) {
-          gameDetailsContext.showDownloadOptionsModal = true;
-        } else if (game.executable_path && !game.running) {
-          commands.runExecutable(game.executable_path);
-        } else if (game.running) {
+        } else if (!local.executable_path) {
+          gameContext.showDownloadOptionsModal = true;
+        } else if (local.executable_path && !local.running) {
+          commands.runExecutable(local.executable_path);
+        } else if (local.running) {
           // Should close
         }
       }}
     >
-      {#if !game}
+      {#if !local}
         <CirclePlus />
-        {$t("game_details.add_to_library")}
-      {:else if game?.running}
+        {$t("game.add_to_library")}
+      {:else if local?.running}
         <CirclePause />
-        {$t("game_details.stop")}
-      {:else if game?.executable_path}
+        {$t("game.stop")}
+      {:else if local?.executable_path}
         <CirclePlay />
-        {$t("game_details.play")}
-      {:else if !game?.executable_path}
+        {$t("game.play")}
+      {:else if !local?.executable_path}
         <DownloadIcon />
-        {$t("game_details.download")}
+        {$t("game.download")}
       {/if}
     </Button>
-    {#if game}
+    {#if local}
       <Separator orientation="vertical" />
     {/if}
-    {#if game || packs.length > 0}
+    {#if local || packs.length > 0}
       <Button
         variant="outline"
         onclick={() => {
-          if (game) {
-            gameDetailsContext.showGameOptionsModal = true;
+          if (local) {
+            gameContext.showGameOptionsModal = true;
           } else {
-            gameDetailsContext.showDownloadOptionsModal = true;
+            gameContext.showDownloadOptionsModal = true;
           }
         }}
       >
-        {#if game}
+        {#if local}
           <SettingsIcon />
-          {$t("game_details.options")}
+          {$t("game.options")}
         {:else}
-          {$t("game_details.open_download_options")}
+          {$t("game.open_download_options")}
         {/if}
       </Button>
     {/if}
   </div>
+  {#if download && download.status === "progress"}
+    <progress
+      max="100"
+      class="absolute bottom-0 left-0 h-1 w-full"
+      value={Math.trunc(download.progress_percentage!)}
+    ></progress>
+  {/if}
 </div>

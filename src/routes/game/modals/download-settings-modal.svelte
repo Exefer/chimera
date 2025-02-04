@@ -4,7 +4,7 @@
   import { Input } from "@/components/ui/input";
   import { Separator } from "@/components/ui/separator";
   import { Downloader, DOWNLOADER_NAME } from "@/constants/";
-  import { getGameDetailsContext } from "@/context";
+  import { getGameContext } from "@/context";
   import { steamImageBuilder } from "@/services/steam";
   import { apps, downloads, games, settings } from "@/stores";
   import * as Types from "@/types";
@@ -19,8 +19,8 @@
   }
 
   let { selectedPackDownload }: DownloadSettingsModalProps = $props();
-  const gameDetailsContext = getGameDetailsContext();
-  const { title, remoteId, game } = $derived(gameDetailsContext);
+  const gameContext = getGameContext();
+  const { title, remoteId, local, download } = $derived(gameContext);
   let selectedUri = $derived<string | null>(selectedPackDownload?.uris?.[0] ?? null);
   let downloadPath = $state($settings.general.downloads_path);
 </script>
@@ -31,14 +31,13 @@
 >
   <Dialog.Content>
     <Dialog.Header>
-      <Dialog.Title>{$t("game_details.download_settings")}</Dialog.Title>
-      <Dialog.Description>{$t("game_details.choose_pack_to_download")}</Dialog.Description
-      >
+      <Dialog.Title>{$t("game.download_settings")}</Dialog.Title>
+      <Dialog.Description>{$t("game.choose_pack_to_download")}</Dialog.Description>
     </Dialog.Header>
     <Separator />
     <div class="flex flex-col gap-4">
       <div class="space-y-2">
-        <p class="text-sm text-muted-foreground">{$t("game_details.downloader")}</p>
+        <p class="text-sm text-muted-foreground">{$t("game.downloader")}</p>
         <div class="flex flex-row gap-2">
           {#each selectedPackDownload?.uris! as uri}
             {@const downloader = getDownloaderFromUrl(uri)}
@@ -56,12 +55,12 @@
         </div>
       </div>
       <div class="space-y-2">
-        <p class="text-sm text-muted-foreground">{$t("game_details.download_path")}</p>
+        <p class="text-sm text-muted-foreground">{$t("game.download_path")}</p>
         <div class="flex flex-row gap-2">
           <Input
             type="text"
             value={downloadPath}
-            placeholder={$t("game_details.download_path")}
+            placeholder={$t("game.download_path")}
             readonly
           />
           <Button
@@ -77,7 +76,7 @@
           >
         </div>
         <p class="text-xs text-muted-foreground">
-          {@html $t("game_details.change_default_download_path", {
+          {@html $t("game.change_default_download_path", {
             values: {
               settings: text =>
                 `<a href="/settings" class="text-primary underline">${text}</a>`,
@@ -87,8 +86,8 @@
       </div>
       <Button
         disabled={!selectedUri || !downloadPath}
-        onclick={() => {
-          if (!game) {
+        onclick={async () => {
+          if (!local) {
             games.addGame({
               title,
               remote_id: remoteId,
@@ -98,11 +97,16 @@
               ),
             });
           }
-          downloads.addDownload(selectedUri!, remoteId, title, downloadPath);
-          gameDetailsContext.showDownloadOptionsModal = false;
-          gameDetailsContext.showGameOptionsModal = false;
+
+          if (download && download.original_url === selectedUri) {
+            await downloads.removeDownload(selectedUri!);
+          }
+
+          await downloads.addDownload(selectedUri!, remoteId, title, downloadPath);
+          gameContext.showDownloadOptionsModal = false;
+          gameContext.showGameOptionsModal = false;
           selectedPackDownload = null;
-        }}><DownloadIcon />{$t("game_details.download_now")}</Button
+        }}><DownloadIcon />{$t("game.download_now")}</Button
       >
     </div>
   </Dialog.Content>

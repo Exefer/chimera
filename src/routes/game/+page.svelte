@@ -2,13 +2,13 @@
   import { goto } from "$app/navigation";
   import { page } from "$app/state";
   import { SteamContentDescriptor } from "@/constants";
-  import { setGameDetailsContext } from "@/context";
+  import { setGameContext } from "@/context";
   import { getSteamAppDetails } from "@/services/steam";
-  import { appsByLetter, games, settings, sources } from "@/stores";
+  import { appsByLetter, downloads, games, settings, sources } from "@/stores";
   import * as Types from "@/types";
   import * as Steam from "@/types/steam.types";
   import { formatTitle } from "@/utils";
-  import GameDetailsContent from "./game-details-content.svelte";
+  import GameDetailsContent from "./game-content.svelte";
   import {
     DownloadOptionsModal,
     DownloadSettingsModal,
@@ -18,25 +18,26 @@
 
   const title = $derived(page.url.searchParams.get("title")!);
   const remoteId = $derived(page.url.searchParams.get("id")!);
-  const game = $derived($games.find(game => game.remote_id === remoteId));
+  const local = $derived($games.find(game => game.remote_id === remoteId));
+  const download = $derived($downloads.find(download => download.remote_id === remoteId));
 
+  let details = $state<Steam.AppDetails | null>(null);
   let selectedPackDownload = $state<Types.Pack | null>(null);
   let showDownloadOptionsModal = $state(false);
   let showGameOptionsModal = $state(false);
-  let appDetails = $state<Steam.AppDetails | null>(null);
   let hasNSFWContentBlocked = $state(false);
 
   $effect(() => {
     getSteamAppDetails(remoteId).then(data => {
-      appDetails = data;
+      details = data;
       hasNSFWContentBlocked =
-        appDetails!.content_descriptors.ids.includes(
+        details!.content_descriptors.ids.includes(
           SteamContentDescriptor.AdultOnlySexualContent
         ) && !$settings.behavior.disable_nsfw_alert;
     });
 
     return () => {
-      appDetails = null;
+      details = null;
     };
   });
   /* TESTING: Proof of concept
@@ -64,21 +65,24 @@
   );
   const packs = $derived(results.filter(result => result.remoteIds.includes(remoteId)));
   /* END OF TESTING */
-  setGameDetailsContext({
+  setGameContext({
     get title() {
       return title;
     },
     get remoteId() {
       return remoteId;
     },
-    get game() {
-      return game;
+    get local() {
+      return local;
+    },
+    get download() {
+      return download;
     },
     get packs() {
       return packs;
     },
-    get appDetails() {
-      return appDetails;
+    get details() {
+      return details;
     },
     get hasNSFWContentBlocked() {
       return hasNSFWContentBlocked;
@@ -109,7 +113,7 @@
 
   <NsfwAlertModal
     onCancel={() => {
-      /* TODO: Use browser history */
+      /* TODO: Go back */
       goto("/");
     }}
     onConfirm={() => {
