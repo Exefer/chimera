@@ -53,7 +53,7 @@ async deleteFile(path: string) : Promise<Result<null, Error>> {
     else return { status: "error", error: e  as any };
 }
 },
-async exists(path: string) : Promise<Result<boolean, Error>> {
+async exists(path: string) : Promise<Result<null, Error>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("exists", { path }) };
 } catch (e) {
@@ -80,7 +80,7 @@ executableEvent: "executable-event"
 
 /** user-defined types **/
 
-export type DownloadEvent = { type: "started"; data: { url: string; path: string; content_length: number } } | { type: "progress"; data: { url: string; progress_percentage: number; downloaded_bytes: number; download_speed: number; eta: number } } | { type: "paused"; data: { url: string } } | { type: "completed"; data: { url: string } } | { type: "aborted"; data: { url: string } }
+export type DownloadEvent = { type: "started"; data: { url: string; path: string; content_length: number } } | { type: "progress"; data: { url: string; progress_percentage: number; downloaded_bytes: number; download_speed: number; eta: number } } | { type: "paused"; data: { url: string } } | { type: "completed"; data: { url: string } } | { type: "aborted"; data: { url: string } } | { type: "rate_limit_exceeded"; data: { url: string } }
 export type Error = 
 /**
  * IO errors

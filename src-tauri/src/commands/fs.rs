@@ -9,6 +9,7 @@ pub fn delete_file(path: String) -> Result<(), Error> {
 
 #[tauri::command]
 #[specta::specta]
-pub fn exists(path: String) -> Result<bool, Error> {
-    Ok(std::fs::metadata(path).is_ok())
+pub fn exists(path: String) -> Result<(), Error> {
+    std::fs::metadata(path).map_err(Error::IoError)?;
+    Ok(())
 }

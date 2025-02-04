@@ -9,7 +9,15 @@ import * as Persistent from "./persistent";
 function createDownloadsStore() {
   const store = writable<Types.Download[]>([]);
   Persistent.downloads.get().then(downloads => {
-    if (downloads) store.set(downloads);
+    if (!downloads) return;
+    downloads.forEach(async (download, index) => {
+      const result = await commands.exists(download.path!);
+      if (result.status === "ok") return;
+
+      downloads.splice(index, 1);
+    });
+
+    store.set(downloads);
   });
 
   /**
@@ -187,11 +195,15 @@ function createDownloadsStore() {
     });
   };
 
+  /**
+   * Removes a download from the store and deletes the associated file if it exists.
+   */
   const removeDownload = async (url: string) => {
     const download = get(store).find(download => download.url === url);
     if (!download) return;
 
-    if (await commands.exists(download.path!)) {
+    const result = await commands.exists(download.path!);
+    if (result.status === "ok") {
       await commands.deleteFile(download.path!);
     }
 
