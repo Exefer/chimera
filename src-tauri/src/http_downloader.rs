@@ -10,10 +10,10 @@ use futures::StreamExt;
 use serde::{Deserialize, Serialize};
 use specta::Type;
 use std::time::Duration;
-use std::{path::Path, time::Instant};
+use std::{path::PathBuf, time::Instant};
 use tauri::{AppHandle, State};
 use tauri_plugin_http::reqwest::{
-    header::{HeaderMap, HeaderName, USER_AGENT},
+    header::{HeaderMap, HeaderName, CONTENT_TYPE, USER_AGENT},
     redirect::Policy,
     ClientBuilder as ReqwestClient, StatusCode,
 };
@@ -75,7 +75,7 @@ pub async fn download(
     dest_path: &str,
     headers: Option<Vec<(String, String)>>,
 ) -> Result<(), Error> {
-    let dest_path = Path::new(dest_path);
+    let mut dest_path = PathBuf::from(dest_path);
     let headers = parse_headers(headers);
 
     if let Some(parent) = dest_path.parent() {
@@ -105,6 +105,17 @@ pub async fn download(
         .emit(&app)
         .ok();
         return Err(Error::HttpClient("Too many requests".to_string()));
+    }
+
+    if dest_path.extension().is_none() {
+        let headers = response.headers();
+        let extension = match headers.get(CONTENT_TYPE).unwrap().to_str().unwrap() {
+            "application/x-rar-compressed" | "application/vnd.rar" => "rar",
+            "application/zip" | "application/x-zip-compressed" => "zip",
+            "application/x-7z-compressed" => "7z",
+            _ => "",
+        };
+        dest_path.set_extension(extension);
     }
 
     let content_length = response
