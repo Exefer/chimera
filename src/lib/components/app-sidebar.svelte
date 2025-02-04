@@ -1,8 +1,8 @@
 <script lang="ts">
   import { page } from "$app/state";
   import * as Sidebar from "@/components/ui/sidebar";
+  import { constructGameUrl } from "@/helpers";
   import { games } from "@/stores";
-  import { getGameDetailsUrl } from "@/utils";
   import Book from "lucide-svelte/icons/book";
   import DownloadIcon from "lucide-svelte/icons/download";
   import House from "lucide-svelte/icons/house";
@@ -12,27 +12,27 @@
 
   const items = $derived([
     {
-      title: $t("sidebar.home"),
+      title: $t("common.home"),
       href: "/",
       icon: House,
     },
     {
-      title: $t("sidebar.downloads"),
+      title: $t("common.downloads"),
       href: "/downloads",
       icon: DownloadIcon,
     },
     {
-      title: $t("sidebar.library"),
+      title: $t("common.library"),
       href: "/library",
       icon: Book,
     },
     {
-      title: $t("sidebar.catalog"),
+      title: $t("common.catalog"),
       href: "/catalog",
       icon: LayoutGrid,
     },
     {
-      title: $t("sidebar.settings"),
+      title: $t("common.settings"),
       href: "/settings",
       icon: SettingsIcon,
     },
@@ -64,7 +64,7 @@
       </Sidebar.GroupContent>
     </Sidebar.Group>
     <Sidebar.Group>
-      <Sidebar.GroupLabel>{$t("sidebar.library")}</Sidebar.GroupLabel>
+      <Sidebar.GroupLabel>{$t("common.library")}</Sidebar.GroupLabel>
       <Sidebar.GroupContent>
         <Sidebar.Input
           type="text"
@@ -78,7 +78,7 @@
             <Sidebar.MenuItem>
               <Sidebar.MenuButton>
                 {#snippet child({ props })}
-                  <a href={getGameDetailsUrl(game.remote_id, game.title)} {...props}>
+                  <a href={constructGameUrl(game.remote_id, game.title)} {...props}>
                     <img
                       src={game.icon_url}
                       width="20"

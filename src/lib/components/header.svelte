@@ -9,18 +9,18 @@
   const title = () => {
     switch (page.url.pathname) {
       case "/":
-        return $t("header.home");
+        return $t("common.home");
       case "/search":
         return $t("header.search_results");
       case "/downloads":
-        return $t("header.downloads");
+        return $t("common.downloads");
       case "/library":
-        return $t("header.library");
+        return $t("common.library");
       case "/settings":
-        return $t("header.settings");
+        return $t("common.settings");
       case "/catalog":
-        return $t("header.catalog");
-      case "/game-details":
+        return $t("common.catalog");
+      case "/game":
         return page.url.searchParams.get("title")!;
       default:
         return document.title;
