@@ -209,8 +209,10 @@ pub async fn download(
         .emit(&app)
         .ok();
     }
+    // Reset abort and pause for the next download
     state.abort_download = None;
     state.pause_download = None;
+
     Ok(())
 }
 
