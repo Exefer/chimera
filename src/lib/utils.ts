@@ -1,6 +1,6 @@
 import { CHAR_MAP, Downloader } from "@/constants/";
 import { type ClassValue, clsx } from "clsx";
-import { addSeconds, formatDistanceStrict } from "date-fns";
+import { addSeconds, differenceInHours, differenceInMinutes } from "date-fns";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -81,8 +81,12 @@ export const formatBytes = (size: number) => {
 export const formatSeconds = (seconds: number) => {
   const now = new Date();
   const futureDate = addSeconds(now, seconds);
-  return formatDistanceStrict(now, futureDate, { roundingMethod: "round" });
-};
 
-export const getGameDetailsUrl = (id: string, title: string) =>
-  `/game-details?id=${id}&title=${title}`;
+  const hours = differenceInHours(futureDate, now);
+  const minutes = differenceInMinutes(futureDate, now);
+
+  if (hours > 0) {
+    return `${hours} hour${hours !== 1 ? "s" : ""}`;
+  }
+  return `${minutes} minute${minutes !== 1 ? "s" : ""}`;
+};
