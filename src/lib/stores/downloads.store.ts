@@ -1,5 +1,5 @@
 import { Downloader, DOWNLOADER_NAME } from "@/constants";
-import { GoFileApi } from "@/services/hosters/gofile";
+import { GofileApi } from "@/services/hosters/gofile";
 import { commands, events } from "@/specta-bindings";
 import * as Types from "@/types";
 import { getDownloaderFromUrl } from "@/utils";
@@ -66,8 +66,8 @@ function createDownloadsStore() {
 
     switch (downloader) {
       case Downloader.Gofile: {
-        const token = await GoFileApi.authorize();
-        const link = await GoFileApi.getDownloadLink(url.split("/").pop()!);
+        const token = await GofileApi.authorize();
+        const link = await GofileApi.getDownloadLink(url.split("/").pop()!);
         const filename = link.split("/").pop()!;
         commands.download(link, `${path}/${filename}`, [
           ["Cookie", `accountToken=${token}`],
@@ -188,8 +188,8 @@ function createDownloadsStore() {
 
     switch (download.downloader) {
       case Downloader.Gofile: {
-        const token = await GoFileApi.authorize();
-        const link = await GoFileApi.getDownloadLink(
+        const token = await GofileApi.authorize();
+        const link = await GofileApi.getDownloadLink(
           download.original_url.split("/").pop()!
         );
         commands.download(link, download.path!, [

@@ -1,31 +1,31 @@
 import ky from "ky";
 
-export interface GoFileAccountsResponse {
+export interface GofileAccountsResponse {
   id: string;
   token: string;
 }
 
-export interface GoFileContentChild {
+export interface GofileContentChild {
   id: string;
   link: string;
 }
 
-export interface GoFileContentsResponse {
+export interface GofileContentsResponse {
   id: string;
   type: string;
-  children: Record<string, GoFileContentChild>;
+  children: Record<string, GofileContentChild>;
 }
 
 export const WT = "4fd6sg89d7s6";
 
-export class GoFileApi {
+export class GofileApi {
   private static token: string;
 
   public static async authorize() {
     const response = await ky
       .post<{
         status: string;
-        data: GoFileAccountsResponse;
+        data: GofileAccountsResponse;
       }>("https://api.gofile.io/accounts")
       .json();
 
@@ -40,7 +40,7 @@ export class GoFileApi {
   public static async getDownloadLink(id: string) {
     const response = await ky<{
       status: string;
-      data: GoFileContentsResponse;
+      data: GofileContentsResponse;
     }>(`https://api.gofile.io/contents/${id}?wt=${WT}`, {
       headers: {
         Authorization: `Bearer ${this.token}`,
