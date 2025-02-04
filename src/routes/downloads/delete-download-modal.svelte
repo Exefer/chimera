@@ -17,10 +17,10 @@
   <Dialog.Content>
     <Dialog.Header>
       <Dialog.Title>{$t("common.are_you_sure")}</Dialog.Title>
-      <Dialog.Description>
-        {$t("downloads.remove_installer:description")}
-      </Dialog.Description>
     </Dialog.Header>
+    <Dialog.Description>
+      {$t("downloads.remove_installer:description")}
+    </Dialog.Description>
     <Separator />
     <Dialog.Footer>
       <Dialog.Close class={buttonVariants({ variant: "outline" })} onclick={onConfirm}
