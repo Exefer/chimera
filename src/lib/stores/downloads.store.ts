@@ -72,6 +72,15 @@ function createDownloadsStore() {
         commands.download(link, `${path}/${filename}`, [
           ["Cookie", `accountToken=${token}`],
         ]);
+
+        break;
+      }
+      case Downloader.PixelDrain: {
+        const id = url.split("/").pop()!;
+        const link = `https://cdn.pd5-gamedriveorg.workers.dev/api/file/${id}`;
+        let filename = title.replace(/\s/g, "-");
+        commands.download(link, `${path}/${filename}`, null);
+
         break;
       }
       default: {
@@ -195,6 +204,13 @@ function createDownloadsStore() {
         commands.download(link, download.path!, [
           ["Range", `bytes=${download.downloaded_bytes}-`],
           ["Cookie", `accountToken=${token}`],
+        ]);
+
+        break;
+      }
+      case Downloader.PixelDrain: {
+        commands.download(download.url, download.path!, [
+          ["Range", `bytes=${download.downloaded_bytes}-`],
         ]);
 
         break;
