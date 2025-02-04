@@ -1,13 +1,12 @@
 <script lang="ts">
-  import { getGameDetailsContext } from "@/context";
+  import { getGameContext } from "@/context";
   import { steamImageBuilder } from "@/services/steam";
   import { t } from "svelte-i18n";
   import HeroPanel from "./hero-panel.svelte";
   import SidePanel from "./side-panel.svelte";
 
-  const gameDetailsContext = getGameDetailsContext();
-  const { title, remoteId, appDetails, hasNSFWContentBlocked } =
-    $derived(gameDetailsContext);
+  const gameContext = getGameContext();
+  const { title, remoteId, details, hasNSFWContentBlocked } = $derived(gameContext);
 </script>
 
 <div class={{ "blur-lg": hasNSFWContentBlocked }}>
@@ -33,13 +32,13 @@
     <div class="flex w-full flex-col">
       <div class="border-b border-r p-4 text-sm">
         <p>
-          {$t("game_details.released_on", {
-            values: { date: appDetails?.release_date.date },
+          {$t("game.released_on", {
+            values: { date: details?.release_date.date },
           })}
         </p>
         <p>
-          {$t("game_details.published_by", {
-            values: { publisher: appDetails?.publishers.join(", ") },
+          {$t("game.published_by", {
+            values: { publisher: details?.publishers.join(", ") },
           })}
         </p>
       </div>
@@ -47,7 +46,7 @@
         <div class="border-r p-4">
           <div class="flex xl:justify-center">
             <article class="pb-[34px] xl:max-w-[750px]">
-              {@html appDetails?.about_the_game}
+              {@html details?.about_the_game}
             </article>
           </div>
         </div>
