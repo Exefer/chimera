@@ -4,6 +4,7 @@ export { CHAR_MAP } from "./char-map";
 export enum Downloader {
   Torrent,
   Gofile,
+  PixelDrain,
   RealDebrid,
   Unknown,
 }
@@ -40,8 +41,9 @@ export const DEFAULT_APP_SETTINGS: Types.AppSettings = {
 };
 
 export const DOWNLOADER_NAME: Record<Downloader, string> = {
-  [Downloader.Gofile]: "Gofile",
-  [Downloader.RealDebrid]: "Real-Debrid",
   [Downloader.Torrent]: "Torrent",
+  [Downloader.Gofile]: "Gofile",
+  [Downloader.PixelDrain]: "PixelDrain",
+  [Downloader.RealDebrid]: "Real-Debrid",
   [Downloader.Unknown]: "Generic HTTP",
 };

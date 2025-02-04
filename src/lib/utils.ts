@@ -55,10 +55,11 @@ export const formatTitle = pipe<string>(
 
 export const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-export const getDownloaderFromUrl = (url: string) => {
+export const getDownloaderFromUrl = (url: string): Downloader => {
   if (/https:\/\/.*gofile.io/.test(url)) return Downloader.Gofile;
   if (url.startsWith("magnet:")) return Downloader.Torrent;
   if (url.startsWith("https://1fichier.com")) return Downloader.RealDebrid;
+  if (url.startsWith("https://pixeldrain.com")) return Downloader.PixelDrain;
 
   return Downloader.Unknown;
 };
