@@ -58,7 +58,8 @@ export const formatTitle = pipe<string>(
 export const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 export const getDownloaderFromUrl = (url: string) => {
-  if (url.startsWith("https://gofile.io")) return Downloader.Gofile;
+  if (url.startsWith("https://gofile.io") || /https:\/\/store.*gofile.io/.test(url))
+    return Downloader.Gofile;
   if (url.startsWith("magnet:")) return Downloader.Torrent;
   if (url.startsWith("https://1fichier.com")) return Downloader.RealDebrid;
 
