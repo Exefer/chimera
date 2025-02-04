@@ -109,6 +109,8 @@ function createDownloadsStore() {
             status: type,
           });
 
+          Persistent.downloads.set(state);
+
           return state;
         });
         break;
@@ -126,6 +128,8 @@ function createDownloadsStore() {
         store.update(state => {
           const index = state.findIndex(download => download.url === data.url);
           state.splice(index, 1);
+
+          Persistent.downloads.set(state);
 
           return state;
         });
