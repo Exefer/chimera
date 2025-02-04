@@ -1,6 +1,7 @@
 <script lang="ts">
   import { BYTES_TO_MEGABYTES } from "@/constants/";
   import { downloads } from "@/stores";
+  import { getCurrentWindow, ProgressBarStatus } from "@tauri-apps/api/window";
   import { formatDuration, intervalToDuration } from "date-fns";
   import { t } from "svelte-i18n";
 
@@ -9,6 +10,21 @@
       .filter(download => download.status === "progress")
       .toSorted((a, b) => b.progress_percentage! - a.progress_percentage!)
   );
+
+  const window = getCurrentWindow();
+
+  $effect(() => {
+    if (currentDownload && currentDownload.status === "progress") {
+      window.setProgressBar({
+        status: ProgressBarStatus.Normal,
+        progress: Math.trunc(currentDownload.progress_percentage!),
+      });
+    } else {
+      window.setProgressBar({
+        status: ProgressBarStatus.None,
+      });
+    }
+  });
 </script>
 
 <footer
