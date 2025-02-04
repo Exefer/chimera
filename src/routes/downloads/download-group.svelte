@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Badge from "@/components/badge.svelte";
   import * as DropdownMenu from "@/components/ui/dropdown-menu";
   import { DOWNLOADER_NAME } from "@/constants";
   import { constructGameUrl } from "@/helpers";
@@ -44,11 +45,7 @@
               alt={download.title}
               class="size-full rounded-l-md border-r object-fill"
             />
-            <span
-              class="absolute bottom-2 right-2 rounded-md border bg-background px-2 py-1 text-xs"
-            >
-              {packer}
-            </span>
+            <Badge position="bottom-right">{packer}</Badge>
           </div>
           <div class="flex w-2/3 flex-col justify-center gap-2 p-4">
             <a

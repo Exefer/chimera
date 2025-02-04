@@ -1,8 +1,10 @@
 <script lang="ts">
+  import Badge from "@/components/badge.svelte";
   import { constructGameUrl } from "@/helpers";
   import { steamImageBuilder } from "@/services/steam";
   import { games } from "@/stores";
-  import { getGameDetailsUrl } from "@/utils";
+  import { formatSeconds } from "@/utils";
+  import Clock from "lucide-svelte/icons/clock";
 </script>
 
 <!-- Proof of concept page -->
@@ -18,6 +20,10 @@
             width="200"
           />
         </a>
+        <Badge position="top-left">
+          <Clock size="12" />
+          {formatSeconds(game.playtime_in_seconds)}
+        </Badge>
       </li>
     {/each}
   </ul>
