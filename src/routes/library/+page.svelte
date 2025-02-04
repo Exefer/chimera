@@ -1,14 +1,16 @@
 <script lang="ts">
+  import { constructGameUrl } from "@/helpers";
   import { steamImageBuilder } from "@/services/steam";
   import { games } from "@/stores";
   import { getGameDetailsUrl } from "@/utils";
 </script>
 
-<main class="p-4">
-  <ul class="flex flex-row flex-wrap gap-4">
+<!-- Proof of concept page -->
+<main class="flex gap-4 p-4">
+  <ul class="flex flex-wrap gap-4">
     {#each $games as game}
-      <li class="transition-transform hover:scale-105">
-        <a href={getGameDetailsUrl(game.remote_id, game.title)}>
+      <li class="relative flex transition-transform hover:scale-105">
+        <a href={constructGameUrl(game.remote_id, game.title)}>
           <img
             class="relative rounded-md"
             src={steamImageBuilder.cover(game.remote_id)}

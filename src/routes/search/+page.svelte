@@ -1,8 +1,8 @@
 <script lang="ts">
   import * as Pagination from "@/components/ui/pagination";
   import { ITEMS_PER_PAGE } from "@/constants/";
+  import { constructGameUrl } from "@/helpers";
   import { apps, isTyping, search } from "@/stores";
-  import { getGameDetailsUrl } from "@/utils";
   import uFuzzy from "@leeoniya/ufuzzy";
   import { t } from "svelte-i18n";
 
@@ -38,7 +38,7 @@
       currentPage === totalPages ? searchResults.length : startIndex + ITEMS_PER_PAGE}
     <div class="flex flex-col">
       {#each searchResults.slice(startIndex, end) as item}
-        <a href={getGameDetailsUrl(String(item.id), item.name)}>
+        <a href={constructGameUrl(String(item.id), item.name)}>
           {item.name}
         </a>
       {/each}

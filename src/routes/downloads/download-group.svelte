@@ -1,10 +1,11 @@
 <script lang="ts">
   import * as DropdownMenu from "@/components/ui/dropdown-menu";
   import { DOWNLOADER_NAME } from "@/constants";
+  import { constructGameUrl } from "@/helpers";
   import { steamImageBuilder } from "@/services/steam";
   import { downloads } from "@/stores";
   import * as Types from "@/types";
-  import { formatBytes, getGameDetailsUrl } from "@/utils";
+  import { formatBytes } from "@/utils";
   import CirclePlay from "lucide-svelte/icons/circle-play";
   import CircleX from "lucide-svelte/icons/circle-x";
   import DownloadIcon from "lucide-svelte/icons/download";
@@ -51,7 +52,7 @@
           </div>
           <div class="flex w-2/3 flex-col justify-center gap-2 p-4">
             <a
-              href={getGameDetailsUrl(download.remote_id, download.title)}
+              href={constructGameUrl(download.remote_id, download.title)}
               class="text-lg font-medium hover:underline"
             >
               {download.title}
