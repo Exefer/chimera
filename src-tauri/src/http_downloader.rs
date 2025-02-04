@@ -116,8 +116,6 @@ pub async fn download(
     // Track the last time we emitted a progress event
     let mut last_progress_emit = Instant::now();
     let session_start_offset = downloaded_bytes;
-    let mut download_aborted = false;
-    let mut download_paused = false;
     let mut writer = BufWriter::new(
         tokio::fs::OpenOptions::new()
             .create(true)
@@ -142,7 +140,7 @@ pub async fn download(
 
         // Check if the specified interval has elapsed since the last progress event
         if last_progress_emit.elapsed() >= PROGRESS_EVENT_EMISSION_INTERVAL {
-            let mut state = state.lock().await;
+            let state = state.lock().await;
 
             // Abort check
             if let Some(abort_download) = &state.abort_download {
@@ -154,8 +152,6 @@ pub async fn download(
                     }
                     .emit(&app)
                     .ok();
-                    download_aborted = true;
-                    state.abort_download = None;
                     break;
                 }
             }
@@ -198,22 +194,23 @@ pub async fn download(
                     }
                     .emit(&app)
                     .ok();
-                    download_paused = true;
-                    state.pause_download = None;
                     break;
                 }
             }
         }
     }
-
     writer.flush().await?;
-    if !download_aborted && !download_paused {
+    let mut state = state.lock().await;
+
+    if !state.abort_download.is_some() && !state.pause_download.is_some() {
         DownloadEvent::Completed {
             url: url.to_string(),
         }
         .emit(&app)
         .ok();
     }
+    state.abort_download = None;
+    state.pause_download = None;
     Ok(())
 }
 
