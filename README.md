@@ -49,6 +49,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md)
 ### Current goals
 
 - [ ] Torrent downloads
+- [ ] Game launch agruments
 - [ ] Improve game details load times with caching
 - [ ] Reduce NSFW content blurring time
 - [ ] Use [Dexie(IndexedDB)](https://dexie.org/) instead of Svelte stores
