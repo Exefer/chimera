@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { cn } from "$lib/utils.js";
+  import { cn } from "@/utils";
   import { Dialog as DialogPrimitive, type WithoutChildrenOrChild } from "bits-ui";
   import X from "lucide-svelte/icons/x";
   import type { Snippet } from "svelte";

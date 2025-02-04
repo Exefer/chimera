@@ -8,10 +8,10 @@
   lang="ts"
   generics="T extends Record<string, unknown>, U extends _FormPathLeaves<T>"
 >
+  import { cn } from "@/utils";
+  import type { WithElementRef, WithoutChildren } from "bits-ui";
   import * as FormPrimitive from "formsnap";
   import type { HTMLAttributes } from "svelte/elements";
-  import type { WithElementRef, WithoutChildren } from "bits-ui";
-  import { cn } from "$lib/utils.js";
 
   let {
     ref = $bindable(null),

@@ -5,9 +5,9 @@
 </script>
 
 <script lang="ts" generics="T extends Record<string, unknown>, U extends _FormPath<T>">
+  import { cn } from "@/utils";
+  import type { WithElementRef, WithoutChildren } from "bits-ui";
   import * as FormPrimitive from "formsnap";
-  import type { WithoutChildren, WithElementRef } from "bits-ui";
-  import { cn } from "$lib/utils.js";
   import type { HTMLAttributes } from "svelte/elements";
 
   let {
