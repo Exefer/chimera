@@ -1,8 +1,10 @@
-import { Downloader } from "@/constants";
+import { Downloader, DOWNLOADER_NAME } from "@/constants";
 import { GoFileApi } from "@/services/hosters/gofile";
 import { commands, events } from "@/specta-bindings";
 import * as Types from "@/types";
 import { getDownloaderFromUrl } from "@/utils";
+import { t } from "svelte-i18n";
+import { toast } from "svelte-sonner";
 import { get, writable } from "svelte/store";
 import * as Persistent from "./persistent";
 
@@ -135,6 +137,17 @@ function createDownloadsStore() {
         });
         break;
       }
+      case "rate_limit_exceeded": {
+        toast.error(
+          get(t)("downloads.rate_limit_exceeded", {
+            values: { downloader: DOWNLOADER_NAME[getDownloaderFromUrl(data.url)] },
+          }),
+          {
+            duration: 2000,
+          }
+        );
+        break;
+      }
     }
   });
 
@@ -183,6 +196,7 @@ function createDownloadsStore() {
           ["Range", `bytes=${download.downloaded_bytes}-`],
           ["Cookie", `accountToken=${token}`],
         ]);
+
         break;
       }
       default: {

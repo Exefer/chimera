@@ -11,19 +11,18 @@ use serde::{Deserialize, Serialize};
 use specta::Type;
 use std::time::Duration;
 use std::{path::Path, time::Instant};
-use tauri::State;
-use tauri::{http::HeaderName, AppHandle};
+use tauri::{AppHandle, State};
 use tauri_plugin_http::reqwest::{
-    header::{HeaderMap, USER_AGENT},
+    header::{HeaderMap, HeaderName, USER_AGENT},
     redirect::Policy,
-    ClientBuilder as ReqwestClient,
+    ClientBuilder as ReqwestClient, StatusCode,
 };
 use tauri_specta::Event;
 use tokio::io::{AsyncWriteExt, BufWriter};
 use tokio::sync::Mutex;
 
 #[derive(Serialize, Deserialize, Debug, Clone, Type, Event)]
-#[serde(rename_all = "lowercase", tag = "type", content = "data")]
+#[serde(rename_all = "snake_case", tag = "type", content = "data")]
 pub enum DownloadEvent {
     Started {
         url: String,
@@ -44,6 +43,9 @@ pub enum DownloadEvent {
         url: String,
     },
     Aborted {
+        url: String,
+    },
+    RateLimitExceeded {
         url: String,
     },
 }
@@ -95,6 +97,16 @@ pub async fn download(
         .headers(headers)
         .send()
         .await?;
+    // Can happen with Gofile
+    if response.status() == StatusCode::TOO_MANY_REQUESTS {
+        DownloadEvent::RateLimitExceeded {
+            url: url.to_string(),
+        }
+        .emit(&app)
+        .ok();
+        return Err(Error::HttpClient("Too many requests".to_string()));
+    }
+
     let content_length = response
         .content_length()
         .ok_or_else(|| Error::Other("Unable to parse content length".to_string()))?;
