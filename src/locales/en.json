@@ -7,9 +7,14 @@
   "common": {
     "are_you_sure": "Are you sure?",
     "cancel": "Cancel",
+    "catalog": "Catalog",
     "change": "Change",
     "confirm": "Confirm",
-    "not_implemented": "Not implemented"
+    "downloads": "Downloads",
+    "home": "Home",
+    "library": "Library",
+    "not_implemented": "Not implemented",
+    "settings": "Settings"
   },
   "downloads": {
     "abort": "Abort",
@@ -21,11 +26,12 @@
     "pause": "Pause",
     "paused": "Paused",
     "queued_downloads": "Queued downloads",
+    "rate_limit_exceeded": "You have been rate limited by {downloader}",
     "remove_installer": "Remove installer",
     "remove_installer:description": "This will remove all the installation files for this game from your computer",
     "resume": "Resume"
   },
-  "game_details": {
+  "game": {
     "add_to_library": "Add to library",
     "change_default_download_path": "To change the default path, go to the <settings>Settings</settings> page",
     "check_other_versions": "Check out updates or other versions of this game",
@@ -45,6 +51,7 @@
     "downloader": "Downloader",
     "downloads": "Downloads",
     "filter_packs": "Filter packs",
+    "last_downloaded_option": "Last downloaded option",
     "last_time_played": "Last played {time}",
     "no_downloads": "No downloads available",
     "no_system_requirements": "No system requirements",
@@ -66,6 +73,8 @@
     "remove_from_library": "Remove from library",
     "remove_from_library:description": "This will remove {title} from your library",
     "remove_from_library_or_files": "Remove this game from your library or it's files",
+    "see_downloaded_files": "See downloaded files",
+    "see_downloaded_files:error": "Failed to see downloaded files",
     "select_executable": "Select",
     "select_executable:description": "Path of the executable that will run when \"Play\" is clicked",
     "select_executable:none_selected": "No executable selected",
@@ -77,13 +86,8 @@
     "updated_at": "Updated {date}"
   },
   "header": {
-    "catalog": "Catalog",
-    "downloads": "Downloads",
-    "home": "Home",
-    "library": "Library",
     "search": "Search",
-    "search_results": "Search results",
-    "settings": "Settings"
+    "search_results": "Search results"
   },
   "layout": {
     "closing": "Closing Chimera...",
@@ -137,11 +141,6 @@
     "sources:title": "Sources"
   },
   "sidebar": {
-    "catalog": "Catalog",
-    "downloads": "Downloads",
-    "filter_by_name": "Filter by name",
-    "home": "Home",
-    "library": "Library",
-    "settings": "Settings"
+    "filter_by_name": "Filter by name"
   }
 }
