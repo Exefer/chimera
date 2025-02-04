@@ -2,17 +2,14 @@
   import { dev } from "$app/environment";
   import AppSidebar from "@/components/app-sidebar.svelte";
   import BottomPanel from "@/components/bottom-panel.svelte";
-  import Header from "@/components/header";
+  import Header from "@/components/header.svelte";
   import * as Sidebar from "@/components/ui/sidebar";
   import { events } from "@/specta-bindings";
-  import { downloads, games, settings } from "@/stores";
-  import * as Persistent from "@/stores/persistent";
-  import { sleep } from "@/utils";
-  import { getCurrentWindow } from "@tauri-apps/api/window";
+  import { games, settings } from "@/stores";
   import { ModeWatcher } from "mode-watcher";
   import { onMount, untrack } from "svelte";
-  import { init, locale, register, t } from "svelte-i18n";
-  import { toast, Toaster } from "svelte-sonner";
+  import { init, locale, register } from "svelte-i18n";
+  import { Toaster } from "svelte-sonner";
   import "../app.css";
 
   let { children } = $props();
@@ -31,28 +28,6 @@
   });
 
   onMount(() => {
-    const appWindow = getCurrentWindow();
-
-    appWindow.once("tauri://close-requested", () => {
-      Promise.all(
-        $downloads.map(async download => {
-          if (download.status != "progress") return;
-          toast.info(
-            $t("layout.pausing_download_for", {
-              values: { title: download.title },
-            })
-          );
-          await downloads.pauseDownload(download.url);
-        })
-      ).then(async () => {
-        toast.info($t("layout.saving_downloads"));
-        await Persistent.downloads.set($downloads);
-        toast.info($t("layout.closing"));
-        await sleep(1000);
-        await appWindow.close();
-      });
-    });
-
     events.executableEvent.listen(({ payload: { data, type } }) => {
       switch (type) {
         case "started": {
