@@ -7,9 +7,14 @@
   "common": {
     "are_you_sure": "Sei sicuro?",
     "cancel": "Annulla",
+    "catalog": "Catalogo",
     "change": "Aggiorna",
     "confirm": "Conferma",
-    "not_implemented": "Non implementato"
+    "downloads": "Downloads",
+    "home": "Home",
+    "library": "Libreria",
+    "not_implemented": "Non implementato",
+    "settings": "Impostazioni"
   },
   "downloads": {
     "abort": "Annulla",
@@ -21,11 +26,12 @@
     "pause": "Pausa",
     "paused": "In pausa",
     "queued_downloads": "In coda",
+    "rate_limit_exceeded": "Hai superato il limite di richieste consentite da {downloader}",
     "remove_installer": "Rimuovi installer",
     "remove_installer:description": "Questa operazione rimuoverà tutti i file di installazione per questo gioco dal tuo computer",
     "resume": "Riprendi"
   },
-  "game_details": {
+  "game": {
     "add_to_library": "Aggiungi alla libreria",
     "change_default_download_path": "Per cambiare il percorso di default, vai alla pagina <settings>Impostazioni</settings>",
     "check_other_versions": "Scopri altre versioni o aggiornamenti di questo gioco",
@@ -45,6 +51,7 @@
     "downloader": "Downloader",
     "downloads": "Downloads",
     "filter_packs": "Filtra packs",
+    "last_downloaded_option": "Ultima opzione scaricata",
     "last_time_played": "Ultimo avvio {time}",
     "no_downloads": "Nessun download disponibile",
     "no_system_requirements": "Nessun requisito di sistema",
@@ -65,7 +72,9 @@
     "remove_files:description": "Questa operazione rimuoverà tutti i file di installazione di {title} dal tuo computer",
     "remove_from_library": "Rimuovi dalla libreria",
     "remove_from_library:description": "Questo rimuoverà {title} dalla tua libreria",
-    "remove_from_library_or_files": "Rimuovi questo gioco dalla tua libreria o i suoi files",
+    "remove_from_library_or_files": "Rimuovi questo gioco dalla tua libreria o i suoi file",
+    "see_downloaded_files": "Vedi i file scaricati",
+    "see_downloaded_files:error": "Impossibile vedere i file scaricati",
     "select_executable": "Seleziona",
     "select_executable:description": "Percorso del file eseguibile che verrà avviato quando si fa clic sulla voce \"Gioca\"",
     "select_executable:none_selected": "Nessun eseguibile selezionato",
@@ -77,13 +86,8 @@
     "updated_at": "Aggiornato il {date}"
   },
   "header": {
-    "catalog": "Catalogo",
-    "downloads": "Downloads",
-    "home": "Home",
-    "library": "Libreria",
     "search": "Cerca",
-    "search_results": "Risultati della ricerca",
-    "settings": "Impostazioni"
+    "search_results": "Risultati della ricerca"
   },
   "layout": {
     "closing": "Chiudendo Chimera...",
@@ -137,11 +141,6 @@
     "sources:title": "Fonti"
   },
   "sidebar": {
-    "catalog": "Catalogo",
-    "downloads": "Downloads",
-    "filter_by_name": "Cerca per nome",
-    "home": "Home",
-    "library": "Libreria",
-    "settings": "Impostazioni"
+    "filter_by_name": "Cerca per nome"
   }
 }
