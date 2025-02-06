@@ -5,6 +5,7 @@
     "no_downloads_in_progress": "No downloads in progress"
   },
   "common": {
+    "an_error_occurred": "An error occurred!",
     "are_you_sure": "Are you sure?",
     "cancel": "Cancel",
     "catalog": "Catalog",
