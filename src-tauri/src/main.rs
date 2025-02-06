@@ -122,13 +122,12 @@ fn main() {
             "../src/lib/specta-bindings.ts",
         )
         .expect("Failed to export typescript bindings");
-
     tauri::Builder::default()
         .plugin(tauri_plugin_single_instance::init(|app, _args, _cwd| {
-            let _ = app
-                .get_webview_window("main")
+            app.get_webview_window("main")
                 .expect("no main window")
-                .set_focus();
+                .set_focus()
+                .expect("failed to focus main window");
         }))
         .plugin(tauri_plugin_store::Builder::new().build())
         .plugin(tauri_plugin_dialog::init())
