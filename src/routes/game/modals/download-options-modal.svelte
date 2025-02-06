@@ -9,13 +9,10 @@
 
   interface DownloadOptionsModalProps {
     open: boolean;
-    selectedPackDownload: Types.Pack | null;
+    onPackSelected: (pack: Types.Pack) => void;
   }
 
-  let {
-    open = $bindable(false),
-    selectedPackDownload = $bindable<Types.Pack | null>(null),
-  }: DownloadOptionsModalProps = $props();
+  let { open = $bindable(false), onPackSelected }: DownloadOptionsModalProps = $props();
   const { packs, download } = getGameContext();
   let filter = $state("");
 </script>
@@ -36,9 +33,7 @@
       }) as pack}
         <button
           class="flex flex-col gap-2 rounded-md border bg-primary-foreground p-4 text-left hover:bg-primary-foreground/80 dark:border-none"
-          onclick={() => {
-            selectedPackDownload = pack;
-          }}
+          onclick={() => onPackSelected(pack)}
         >
           <p class="text-wrap text-sm">{pack.title}</p>
           {#if download && pack.uris.includes(download!.original_url)}
