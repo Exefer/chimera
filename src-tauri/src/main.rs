@@ -3,10 +3,10 @@
 //! Chimera - A game launcher built with Tauri
 //!
 //! This is the main entry point for the Tauri application.
-
 mod commands;
 mod exec_handler;
 mod http_downloader;
+mod torrent_downloader;
 use tauri::Manager;
 use tokio::sync::Mutex;
 
