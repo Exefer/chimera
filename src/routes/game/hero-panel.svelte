@@ -83,7 +83,7 @@
             remote_id: remoteId,
             icon_url: steamImageBuilder.icon(
               remoteId,
-              $apps.find(app => app.id === Number(remoteId))?.clientIcon!
+              $apps.find(app => app.id === remoteId)?.clientIcon!
             ),
           });
         } else if (!local.executable_path) {
