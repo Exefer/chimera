@@ -97,7 +97,9 @@ pub async fn download(
         .headers(headers)
         .send()
         .await?;
-    // Can happen with Gofile
+    let headers = response.headers();
+    let content_type = headers.get(CONTENT_TYPE).unwrap().to_str().unwrap();
+    // This can occur with Gofile when the storage cap of 1000GB is reached
     if response.status() == StatusCode::TOO_MANY_REQUESTS {
         DownloadEvent::RateLimitExceeded {
             url: url.to_string(),
@@ -106,10 +108,18 @@ pub async fn download(
         .ok();
         return Err(Error::HttpClient("Too many requests".to_string()));
     }
-
+    // If the content type is text-based (e.g., "text/html"), the request likely failed
+    // and returned an error page instead of the expected file. Return an error to avoid processing invalid data
+    if content_type.starts_with("text/") {
+        return Err(Error::HttpClient(
+            "Request failed: server returned a text-based response, likely an error page"
+                .to_string(),
+        ));
+    }
+    // If the destination path has no file extension, infer it from the `content_type`
+    // Supported types include RAR, ZIP, and 7Z; unsupported types result in no extension
     if dest_path.extension().is_none() {
-        let headers = response.headers();
-        let extension = match headers.get(CONTENT_TYPE).unwrap().to_str().unwrap() {
+        let extension = match content_type {
             "application/x-rar-compressed" | "application/vnd.rar" => "rar",
             "application/zip" | "application/x-zip-compressed" => "zip",
             "application/x-7z-compressed" => "7z",
@@ -120,7 +130,7 @@ pub async fn download(
 
     let content_length = response
         .content_length()
-        .ok_or_else(|| Error::Other("Unable to parse content length".to_string()))?;
+        .ok_or_else(|| Error::HttpClient("Unable to parse content length".to_string()))?;
     let content_length = downloaded_bytes + content_length;
 
     let start_time = Instant::now();
@@ -213,7 +223,7 @@ pub async fn download(
     writer.flush().await?;
     let mut state = state.lock().await;
 
-    if !state.abort_download.is_some() && !state.pause_download.is_some() {
+    if state.abort_download.is_none() && state.pause_download.is_none() {
         DownloadEvent::Completed {
             url: url.to_string(),
         }
