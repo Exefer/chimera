@@ -15,20 +15,25 @@
   import { t } from "svelte-i18n";
 
   interface DownloadSettingsModalProps {
+    open: boolean;
     selectedPackDownload: Types.Pack | null;
+    onDownloadStarted: () => void;
+    onDownloadErrored: () => void;
   }
 
-  let { selectedPackDownload }: DownloadSettingsModalProps = $props();
+  let {
+    open,
+    selectedPackDownload,
+    onDownloadStarted,
+    onDownloadErrored,
+  }: DownloadSettingsModalProps = $props();
   const gameContext = getGameContext();
   const { title, remoteId, local, download } = $derived(gameContext);
   let selectedUri = $derived<string | null>(selectedPackDownload?.uris?.[0] ?? null);
   let downloadPath = $state($settings.general.downloads_path);
 </script>
 
-<Dialog.Root
-  open={selectedPackDownload != null}
-  onOpenChange={open => !open && (selectedPackDownload = null)}
->
+<Dialog.Root {open}>
   <Dialog.Content>
     <Dialog.Header>
       <Dialog.Title>{$t("game.download_settings")}</Dialog.Title>
@@ -93,7 +98,7 @@
               remote_id: remoteId,
               icon_url: steamImageBuilder.icon(
                 remoteId,
-                $apps.find(app => app.id === Number(remoteId))?.clientIcon!
+                $apps.find(app => app.id === remoteId)?.clientIcon!
               ),
             });
           }
@@ -102,10 +107,13 @@
             await downloads.removeDownload(selectedUri!);
           }
 
-          await downloads.addDownload(selectedUri!, remoteId, title, downloadPath);
-          gameContext.showDownloadOptionsModal = false;
-          gameContext.showGameOptionsModal = false;
-          selectedPackDownload = null;
+          try {
+            await downloads.addDownload(selectedUri!, remoteId, title, downloadPath);
+            onDownloadStarted();
+          } catch (e) {
+            console.error(e);
+            onDownloadErrored();
+          }
         }}><DownloadIcon />{$t("game.download_now")}</Button
       >
     </div>

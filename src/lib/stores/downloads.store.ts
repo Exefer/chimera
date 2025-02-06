@@ -69,19 +69,17 @@ function createDownloadsStore() {
         const token = await GofileApi.authorize();
         const link = await GofileApi.getDownloadLink(url.split("/").pop()!);
         const filename = link.split("/").pop()!;
-        commands.download(link, `${path}/${filename}`, [
+
+        return commands.download(link, `${path}/${filename}`, [
           ["Cookie", `accountToken=${token}`],
         ]);
-
-        break;
       }
       case Downloader.PixelDrain: {
         const id = url.split("/").pop()!;
         const link = `https://cdn.pd5-gamedriveorg.workers.dev/api/file/${id}`;
         let filename = title.replace(/\s/g, "-");
-        commands.download(link, `${path}/${filename}`, null);
 
-        break;
+        return commands.download(link, `${path}/${filename}`, null);
       }
       default: {
         // TODO: Implement download for other downloaders
@@ -201,19 +199,16 @@ function createDownloadsStore() {
         const link = await GofileApi.getDownloadLink(
           download.original_url.split("/").pop()!
         );
-        commands.download(link, download.path!, [
+
+        return commands.download(link, download.path!, [
           ["Range", `bytes=${download.downloaded_bytes}-`],
           ["Cookie", `accountToken=${token}`],
         ]);
-
-        break;
       }
       case Downloader.PixelDrain: {
-        commands.download(download.url, download.path!, [
+        return commands.download(download.url, download.path!, [
           ["Range", `bytes=${download.downloaded_bytes}-`],
         ]);
-
-        break;
       }
       default: {
         // TODO: Implement resume download for other downloaders

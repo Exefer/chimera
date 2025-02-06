@@ -109,7 +109,18 @@
 
   <DownloadOptionsModal bind:open={showDownloadOptionsModal} bind:selectedPackDownload />
 
-  <DownloadSettingsModal {selectedPackDownload} />
+  <DownloadSettingsModal
+    open={selectedPackDownload != null}
+    {selectedPackDownload}
+    onDownloadStarted={() => {
+      showDownloadOptionsModal = false;
+      showGameOptionsModal = false;
+      selectedPackDownload = null;
+    }}
+    onDownloadErrored={() => {
+      toast.error($t("common.an_error_occurred"));
+    }}
+  />
 
   <NsfwAlertModal
     onCancel={() => {

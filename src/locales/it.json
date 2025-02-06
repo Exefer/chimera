@@ -5,6 +5,7 @@
     "no_downloads_in_progress": "Nessun download in corso"
   },
   "common": {
+    "an_error_occurred": "Si è verificato un errore!",
     "are_you_sure": "Sei sicuro?",
     "cancel": "Annulla",
     "catalog": "Catalogo",
