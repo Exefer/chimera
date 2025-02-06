@@ -6,8 +6,8 @@
   import { t } from "svelte-i18n";
 
   interface NsfwAlertModalProps {
-    onCancel(): void;
-    onConfirm(): void;
+    onCancel: () => void;
+    onConfirm: () => void;
   }
 
   let { onCancel, onConfirm }: NsfwAlertModalProps = $props();

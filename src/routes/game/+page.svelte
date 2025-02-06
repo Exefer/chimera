@@ -8,6 +8,8 @@
   import * as Types from "@/types";
   import * as Steam from "@/types/steam.types";
   import { formatTitle } from "@/utils";
+  import { t } from "svelte-i18n";
+  import { toast } from "svelte-sonner";
   import GameDetailsContent from "./game-content.svelte";
   import {
     DownloadOptionsModal,
@@ -107,7 +109,10 @@
 
   <GameOptionsModal bind:open={showGameOptionsModal} />
 
-  <DownloadOptionsModal bind:open={showDownloadOptionsModal} bind:selectedPackDownload />
+  <DownloadOptionsModal
+    bind:open={showDownloadOptionsModal}
+    onPackSelected={pack => (selectedPackDownload = pack)}
+  />
 
   <DownloadSettingsModal
     open={selectedPackDownload != null}
@@ -124,7 +129,6 @@
 
   <NsfwAlertModal
     onCancel={() => {
-      /* TODO: Go back */
       goto("/");
     }}
     onConfirm={() => {

@@ -6,8 +6,8 @@
 
   interface DeleteDownloadModalProps {
     open: boolean;
-    onCancel(): void;
-    onConfirm(): void;
+    onCancel: () => void;
+    onConfirm: () => void;
   }
 
   let { open, onCancel, onConfirm }: DeleteDownloadModalProps = $props();
