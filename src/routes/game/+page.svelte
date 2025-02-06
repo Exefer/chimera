@@ -54,12 +54,12 @@
         formattedTitle.startsWith(app.name)
       );
 
-      gamesInSteam.forEach(game => remoteIdsOnSource.add(String(game.id)));
+      gamesInSteam.forEach(game => remoteIdsOnSource.add(game.id));
 
       return {
         ...download,
         packer: source.name,
-        remoteIds: gamesInSteam.map(app => String(app.id)),
+        remoteIds: gamesInSteam.map(app => app.id),
       };
     })
   );

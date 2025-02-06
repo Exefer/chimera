@@ -38,7 +38,7 @@
       currentPage === totalPages ? searchResults.length : startIndex + ITEMS_PER_PAGE}
     <div class="flex flex-col">
       {#each searchResults.slice(startIndex, end) as item}
-        <a href={constructGameUrl(String(item.id), item.name)}>
+        <a href={constructGameUrl(item.id, item.name)}>
           {item.name}
         </a>
       {/each}

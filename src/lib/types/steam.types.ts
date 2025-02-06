@@ -90,7 +90,7 @@ export interface ExtendedRatingDetail extends RatingDetail {
 
 export interface App {
   name: string;
-  id: number;
+  id: string;
   clientIcon: string;
 }
 

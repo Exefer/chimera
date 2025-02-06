@@ -1,29 +1,40 @@
 <script lang="ts">
   import { apps, appsByLetter } from "@/stores";
-  import * as Steam from "@/types/steam.types";
   import { formatTitle } from "@/utils";
   import ky from "ky";
   import { onMount } from "svelte";
 
   onMount(() => {
     if (!$apps || !appsByLetter) {
-      ky<Steam.App[]>(
+      ky<Array<{ name: string; id: number; clientIcon: string }>>(
         atob(
           "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL2h5ZHJhbGF1bmNoZXIvaHlkcmEvcmVmcy9oZWFkcy9tYWluL3NlZWRzL3N0ZWFtLWdhbWVzLmpzb24"
         )
       )
         .then(response => response.json())
+        .then(data =>
+          data.map(app => ({
+            name: app.name,
+            id: String(app.id),
+            clientIcon: app.clientIcon,
+          }))
+        )
         .then(data => {
           apps.set(data);
           appsByLetter.set(
-            data.reduce<Record<string, { name: string; id: number }[]>>((acc, app) => {
-              if (!app.name) return acc;
-              const formattedTitle = formatTitle(app.name);
-              const [firstLetter] = formattedTitle;
-              if (!acc[firstLetter]) acc[firstLetter] = [];
-              acc[firstLetter].push({ name: formattedTitle, id: app.id });
-              return acc;
-            }, {})
+            data.reduce<Record<string, Array<{ name: string; id: string }>>>(
+              (acc, app) => {
+                if (!app.name) return acc;
+                const formattedTitle = formatTitle(app.name);
+                const [firstLetter] = formattedTitle;
+
+                if (!acc[firstLetter]) acc[firstLetter] = [];
+
+                acc[firstLetter].push({ name: formattedTitle, id: app.id });
+                return acc;
+              },
+              {}
+            )
           );
         });
     }
