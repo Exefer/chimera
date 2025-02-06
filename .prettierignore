@@ -5,5 +5,6 @@ yarn.lock
 bun.lock
 
 # other
-src-tauri/
-**specta-bindings**
+src-tauri/gen
+src-tauri/target
+*specta-bindings*

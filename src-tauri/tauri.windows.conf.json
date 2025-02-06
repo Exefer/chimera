@@ -1,7 +1,7 @@
 {
- "bundle": {
-  "resources": {
-   "scripts/windows/*": "scripts/"
- }
- }
+  "bundle": {
+    "resources": {
+      "scripts/windows/*": "scripts/"
+    }
+  }
 }
