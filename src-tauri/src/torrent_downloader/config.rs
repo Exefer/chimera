@@ -15,7 +15,7 @@ use crate::Error;
 pub struct ChimeraConfigDht {
     pub disable: bool,
     pub disable_persistence: bool,
-    pub persistence_filename: PathBuf,
+    pub persistence_file: PathBuf,
 }
 
 impl Default for ChimeraConfigDht {
@@ -23,7 +23,7 @@ impl Default for ChimeraConfigDht {
         Self {
             disable: false,
             disable_persistence: false,
-            persistence_filename: PersistentDht::default_persistence_filename().unwrap(),
+            persistence_file: PersistentDht::default_persistence_filename().unwrap(),
         }
     }
 }

@@ -84,7 +84,7 @@ async fn initialize_api(config: &ChimeraConfig) -> anyhow::Result<Api> {
             disable_dht: config.dht.disable,
             disable_dht_persistence: config.dht.disable_persistence,
             dht_config: Some(PersistentDhtConfig {
-                config_filename: Some(config.dht.persistence_filename.clone()),
+                config_filename: Some(config.dht.persistence_file.clone()),
                 ..Default::default()
             }),
             persistence,
