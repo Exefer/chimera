@@ -1,6 +1,6 @@
 //! Main module for the torrent downloader functionality.
+mod commands;
 mod config;
-mod torrent_downloader;
 
+pub use commands::*;
 pub use config::*;
-pub use torrent_downloader::*;

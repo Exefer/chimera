@@ -9,6 +9,7 @@ mod http_downloader;
 mod torrent_downloader;
 use tauri::Manager;
 use tokio::sync::Mutex;
+use torrent_downloader::AppTorrentingState;
 
 #[derive(Default)]
 pub struct AppState {
@@ -87,7 +88,7 @@ impl serde::Serialize for Error {
     }
 }
 
-/// Main entry point for the Tauri application.
+/// Entry point for the Tauri application.
 ///
 ///
 /// # Panics:
@@ -97,7 +98,7 @@ impl serde::Serialize for Error {
 /// - Failed to build the main window
 /// - Failed to focus the main window
 /// - Failed to manage the app state
-fn main() {
+async fn start() {
     let builder = tauri_specta::Builder::<tauri::Wry>::new()
         .commands(tauri_specta::collect_commands![
             exec_handler::run_executable,
@@ -121,7 +122,7 @@ fn main() {
                 .header("// @ts-nocheck"),
             "../src/lib/specta-bindings.ts",
         )
-        .expect("Failed to export typescript bindings");
+        .expect("failed to export typescript bindings");
     tauri::Builder::default()
         .plugin(tauri_plugin_single_instance::init(|app, _args, _cwd| {
             app.get_webview_window("main")
@@ -134,11 +135,35 @@ fn main() {
         .plugin(tauri_plugin_http::init())
         .plugin(tauri_plugin_opener::init())
         .invoke_handler(builder.invoke_handler())
+        .invoke_handler(tauri::generate_handler![
+            torrent_downloader::get_current_torrent_configuration,
+            torrent_downloader::apply_torrent_configuration,
+            torrent_downloader::start_torrent,
+            torrent_downloader::pause_torrent,
+            torrent_downloader::forget_torrent,
+            torrent_downloader::delete_torrent,
+            torrent_downloader::get_torrent_details,
+            torrent_downloader::get_torrent_session_stats,
+            torrent_downloader::get_torrent_statistics,
+            torrent_downloader::add_torrent_from_url,
+            torrent_downloader::configure_torrent_files,
+            torrent_downloader::list_torrents,
+            torrent_downloader::get_default_torrent_configuration,
+        ])
         .setup(move |app| {
             builder.mount_events(app);
             Ok(())
         })
         .manage(Mutex::new(AppState::default()))
+        .manage(AppTorrentingState::new().await)
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
+}
+
+fn main() {
+    tokio::runtime::Builder::new_multi_thread()
+        .enable_all()
+        .build()
+        .expect("couldn't set up tokio runtime")
+        .block_on(start())
 }
