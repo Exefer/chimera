@@ -1,66 +1,50 @@
-import type {
-  AddTorrentOptions,
-  AddTorrentResponse,
-  ListTorrentsResponse,
-  SessionStats,
-  TorrentAPI,
-  TorrentAPIConfig,
-  TorrentDetails,
-  TorrentStats,
-} from "@/types/raw-bindings.types";
+import type { TorrentAPI } from "@/types/raw-bindings.types";
 import { invoke } from "@tauri-apps/api/core";
 
 export const TorrentApi: TorrentAPI = {
-  getDefaultTorrentConfig: () => {
+  getDefaultConfiguration: () => {
     return invoke("get_default_torrent_configuration");
   },
-  getPlaylistUrl: (index: number): string | null => {
+  getPlaylistUrl: index => {
     throw new Error("Function not implemented.");
   },
-  getStreamLogsUrl: (): string | null => {
+  getStreamLogsUrl: () => {
     throw new Error("Function not implemented.");
   },
-  listTorrents: (): Promise<ListTorrentsResponse> => {
+  listTorrents: () => {
     throw new Error("Function not implemented.");
   },
-  getTorrentDetails: (index: number): Promise<TorrentDetails> => {
+  getTorrentDetails: index => {
     throw new Error("Function not implemented.");
   },
-  getTorrentStats: (index: number): Promise<TorrentStats> => {
+  getTorrentStats: index => {
     throw new Error("Function not implemented.");
   },
-  getTorrentStreamUrl: (
-    index: number,
-    file_id: number,
-    filename?: string | null
-  ): string | null => {
+  getTorrentStreamUrl: (index, file_id, filename) => {
     throw new Error("Function not implemented.");
   },
-  addTorrentFromUrl: (
-    url: string,
-    opts?: AddTorrentOptions
-  ): Promise<AddTorrentResponse> => {
+  addTorrentFromUrl: (url, opts) => {
     return invoke("add_torrent_from_url", { url, opts });
   },
-  pause: (index: number): Promise<void> => {
+  pause: index => {
     throw new Error("Function not implemented.");
   },
-  updateOnlyFiles: (index: number, files: number[]): Promise<void> => {
+  updateOnlyFiles: (index, files) => {
     throw new Error("Function not implemented.");
   },
-  start: (index: number): Promise<void> => {
+  start: index => {
     throw new Error("Function not implemented.");
   },
-  forget: (index: number): Promise<void> => {
+  forget: index => {
     throw new Error("Function not implemented.");
   },
-  delete: (index: number): Promise<void> => {
+  delete: index => {
     throw new Error("Function not implemented.");
   },
-  stats: (): Promise<SessionStats> => {
+  stats: () => {
     return invoke("get_torrent_session_stats");
   },
-  applyTorrentConfig: (config: TorrentAPIConfig): Promise<void> => {
+  applyConfiguration: config => {
     return invoke("apply_torrent_configuration", { config });
   },
 };

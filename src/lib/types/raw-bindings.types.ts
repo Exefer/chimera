@@ -187,7 +187,7 @@ export interface JSONLogLine {
 }
 
 export interface TorrentAPI {
-  getDefaultTorrentConfig: () => Promise<TorrentAPIConfig>;
+  getDefaultConfiguration: () => Promise<TorrentAPIConfig>;
   getPlaylistUrl: (index: number) => string | null;
   getStreamLogsUrl: () => string | null;
   listTorrents: () => Promise<ListTorrentsResponse>;
@@ -208,5 +208,5 @@ export interface TorrentAPI {
   forget: (index: number) => Promise<void>;
   delete: (index: number) => Promise<void>;
   stats: () => Promise<SessionStats>;
-  applyTorrentConfig: (config: TorrentAPIConfig) => Promise<void>;
+  applyConfiguration: (config: TorrentAPIConfig) => Promise<void>;
 }

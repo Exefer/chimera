@@ -24,7 +24,7 @@
   let selected = $state(tabs[0]);
 
   $effect(() => {
-    TorrentApi.applyTorrentConfig($settings.rqbit);
+    TorrentApi.applyConfiguration($settings.rqbit);
   });
 </script>
 

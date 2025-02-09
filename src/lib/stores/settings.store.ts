@@ -1,13 +1,13 @@
 import { DEFAULT_APP_SETTINGS } from "@/constants/";
+import { TorrentApi } from "@/raw-bindings";
 import * as Types from "@/types";
 import { writable } from "svelte/store";
 import * as Persistent from "./persistent";
-import { TorrentApi } from "@/raw-bindings";
 
 function createSettingsStore() {
   const store = writable<Types.AppSettings>(DEFAULT_APP_SETTINGS);
 
-  TorrentApi.getDefaultTorrentConfig().then(config => {
+  TorrentApi.getDefaultConfiguration().then(config => {
     store.update(state => ({
       ...state,
       rqbit: config,
