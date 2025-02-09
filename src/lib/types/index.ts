@@ -1,5 +1,6 @@
 import type { Downloader } from "@/constants";
 import type { DownloadEvent } from "@/specta-bindings";
+import type { TorrentAPIConfig } from "./raw-bindings.types";
 
 export type AppTheme = "light" | "dark" | "system";
 
@@ -20,6 +21,7 @@ export interface AppSettings {
     minimize_to_tray: boolean;
     disable_nsfw_alert: boolean;
   };
+  rqbit: TorrentAPIConfig;
 }
 
 export interface Source {

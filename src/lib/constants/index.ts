@@ -38,6 +38,40 @@ export const DEFAULT_APP_SETTINGS: Types.AppSettings = {
     minimize_to_tray: false,
     disable_nsfw_alert: false,
   },
+  rqbit: {
+    default_download_location: "",
+    disable_upload: false,
+    http_api: {
+      disable: false,
+      listen_addr: "",
+      read_only: false,
+    },
+    peer_opts: {
+      connect_timeout: 0,
+      read_write_timeout: 0,
+    },
+    dht: {
+      disable: false,
+      disable_persistence: false,
+      persistence_file: "",
+    },
+    tcp_listen: {
+      disable: false,
+      min_port: 0,
+      max_port: 0,
+    },
+    upnp: {
+      disable: false,
+      enable_server: false,
+      server_friendly_name: null,
+    },
+    persistence: {
+      disable: false,
+      fastresume: false,
+      filename: "",
+      folder: "",
+    },
+  },
 };
 
 export const DOWNLOADER_NAME: Record<Downloader, string> = {
