@@ -4,12 +4,17 @@
   import { Input } from "@/components/ui/input";
   import { Label } from "@/components/ui/label";
   import * as Select from "@/components/ui/select";
+  import { TorrentApi } from "@/raw-bindings";
   import { settings } from "@/stores";
   import * as Types from "@/types";
   import { capitalize } from "@/utils";
   import { open as openDialog } from "@tauri-apps/plugin-dialog";
-  import { resetMode, setMode } from "mode-watcher";
   import { locale, locales, t } from "svelte-i18n";
+  import { resetMode, setMode } from "mode-watcher";
+
+  $effect(() => {
+    TorrentApi.applyTorrentConfig($settings.rqbit);
+  });
 </script>
 
 <div class="flex flex-col gap-4">
@@ -30,6 +35,7 @@
           const selected = await openDialog({ multiple: false, directory: true });
           if (!selected) return;
           $settings.general.downloads_path = selected;
+          $settings.rqbit.default_download_location = selected;
         }}>{$t("common.change")}</Button
       >
     </div>

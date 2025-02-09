@@ -3,6 +3,7 @@
   import { t } from "svelte-i18n";
   import Behavior from "./behavior.svelte";
   import General from "./general.svelte";
+  import Rqbit from "./rqbit";
   import Sources from "./sources.svelte";
 
   const tabs = [
@@ -17,6 +18,10 @@
     {
       name: () => $t("settings.sources:title"),
       component: Sources,
+    },
+    {
+      name: () => "Rqbit",
+      component: Rqbit,
     },
   ];
 
