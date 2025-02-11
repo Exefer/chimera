@@ -158,6 +158,9 @@ pub async fn download(
     let content_length = response
         .content_length()
         .ok_or_else(|| Error::HttpClient("Unable to parse content length".to_string()))?;
+    // For resumed downloads, the HTTP response provides only the size of the remaining data
+    // `downloaded_bytes` holds the size of the already saved portion
+    // Adding these gives the total file size, which is needed for accurate progress, ETA, and speed calculations
     let content_length = downloaded_bytes + content_length;
 
     let start_time = Instant::now();
