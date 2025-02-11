@@ -18,7 +18,7 @@
   interface DownloadGroupProps {
     title: string;
     items: Types.Download[];
-    openDeleteDownloadModal(download: Types.Download): void;
+    openDeleteDownloadModal: (download: Types.Download) => void;
   }
 
   let { title, items, openDeleteDownloadModal }: DownloadGroupProps = $props();
