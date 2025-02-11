@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { BYTES_TO_MEGABYTES } from "@/constants/";
   import { downloads } from "@/stores";
+  import { formatBytes } from "@/utils";
   import { getCurrentWindow, ProgressBarStatus } from "@tauri-apps/api/window";
   import { t } from "svelte-i18n";
   import { formatDuration, intervalToDuration } from "date-fns";
@@ -44,7 +44,7 @@
               }),
               { format: ["minutes", "seconds", "hours", "days", "weeks"] }
             ),
-            speed: (currentDownload.download_speed! / BYTES_TO_MEGABYTES).toFixed(1),
+            speed: formatBytes(currentDownload.download_speed!),
           },
         })}
       {:else}

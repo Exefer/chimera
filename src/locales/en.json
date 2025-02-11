@@ -1,7 +1,7 @@
 {
   "bottom_panel": {
     "calculating_eta": "Downloading {title}… ({percentage}% complete) - Calculating remaining time…",
-    "downloading": "Downloading {title}… ({percentage}% complete) - Completion in {eta} - {speed}MB/s",
+    "downloading": "Downloading {title}… ({percentage}% complete) - Completion in {eta} - {speed}/s",
     "no_downloads_in_progress": "No downloads in progress"
   },
   "common": {

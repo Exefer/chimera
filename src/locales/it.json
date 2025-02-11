@@ -1,7 +1,7 @@
 {
   "bottom_panel": {
     "calculating_eta": "Scaricando {title}… ({percentage}% completo) - Calcolando tempo rimanente…",
-    "downloading": "Scaricando {title}… ({percentage}% completo) - Completamento in {eta} - {speed}MB/s",
+    "downloading": "Scaricando {title}… ({percentage}% completo) - Completamento in {eta} - {speed}/s",
     "no_downloads_in_progress": "Nessun download in corso"
   },
   "common": {

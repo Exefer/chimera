@@ -2,8 +2,6 @@ import * as Types from "@/types";
 
 export { CHAR_MAP } from "./char-map";
 
-export const BYTES_TO_MEGABYTES = 1024 * 1024;
-
 export const SEARCH_DEBOUNCE = 250;
 
 export const ITEMS_PER_PAGE = 20;
