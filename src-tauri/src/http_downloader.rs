@@ -78,10 +78,6 @@ pub async fn download(
     let mut dest_path = PathBuf::from(dest_path);
     let headers = parse_headers(headers);
 
-    if let Some(parent) = dest_path.parent() {
-        tokio::fs::create_dir_all(parent).await?;
-    }
-
     let mut downloaded_bytes = if let Some(range) = headers.get("Range") {
         range.to_str().unwrap()[6..range.len() - 1]
             .parse::<u64>()
@@ -167,6 +163,11 @@ pub async fn download(
     // Track the last time we emitted a progress event
     let mut last_progress_emit = Instant::now();
     let session_start_offset = downloaded_bytes;
+
+    if let Some(parent) = dest_path.parent() {
+        tokio::fs::create_dir_all(parent).await?;
+    }
+
     let mut writer = BufWriter::new(
         tokio::fs::OpenOptions::new()
             .create(true)
