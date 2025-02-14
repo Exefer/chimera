@@ -135,6 +135,8 @@ function createDownloadsStore() {
           const index = state.findIndex(download => download.url === data.url);
           state.splice(index, 1, { ...state[index], ...data, status: type, eta: 0 });
 
+          Persistent.downloads.set(state);
+
           return state;
         });
         break;
