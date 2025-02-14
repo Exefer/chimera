@@ -71,7 +71,7 @@
 
   :global(article h2) {
     font-size: 22px;
-    font-weight: 500;
+    font-weight: 800;
     margin: 16px 0 0;
   }
 
