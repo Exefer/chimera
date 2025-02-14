@@ -60,7 +60,7 @@
     "nsfw_content_alert:allow": "Continue",
     "nsfw_content_alert:description": "{title} contains content that may not be suitable for all ages. Are you sure you want to continue?",
     "nsfw_content_alert:refuse": "Go back",
-    "nsfw_content_alert:title": "This game contains innapropriate content",
+    "nsfw_content_alert:title": "This game contains inapropriate content",
     "open_download_options": "Open download options",
     "open_folder": "Open folder",
     "options": "Options",
