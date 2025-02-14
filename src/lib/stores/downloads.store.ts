@@ -29,7 +29,8 @@ function createDownloadsStore() {
     url: string,
     remoteId: string,
     title: string,
-    path: string
+    path: string,
+    callback?: () => void
   ) => {
     const downloader = getDownloaderFromUrl(url);
     url = transformDownloadUrl(url);
@@ -51,6 +52,9 @@ function createDownloadsStore() {
 
             return state;
           });
+
+          if (callback) callback();
+
           listener.then(unlisten => unlisten());
           break;
         }
