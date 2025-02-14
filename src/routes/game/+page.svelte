@@ -37,7 +37,7 @@
       return cached.data;
     }
 
-    const data = await getSteamAppDetails(remoteId);
+    const data = await getSteamAppDetails(remoteId, $settings.general.locale);
 
     if (!data) {
       toast.error($t("common.an_error_occurred"));
