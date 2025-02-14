@@ -1,7 +1,7 @@
 <script lang="ts">
   import { SteamContentDescriptor } from "@/constants";
   import { setGameContext } from "@/context";
-  import { gameDetailsCache } from "@/database";
+  import { db } from "@/database";
   import { getSteamAppDetails } from "@/services/steam";
   import { appsByLetter, downloads, games, settings, sources } from "@/stores";
   import * as Types from "@/types";
@@ -31,7 +31,7 @@
   let hasNSFWContentBlocked = $state(false);
 
   const getGameDetails = async () => {
-    const cached = await gameDetailsCache.where("remoteId").equals(remoteId).first();
+    const cached = await db.gameDetailsCache.where("remoteId").equals(remoteId).first();
 
     if (cached && cached.locale === $settings.general.locale) {
       return cached.data;
@@ -46,7 +46,7 @@
     }
 
     if (cached) {
-      await gameDetailsCache
+      await db.gameDetailsCache
         .where("remoteId")
         .equals(remoteId)
         .modify(entry => {
@@ -54,9 +54,9 @@
           entry.data = data;
         });
     } else {
-      await gameDetailsCache.add({
-        remoteId,
+      await db.gameDetailsCache.add({
         locale: $settings.general.locale,
+        remoteId,
         data,
       });
     }
