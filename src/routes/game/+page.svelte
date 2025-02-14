@@ -10,7 +10,7 @@
   import { page } from "$app/state";
   import { t } from "svelte-i18n";
   import { toast } from "svelte-sonner";
-  import GameDetailsContent from "./game-content.svelte";
+  import GameContent from "./game-content.svelte";
   import {
     DownloadOptionsModal,
     DownloadSettingsModal,
@@ -105,7 +105,7 @@
 </script>
 
 <main>
-  <GameDetailsContent />
+  <GameContent />
 
   <GameOptionsModal bind:open={showGameOptionsModal} />
 
@@ -115,7 +115,7 @@
   />
 
   <DownloadSettingsModal
-    open={selectedPackDownload != null}
+    open={selectedPackDownload !== null}
     {selectedPackDownload}
     onDownloadStarted={() => {
       showDownloadOptionsModal = false;
