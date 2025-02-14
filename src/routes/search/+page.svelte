@@ -28,6 +28,11 @@
     return idxs.map(index => $apps[index]);
   });
   let currentPage = $state<number>(1);
+
+  $effect(() => {
+    searchResults;
+    currentPage = 1;
+  });
 </script>
 
 <main class="p-4">
