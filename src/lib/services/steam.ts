@@ -1,12 +1,13 @@
+import { APP_LANGUAGES } from "@/constants";
+import * as Types from "@/types";
 import * as Steam from "@/types/steam.types";
 import { fetch } from "@tauri-apps/plugin-http";
 import ky from "ky";
 
-// TODO: Localize
-export const getSteamAppDetails = async (remoteId: string) => {
+export const getSteamAppDetails = async (remoteId: string, locale: Types.AppLocale) => {
   const searchParams = new URLSearchParams({
     appids: remoteId,
-    // l: language
+    l: APP_LANGUAGES[locale].name.toLowerCase(),
   });
 
   return ky<Steam.AppDetailsResponse>(
