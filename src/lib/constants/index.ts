@@ -53,5 +53,5 @@ export const DOWNLOADER_NAME: Record<Downloader, string> = {
   [Downloader.PixelDrain]: "PixelDrain",
   [Downloader.RealDebrid]: "Real-Debrid",
   [Downloader.BuzzHeavier]: "BuzzHeavier",
-  [Downloader.Unknown]: "Generic HTTP",
+  [Downloader.Unknown]: "Unknown",
 };
