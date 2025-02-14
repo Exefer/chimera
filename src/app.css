@@ -25,6 +25,7 @@
     --destructive-foreground: 0 0% 98%;
     --ring: 0 0% 3.9%;
     --radius: 0.5rem;
+    --content-height: calc(100vh - calc(73px + 26px));
     --header-background: 0 0% 98%;
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;

@@ -29,7 +29,7 @@
 
 <main
   class={[
-    "flex min-h-[calc(100vh-99px)] p-4",
+    "flex min-h-[var(--content-height)] p-4",
     { "items-center justify-center": $downloads.length === 0 },
   ]}
 >
