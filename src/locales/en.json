@@ -90,11 +90,6 @@
     "search": "Search",
     "search_results": "Search results"
   },
-  "layout": {
-    "closing": "Closing Chimera...",
-    "pausing_download_for": "Pausing download for {title}...",
-    "saving_downloads": "Saving downloads..."
-  },
   "search": {
     "displaying": "{range} of {total}",
     "next_page": "Next",
