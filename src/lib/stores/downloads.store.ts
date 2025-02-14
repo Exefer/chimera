@@ -31,33 +31,25 @@ function createDownloadsStore() {
     title: string,
     path: string
   ) => {
-    const state = get(store);
-    const download = state.find(download => download.url === url);
-    if (download) return;
-
     const downloader = getDownloaderFromUrl(url);
     url = transformDownloadUrl(url);
 
     const listener = events.downloadEvent.listen(({ payload }) => {
       switch (payload.type) {
         case "started": {
-          Promise.all(
-            state.map(async download => await commands.pauseDownload(download.url))
-          ).then(() => {
-            store.update(state => {
-              state.push({
-                ...payload.data,
-                original_url: url,
-                title,
-                downloader,
-                remote_id: remoteId,
-                status: "progress",
-                progress_percentage: 0,
-                downloaded_bytes: 0,
-              });
-
-              return state;
+          store.update(state => {
+            state.push({
+              ...payload.data,
+              original_url: url,
+              title,
+              downloader,
+              remote_id: remoteId,
+              status: "progress",
+              progress_percentage: 0,
+              downloaded_bytes: 0,
             });
+
+            return state;
           });
           listener.then(unlisten => unlisten());
           break;
