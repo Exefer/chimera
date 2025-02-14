@@ -1,6 +1,7 @@
 <script lang="ts">
   import { SteamContentDescriptor } from "@/constants";
   import { setGameContext } from "@/context";
+  import { gameDetailsCache } from "@/database";
   import { getSteamAppDetails } from "@/services/steam";
   import { appsByLetter, downloads, games, settings, sources } from "@/stores";
   import * as Types from "@/types";
@@ -29,13 +30,47 @@
   let showGameOptionsModal = $state(false);
   let hasNSFWContentBlocked = $state(false);
 
+  const getGameDetails = async () => {
+    const cached = await gameDetailsCache.where("remoteId").equals(remoteId).first();
+
+    if (cached && cached.locale === $settings.general.locale) {
+      return cached.data;
+    }
+
+    const data = await getSteamAppDetails(remoteId);
+
+    if (!data) {
+      toast.error($t("common.an_error_occurred"));
+      // Fallback to cached data even if outdated
+      return cached?.data || null;
+    }
+
+    if (cached) {
+      await gameDetailsCache
+        .where("remoteId")
+        .equals(remoteId)
+        .modify(entry => {
+          entry.locale = $settings.general.locale;
+          entry.data = data;
+        });
+    } else {
+      await gameDetailsCache.add({
+        remoteId,
+        locale: $settings.general.locale,
+        data,
+      });
+    }
+
+    return data;
+  };
+
   $effect(() => {
-    getSteamAppDetails(remoteId).then(data => {
-      details = data;
+    getGameDetails().then(async data => {
       hasNSFWContentBlocked =
-        details!.content_descriptors.ids.includes(
+        data!.content_descriptors.ids.includes(
           SteamContentDescriptor.AdultOnlySexualContent
         ) && !$settings.behavior.disable_nsfw_alert;
+      details = data;
     });
 
     return () => {
