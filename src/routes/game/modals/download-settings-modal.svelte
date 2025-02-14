@@ -17,6 +17,7 @@
   interface DownloadSettingsModalProps {
     open: boolean;
     selectedPackDownload: Types.Pack | null;
+    onClose: () => void;
     onDownloadStarted: () => void;
     onDownloadErrored: () => void;
   }
@@ -26,6 +27,7 @@
     selectedPackDownload,
     onDownloadStarted,
     onDownloadErrored,
+    onClose,
   }: DownloadSettingsModalProps = $props();
   const gameContext = getGameContext();
   const { title, remoteId, local, download } = $derived(gameContext);
@@ -33,7 +35,12 @@
   let downloadPath = $state($settings.general.downloads_path);
 </script>
 
-<Dialog.Root {open}>
+<Dialog.Root
+  {open}
+  onOpenChange={open => {
+    if (!open) onClose();
+  }}
+>
   <Dialog.Content>
     <Dialog.Header>
       <Dialog.Title>{$t("game.download_settings")}</Dialog.Title>
@@ -108,8 +115,13 @@
           }
 
           try {
-            await downloads.addDownload(selectedUri!, remoteId, title, downloadPath);
-            onDownloadStarted();
+            await downloads.addDownload(
+              selectedUri!,
+              remoteId,
+              title,
+              downloadPath,
+              onDownloadStarted
+            );
           } catch (e) {
             console.error(e);
             onDownloadErrored();

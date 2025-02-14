@@ -125,6 +125,7 @@
     onDownloadErrored={() => {
       toast.error($t("common.an_error_occurred"));
     }}
+    onClose={() => (selectedPackDownload = null)}
   />
 
   <NsfwAlertModal
