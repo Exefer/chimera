@@ -4,7 +4,7 @@ export { CHAR_MAP } from "./char-map";
 
 export const SEARCH_DEBOUNCE = 250;
 
-export const ITEMS_PER_PAGE = 20;
+export const ITEMS_PER_PAGE = 16;
 
 export const DEFAULT_APP_SETTINGS: Types.AppSettings = {
   general: {
