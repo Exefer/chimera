@@ -1,10 +1,10 @@
 <script lang="ts">
   import * as Pagination from "@ui/pagination";
   import { ITEMS_PER_PAGE } from "@/constants/";
-  import { constructGameUrl } from "@/helpers";
   import { apps, isTyping, search } from "@/stores";
-  import { t } from "svelte-i18n";
+  import { number, t } from "svelte-i18n";
   import uFuzzy from "@leeoniya/ufuzzy";
+  import SearchResults from "./search-results.svelte";
 
   // See https://github.com/leeoniya/uFuzzy#options
   const uf = new uFuzzy({
@@ -28,6 +28,11 @@
     return idxs.map(index => $apps[index]);
   });
   let currentPage = $state<number>(1);
+  const totalPages = $derived(Math.ceil(searchResults.length / ITEMS_PER_PAGE));
+  const startIndex = $derived((currentPage - 1) * ITEMS_PER_PAGE);
+  const endIndex = $derived(
+    currentPage === totalPages ? searchResults.length : startIndex + ITEMS_PER_PAGE
+  );
 
   $effect(() => {
     searchResults;
@@ -35,19 +40,12 @@
   });
 </script>
 
-<main class="p-4">
-  {#if searchResults && searchResults.length > 0 && !$isTyping}
-    {@const totalPages = Math.ceil(searchResults.length / ITEMS_PER_PAGE)}
-    {@const startIndex = (currentPage - 1) * ITEMS_PER_PAGE}
-    {@const end =
-      currentPage === totalPages ? searchResults.length : startIndex + ITEMS_PER_PAGE}
-    <div class="flex flex-col">
-      {#each searchResults.slice(startIndex, end) as item}
-        <a href={constructGameUrl(item.id, item.name)}>
-          {item.name}
-        </a>
-      {/each}
-    </div>
+<main class="p-4 flex flex-col items-center justify-between h-[var(--content-height)]">
+  {#if $isTyping}
+    <p class="text-muted-foreground">{$t("search.typing")}</p>
+  {:else if searchResults?.length > 0}
+    <SearchResults results={searchResults.slice(startIndex, endIndex)} />
+
     <Pagination.Root
       count={searchResults.length}
       perPage={ITEMS_PER_PAGE}
@@ -57,8 +55,8 @@
         <p>
           {$t("search.displaying", {
             values: {
-              range: `${startIndex === 0 ? 1 : startIndex}-${end}`,
-              total: searchResults.length,
+              range: `${startIndex === 0 ? 1 : $number(startIndex)}-${$number(endIndex)}`,
+              total: $number(searchResults.length),
             },
           })}
         </p>
@@ -85,11 +83,7 @@
         </Pagination.Content>
       {/snippet}
     </Pagination.Root>
-  {:else if searchResults.length === 0 && !$isTyping}
-    <div class="flex h-full flex-col items-center justify-center gap-4">
-      <p class="text-muted-foreground">{$t("search.no_results")}</p>
-    </div>
-  {:else if $isTyping}
-    {$t("search.typing")}
+  {:else}
+    <p class="text-muted-foreground">{$t("search.no_results")}</p>
   {/if}
 </main>
