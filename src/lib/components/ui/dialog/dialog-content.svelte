@@ -3,7 +3,7 @@
   import type { Snippet } from "svelte";
   import X from "lucide-svelte/icons/x";
   import { Dialog as DialogPrimitive, type WithoutChildrenOrChild } from "bits-ui";
-  import * as Dialog from "./index.js";
+  import * as Dialog from "./";
 
   let {
     ref = $bindable(null),

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Button } from "@/components/ui/button";
+  import { Button } from "@ui/button";
   import { t } from "svelte-i18n";
   import Behavior from "./settings-behavior.svelte";
   import General from "./settings-general.svelte";

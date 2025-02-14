@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { buttonVariants } from "@/components/ui/button";
-  import * as Dialog from "@/components/ui/dialog";
-  import { Separator } from "@/components/ui/separator";
+  import { buttonVariants } from "@ui/button";
+  import * as Dialog from "@ui/dialog";
+  import { Separator } from "@ui/separator";
   import { t } from "svelte-i18n";
 
   interface DeleteDownloadModalProps {

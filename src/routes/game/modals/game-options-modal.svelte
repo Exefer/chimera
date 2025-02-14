@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { Button, buttonVariants } from "@/components/ui/button";
-  import * as Dialog from "@/components/ui/dialog";
-  import { Input } from "@/components/ui/input";
-  import { Separator } from "@/components/ui/separator";
+  import { Button, buttonVariants } from "@ui/button";
+  import * as Dialog from "@ui/dialog";
+  import { Input } from "@ui/input";
+  import { Separator } from "@ui/separator";
   import { getGameContext } from "@/context";
   import { commands } from "@/specta-bindings";
   import { games } from "@/stores";

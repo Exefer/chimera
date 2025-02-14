@@ -7,11 +7,11 @@
 </script>
 
 <script lang="ts">
-  import { Button, buttonVariants } from "@/components/ui/button";
-  import * as Dialog from "@/components/ui/dialog";
-  import * as Form from "@/components/ui/form";
-  import { Input } from "@/components/ui/input";
-  import { Separator } from "@/components/ui/separator";
+  import { Button, buttonVariants } from "@ui/button";
+  import * as Dialog from "@ui/dialog";
+  import * as Form from "@ui/form";
+  import { Input } from "@ui/input";
+  import { Separator } from "@ui/separator";
   import { sources } from "@/stores";
   import * as Types from "@/types";
   import { t } from "svelte-i18n";

@@ -1,8 +1,8 @@
 <script lang="ts">
+  import * as Sidebar from "@ui/sidebar";
   import AppSidebar from "@/components/app-sidebar.svelte";
   import BottomPanel from "@/components/bottom-panel.svelte";
   import Header from "@/components/header.svelte";
-  import * as Sidebar from "@/components/ui/sidebar";
   import { events } from "@/specta-bindings";
   import { apps, appsByLetter, games, settings } from "@/stores";
   import { formatTitle } from "@/utils";

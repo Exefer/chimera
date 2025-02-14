@@ -1,5 +1,5 @@
 <script lang="ts">
-  import * as Sidebar from "@/components/ui/sidebar";
+  import * as Sidebar from "@ui/sidebar";
   import { constructGameUrl } from "@/helpers";
   import { games } from "@/stores";
   import { page } from "$app/state";

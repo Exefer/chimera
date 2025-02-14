@@ -1,7 +1,7 @@
 <script lang="ts">
-  import Button from "@/components/ui/button/button.svelte";
-  import * as Dialog from "@/components/ui/dialog";
-  import { Separator } from "@/components/ui/separator";
+  import Button from "@ui/button/button.svelte";
+  import * as Dialog from "@ui/dialog";
+  import { Separator } from "@ui/separator";
   import { getGameContext } from "@/context";
   import { t } from "svelte-i18n";
 

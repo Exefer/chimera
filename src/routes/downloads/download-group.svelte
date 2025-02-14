@@ -1,6 +1,6 @@
 <script lang="ts">
+  import * as DropdownMenu from "@ui/dropdown-menu";
   import Badge from "@/components/badge.svelte";
-  import * as DropdownMenu from "@/components/ui/dropdown-menu";
   import { DOWNLOADER_NAME } from "@/constants";
   import { constructGameUrl } from "@/helpers";
   import { steamImageBuilder } from "@/services/steam";

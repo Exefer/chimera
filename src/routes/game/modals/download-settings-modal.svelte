@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { Button } from "@/components/ui/button";
-  import * as Dialog from "@/components/ui/dialog";
-  import { Input } from "@/components/ui/input";
-  import { Separator } from "@/components/ui/separator";
+  import { Button } from "@ui/button";
+  import * as Dialog from "@ui/dialog";
+  import { Input } from "@ui/input";
+  import { Separator } from "@ui/separator";
   import { Downloader, DOWNLOADER_NAME } from "@/constants/";
   import { getGameContext } from "@/context";
   import { steamImageBuilder } from "@/services/steam";

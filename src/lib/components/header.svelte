@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Input } from "@/components/ui/input";
+  import { Input } from "@ui/input";
   import { SEARCH_DEBOUNCE } from "@/constants/";
   import { isTyping, search } from "@/stores";
   import { beforeNavigate, goto } from "$app/navigation";

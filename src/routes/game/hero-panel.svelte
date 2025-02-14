@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { Button } from "@/components/ui/button";
-  import { Separator } from "@/components/ui/separator";
+  import { Button } from "@ui/button";
+  import { Separator } from "@ui/separator";
   import { getGameContext } from "@/context";
   import { steamImageBuilder } from "@/services/steam";
   import { commands } from "@/specta-bindings";

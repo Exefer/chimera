@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { buttonVariants } from "@/components/ui/button/index.js";
+  import { buttonVariants } from "@ui/button";
   import { cn } from "@/utils";
   import { t } from "svelte-i18n";
   import ChevronRight from "lucide-svelte/icons/chevron-right";

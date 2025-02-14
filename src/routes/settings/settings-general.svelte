@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { Button } from "@/components/ui/button";
-  import { Checkbox } from "@/components/ui/checkbox";
-  import { Input } from "@/components/ui/input";
-  import { Label } from "@/components/ui/label";
-  import * as Select from "@/components/ui/select";
+  import { Button } from "@ui/button";
+  import { Checkbox } from "@ui/checkbox";
+  import { Input } from "@ui/input";
+  import { Label } from "@ui/label";
+  import * as Select from "@ui/select";
   import { APP_LANGUAGES } from "@/constants";
   import { settings } from "@/stores";
   import * as Types from "@/types";

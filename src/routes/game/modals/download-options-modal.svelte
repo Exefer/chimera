@@ -1,8 +1,8 @@
 <script lang="ts">
+  import * as Dialog from "@ui/dialog";
+  import { Input } from "@ui/input";
+  import { Separator } from "@ui/separator";
   import Badge from "@/components/badge.svelte";
-  import * as Dialog from "@/components/ui/dialog";
-  import { Input } from "@/components/ui/input";
-  import { Separator } from "@/components/ui/separator";
   import { getGameContext } from "@/context";
   import * as Types from "@/types";
   import { t } from "svelte-i18n";

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import * as Accordion from "@/components/ui/accordion";
+  import * as Accordion from "@ui/accordion";
   import { getGameContext } from "@/context";
   import * as Steam from "@/types/steam.types";
   import { t } from "svelte-i18n";
