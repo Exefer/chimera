@@ -51,7 +51,6 @@ See [CONTRIBUTING.md](CONTRIBUTING.md)
 - [ ] Torrent downloads
 - [ ] Game launch arguments
 - [ ] Improve game details load times with caching
-- [ ] Reduce NSFW content blurring time
 - [ ] Use [Dexie(IndexedDB)](https://dexie.org/) instead of Svelte stores
 
 ### Implemented
@@ -59,6 +58,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md)
 - [x] Direct downloads
 - [x] Desktop shortcut creation
 - [x] Pausing and resuming downloads
+- [x] Reduce NSFW content blurring time
 
 ### Planned
 
