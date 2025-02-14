@@ -27,6 +27,7 @@
     "@trivago/prettier-plugin-sort-imports"
   ],
   "importOrder": [
+    "^@ui/(.*)$",
     "^@/(.*)$",
     "^@tauri-apps/(.*)$",
     "^\\$app(.*)$",

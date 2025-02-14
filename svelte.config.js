@@ -11,6 +11,7 @@ const config = {
     adapter: adapter(),
     alias: {
       "@": "./src/lib",
+      "@ui": "./src/lib/components/ui",
     },
   },
   vitePlugin: {
