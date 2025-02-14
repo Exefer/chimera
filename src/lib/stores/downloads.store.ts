@@ -10,16 +10,15 @@ import * as Persistent from "./persistent";
 
 function createDownloadsStore() {
   const store = writable<Types.Download[]>([]);
-  Persistent.downloads.get().then(downloads => {
+  Persistent.downloads.get().then(async downloads => {
     if (!downloads) return;
-    downloads.forEach(async (download, index) => {
-      const result = await commands.exists(download.path!);
-      if (result.status === "ok") return;
-
-      downloads.splice(index, 1);
-    });
-
-    store.set(downloads);
+    const existentDownloads = await Promise.all(
+      downloads.map(async download => {
+        const result = await commands.exists(download.path!);
+        return result.status === "ok" ? download : null;
+      })
+    ).then(downloads => downloads.filter(download => download !== null));
+    store.set(existentDownloads);
   });
 
   /**
