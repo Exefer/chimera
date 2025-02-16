@@ -39,9 +39,7 @@
   onMount(() => {
     getCatalogue(currentCatalogueCategory);
 
-    const interval = setInterval(() => {
-      nextFeaturedGame();
-    }, AUTOPLAY_DELAY);
+    const interval = setInterval(nextFeaturedGame, AUTOPLAY_DELAY);
 
     return () => clearInterval(interval);
   });
