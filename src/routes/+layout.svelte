@@ -16,25 +16,11 @@
 
   let { children } = $props();
 
-  $effect.pre(() => {
-    register("en", () => import("../locales/en.json"));
-    register("it", () => import("../locales/it.json"));
-
-    init({
-      fallbackLocale: "en",
-      initialLocale: $settings.general.locale,
-      ignoreTag: false,
-    });
-
-    untrack(() => locale.set($settings.general.locale));
-  });
+  const STEAM_GAMES_URL =
+    "https://raw.githubusercontent.com/hydralauncher/hydra/refs/heads/main/seeds/steam-games.json";
 
   onMount(() => {
-    ky<Array<{ name: string; id: number; clientIcon: string }>>(
-      atob(
-        "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL2h5ZHJhbGF1bmNoZXIvaHlkcmEvcmVmcy9oZWFkcy9tYWluL3NlZWRzL3N0ZWFtLWdhbWVzLmpzb24"
-      )
-    )
+    ky<Array<{ name: string; id: number; clientIcon: string }>>(STEAM_GAMES_URL)
       .then(response => response.json())
       .then(data =>
         data.map(app => ({
@@ -78,6 +64,19 @@
         }
       }
     });
+  });
+
+  $effect.pre(() => {
+    register("en", () => import("../locales/en.json"));
+    register("it", () => import("../locales/it.json"));
+
+    init({
+      fallbackLocale: "en",
+      initialLocale: $settings.general.locale,
+      ignoreTag: false,
+    });
+
+    untrack(() => locale.set($settings.general.locale));
   });
 </script>
 
