@@ -42,7 +42,6 @@
     class: className,
     variant = "default",
     position,
-
     children,
     ...restProps
   }: BadgeProps = $props();
