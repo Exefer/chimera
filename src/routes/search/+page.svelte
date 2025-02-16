@@ -40,7 +40,7 @@
   });
 </script>
 
-<main class="p-4 flex flex-col items-center justify-between h-[var(--content-height)]">
+<main class="flex h-[var(--content-height)] flex-col items-center justify-between p-4">
   {#if $isTyping}
     <p class="text-muted-foreground">{$t("search.typing")}</p>
   {:else if searchResults?.length > 0}
