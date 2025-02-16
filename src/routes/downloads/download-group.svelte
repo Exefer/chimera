@@ -12,8 +12,8 @@
   import CirclePlay from "lucide-svelte/icons/circle-play";
   import CircleX from "lucide-svelte/icons/circle-x";
   import DownloadIcon from "lucide-svelte/icons/download";
-  import Menu from "lucide-svelte/icons/menu";
-  import Pause from "lucide-svelte/icons/pause";
+  import MenuIcon from "lucide-svelte/icons/menu";
+  import PauseIcon from "lucide-svelte/icons/pause";
 
   interface DownloadGroupProps {
     title: string;
@@ -22,6 +22,52 @@
   }
 
   let { title, items, openDeleteDownloadModal }: DownloadGroupProps = $props();
+
+  const getDownloadActions = (download: Types.Download) => {
+    switch (download.status) {
+      case "paused":
+        return [
+          {
+            label: $t("downloads.resume"),
+            onClick: () => downloads.resumeDownload(download.url),
+            icon: CirclePlay,
+          },
+          {
+            label: $t("downloads.abort"),
+            onClick: () => downloads.abortDownload(download.url),
+            icon: CircleX,
+          },
+        ];
+      case "progress":
+        return [
+          {
+            label: $t("downloads.pause"),
+            onClick: () => downloads.pauseDownload(download.url),
+            icon: PauseIcon,
+          },
+          {
+            label: $t("downloads.abort"),
+            onClick: () => downloads.abortDownload(download.url),
+            icon: CircleX,
+          },
+        ];
+      case "completed":
+        return [
+          {
+            label: $t("downloads.install"),
+            onClick: () => toast.info($t("common.not_implemented")),
+            icon: DownloadIcon,
+          },
+          {
+            label: $t("downloads.remove_installer"),
+            onClick: () => openDeleteDownloadModal(download),
+            icon: CircleX,
+          },
+        ];
+      default:
+        return [];
+    }
+  };
 </script>
 
 {#if items.length > 0}
@@ -71,45 +117,16 @@
           </div>
           <DropdownMenu.Root>
             <DropdownMenu.Trigger
-              class="absolute right-3 top-3 rounded-full p-1.5 transition-colors hover:bg-muted"
-              ><Menu /></DropdownMenu.Trigger
+              class="absolute right-3 top-3 rounded-full p-1.5 transition-colors hover:bg-muted disabled:text-muted-foreground"
+              ><MenuIcon /></DropdownMenu.Trigger
             >
             <DropdownMenu.Content side="bottom" align="end">
-              <DropdownMenu.Item
-                onclick={() => {
-                  if (download.status === "paused") {
-                    downloads.resumeDownload(download.url);
-                  } else if (download.status === "progress") {
-                    downloads.pauseDownload(download.url);
-                  } else {
-                    toast.info($t("common.not_implemented"));
-                  }
-                }}
-              >
-                {#if download.status === "paused"}
-                  <CirclePlay /> {$t("downloads.resume")}
-                {:else if download.status === "progress"}
-                  <Pause /> {$t("downloads.pause")}
-                {:else}
-                  <DownloadIcon /> {$t("downloads.install")}
-                {/if}
-              </DropdownMenu.Item>
-              <DropdownMenu.Item
-                onclick={async () => {
-                  if (download.status === "completed") {
-                    openDeleteDownloadModal(download);
-                  } else {
-                    downloads.abortDownload(download.url);
-                  }
-                }}
-              >
-                <CircleX />
-                {#if download.status === "completed"}
-                  <p>{$t("downloads.remove_installer")}</p>
-                {:else}
-                  <p>{$t("downloads.abort")}</p>
-                {/if}
-              </DropdownMenu.Item>
+              {#each getDownloadActions(download) as action}
+                <DropdownMenu.Item onclick={action.onClick}>
+                  <action.icon />
+                  {action.label}
+                </DropdownMenu.Item>
+              {/each}
             </DropdownMenu.Content>
           </DropdownMenu.Root>
         </li>
