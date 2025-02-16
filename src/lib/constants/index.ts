@@ -47,6 +47,12 @@ export enum SteamContentDescriptor {
   GeneralMatureContent = 5,
 }
 
+export enum CatalogueCategory {
+  Hot = "hot",
+  Weekly = "weekly",
+  Achievements = "achievements",
+}
+
 export const DOWNLOADER_NAME: Record<Downloader, string> = {
   [Downloader.Torrent]: "Torrent",
   [Downloader.Gofile]: "Gofile",

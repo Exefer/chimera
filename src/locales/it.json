@@ -90,6 +90,12 @@
     "search": "Cerca",
     "search_results": "Risultati della ricerca"
   },
+  "home": {
+    "achievements": "🏆 Giochi da completare",
+    "featured": "In primo piano",
+    "hot": "🔥 Di tendenza",
+    "weekly": "📅 Giochi della settimana"
+  },
   "search": {
     "displaying": "{range} di {total}",
     "next_page": "Successivo",

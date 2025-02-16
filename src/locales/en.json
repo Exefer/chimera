@@ -90,6 +90,12 @@
     "search": "Search",
     "search_results": "Search results"
   },
+  "home": {
+    "achievements": "🏆 Games to beat",
+    "featured": "Featured",
+    "hot": "🔥 Hot",
+    "weekly": "📅 Top games of the week"
+  },
   "search": {
     "displaying": "{range} of {total}",
     "next_page": "Next",
