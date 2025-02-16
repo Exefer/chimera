@@ -23,17 +23,17 @@
   ],
   "plugins": [
     "prettier-plugin-svelte",
-    "prettier-plugin-tailwindcss",
-    "@trivago/prettier-plugin-sort-imports"
+    "@trivago/prettier-plugin-sort-imports",
+    "prettier-plugin-tailwindcss"
   ],
   "importOrder": [
     "^@ui/(.*)$",
     "^@/(.*)$",
     "^@tauri-apps/(.*)$",
     "^\\$app(.*)$",
-    "^svelte(.*)$",
-    "^lucide-svelte(.*)$",
+    "^svelte(-.*|/.*)?$",
     "<THIRD_PARTY_MODULES>",
+    "^lucide-svelte(.*)$",
     "^[./]"
   ],
   "importOrderSeparation": false,
