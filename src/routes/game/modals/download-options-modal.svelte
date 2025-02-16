@@ -5,7 +5,7 @@
   import Badge from "@/components/badge.svelte";
   import { getGameContext } from "@/context";
   import * as Types from "@/types";
-  import { t } from "svelte-i18n";
+  import { date, t } from "svelte-i18n";
 
   interface DownloadOptionsModalProps {
     open: boolean;
@@ -37,12 +37,12 @@
         >
           <p class="text-wrap text-sm">{pack.title}</p>
           {#if download && pack.uris.find(uri => download!.original_url.startsWith(uri))}
-            <Badge variant="transparent">{$t("game.last_downloaded_option")}</Badge>
+            <div>
+              <Badge variant="transparent">{$t("game.last_downloaded_option")}</Badge>
+            </div>
           {/if}
           <p class="text-xs text-muted-foreground">
-            {pack.fileSize} - {pack.packer} - {new Date(
-              pack.uploadDate
-            ).toLocaleDateString()}
+            {pack.fileSize} - {pack.packer} - {$date(new Date(pack.uploadDate))}
           </p>
         </button>
       {/each}

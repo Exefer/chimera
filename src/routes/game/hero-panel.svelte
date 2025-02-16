@@ -6,7 +6,7 @@
   import { commands } from "@/specta-bindings";
   import { apps, games } from "@/stores";
   import { formatSeconds } from "@/utils";
-  import { t } from "svelte-i18n";
+  import { date, t } from "svelte-i18n";
   import { formatDistanceToNow } from "date-fns";
   import CirclePause from "lucide-svelte/icons/circle-pause";
   import CirclePlay from "lucide-svelte/icons/circle-play";
@@ -27,7 +27,7 @@
       {#if updatedAt}
         <p>
           {$t("game.updated_at", {
-            values: { date: updatedAt.toLocaleDateString() },
+            values: { date: $date(updatedAt) },
           })}
         </p>
       {/if}
