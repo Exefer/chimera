@@ -1,6 +1,5 @@
 <script lang="ts" module>
   import type { HTMLAttributes } from "svelte/elements";
-  import type { WithElementRef } from "bits-ui";
   import { tv, type VariantProps } from "tailwind-variants";
 
   export const badgeVariants = tv({
@@ -30,10 +29,7 @@
 
   export type BadgeVariant = VariantProps<typeof badgeVariants>["variant"];
   export type BadgePosition = VariantProps<typeof badgeVariants>["position"];
-  export type BadgeProps = WithElementRef<
-    HTMLAttributes<HTMLSpanElement>,
-    HTMLSpanElement
-  > & {
+  export type BadgeProps = HTMLAttributes<HTMLSpanElement> & {
     variant?: BadgeVariant;
     position?: BadgePosition;
   };
@@ -46,16 +42,12 @@
     class: className,
     variant = "default",
     position,
-    ref = $bindable(null),
+
     children,
     ...restProps
   }: BadgeProps = $props();
 </script>
 
-<span
-  bind:this={ref}
-  class={cn(badgeVariants({ variant, position }), className)}
-  {...restProps}
->
+<span class={cn(badgeVariants({ variant, position }), className)} {...restProps}>
   {@render children?.()}
 </span>
