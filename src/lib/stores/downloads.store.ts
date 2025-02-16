@@ -3,6 +3,7 @@ import { GofileApi } from "@/services/hosters/gofile";
 import { commands, events } from "@/specta-bindings";
 import * as Types from "@/types";
 import { getDownloaderFromUrl, transformDownloadUrl } from "@/utils";
+import { exists, remove, stat } from "@tauri-apps/plugin-fs";
 import { t } from "svelte-i18n";
 import { toast } from "svelte-sonner";
 import { get, writable } from "svelte/store";
@@ -10,15 +11,31 @@ import * as Persistent from "./persistent";
 
 function createDownloadsStore() {
   const store = writable<Types.Download[]>([]);
+
   Persistent.downloads.get().then(async downloads => {
     if (!downloads) return;
-    const existentDownloads = await Promise.all(
+
+    const validDownloads = await Promise.all(
       downloads.map(async download => {
-        const result = await commands.exists(download.path!);
-        return result.status === "ok" ? download : null;
+        const downloadExists = await exists(download.path!);
+        return downloadExists ? download : null;
       })
-    ).then(downloads => downloads.filter(download => download !== null));
-    store.set(existentDownloads);
+    )
+      .then(downloads => downloads.filter(download => download !== null))
+      .then(downloads =>
+        Promise.all(
+          downloads.map(async download => {
+            const fileInfo = await stat(download.path!);
+
+            return {
+              ...download,
+              downloaded_bytes: Math.max(fileInfo.size, download.downloaded_bytes!),
+            };
+          })
+        )
+      );
+    Persistent.downloads.set(validDownloads);
+    store.set(validDownloads);
   });
 
   /**
@@ -196,6 +213,7 @@ function createDownloadsStore() {
     url = transformDownloadUrl(url);
     const download = get(store).find(download => download.url === url);
     if (!download) return;
+
     const rangeHeader: [string, string] = [
       "Range",
       `bytes=${download.downloaded_bytes}-`,
@@ -233,9 +251,10 @@ function createDownloadsStore() {
     const download = get(store).find(download => download.url === url);
     if (!download) return;
 
-    const result = await commands.exists(download.path!);
-    if (result.status === "ok") {
-      await commands.deleteFile(download.path!);
+    const downloadExists = await exists(download.path!);
+
+    if (downloadExists) {
+      await remove(download.path!);
     }
 
     store.update(state => {

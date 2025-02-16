@@ -3,7 +3,6 @@
 //! Chimera - A game launcher built with Tauri
 //!
 //! This is the main entry point for the Tauri application.
-mod commands;
 mod exec_handler;
 mod http_downloader;
 use tauri::Manager;
@@ -104,8 +103,6 @@ fn main() {
             http_downloader::download,
             http_downloader::abort_download,
             http_downloader::pause_download,
-            commands::fs::delete_file,
-            commands::fs::exists,
         ])
         .events(tauri_specta::collect_events![
             http_downloader::DownloadEvent,
@@ -132,6 +129,7 @@ fn main() {
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_http::init())
         .plugin(tauri_plugin_opener::init())
+        .plugin(tauri_plugin_fs::init())
         .invoke_handler(builder.invoke_handler())
         .setup(move |app| {
             builder.mount_events(app);
