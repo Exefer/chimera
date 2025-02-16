@@ -66,6 +66,8 @@ function createDownloadsStore() {
               downloaded_bytes: 0,
             });
 
+            Persistent.downloads.set(state);
+
             return state;
           });
 
