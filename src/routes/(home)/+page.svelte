@@ -37,9 +37,7 @@
 
   const AUTOPLAY_DELAY = 30 * 1000;
   onMount(() => {
-    getCatalogue(currentCatalogueCategory).then(() => {
-      nextFeaturedGame();
-    });
+    getCatalogue(currentCatalogueCategory);
 
     const interval = setInterval(() => {
       nextFeaturedGame();
