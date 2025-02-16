@@ -9,7 +9,7 @@
   import * as Types from "@/types";
   import { capitalize } from "@/utils";
   import { open as openDialog } from "@tauri-apps/plugin-dialog";
-  import { locale, locales, t } from "svelte-i18n";
+  import { locale, t } from "svelte-i18n";
   import { resetMode, setMode } from "mode-watcher";
 </script>
 
