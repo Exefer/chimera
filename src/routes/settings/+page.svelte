@@ -27,16 +27,18 @@
   <div
     class="flex h-fit flex-col gap-4 rounded-lg border p-6 shadow-sm dark:bg-background"
   >
-    <div class="flex gap-2">
+    <ul class="flex gap-2">
       {#each tabs as tab}
-        <Button
-          variant={tab.name() === selected.name() ? "default" : "outline"}
-          onclick={() => {
-            selected = tab;
-          }}>{tab.name()}</Button
-        >
+        <li>
+          <Button
+            variant={tab.name() === selected.name() ? "default" : "outline"}
+            onclick={() => {
+              selected = tab;
+            }}>{tab.name()}</Button
+          >
+        </li>
       {/each}
-    </div>
+    </ul>
     <selected.component />
   </div>
 </main>
