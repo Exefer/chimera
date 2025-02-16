@@ -1,8 +1,7 @@
 <script lang="ts">
   import { SteamContentDescriptor } from "@/constants";
   import { setGameContext } from "@/context";
-  import { db } from "@/database";
-  import { getSteamAppDetails } from "@/services/steam";
+  import { getGameDetails } from "@/services/games";
   import { appsByLetter, downloads, games, settings, sources } from "@/stores";
   import * as Types from "@/types";
   import * as Steam from "@/types/steam.types";
@@ -30,42 +29,8 @@
   let showGameOptionsModal = $state(false);
   let hasNSFWContentBlocked = $state(false);
 
-  const getGameDetails = async () => {
-    const cached = await db.gameDetailsCache.where("remoteId").equals(remoteId).first();
-
-    if (cached && cached.locale === $settings.general.locale) {
-      return cached.data;
-    }
-
-    const data = await getSteamAppDetails(remoteId, $settings.general.locale);
-
-    if (!data) {
-      toast.error($t("common.an_error_occurred"));
-      // Fallback to cached data even if outdated
-      return cached?.data || null;
-    }
-
-    if (cached) {
-      await db.gameDetailsCache
-        .where("remoteId")
-        .equals(remoteId)
-        .modify(entry => {
-          entry.locale = $settings.general.locale;
-          entry.data = data;
-        });
-    } else {
-      await db.gameDetailsCache.add({
-        locale: $settings.general.locale,
-        remoteId,
-        data,
-      });
-    }
-
-    return data;
-  };
-
   $effect(() => {
-    getGameDetails().then(async data => {
+    getGameDetails(remoteId).then(async data => {
       hasNSFWContentBlocked =
         data!.content_descriptors.ids.includes(
           SteamContentDescriptor.AdultOnlySexualContent
