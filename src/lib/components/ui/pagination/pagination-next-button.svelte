@@ -2,8 +2,8 @@
   import { buttonVariants } from "@ui/button";
   import { cn } from "@/utils";
   import { t } from "svelte-i18n";
-  import ChevronRight from "lucide-svelte/icons/chevron-right";
   import { Pagination as PaginationPrimitive } from "bits-ui";
+  import ChevronRight from "lucide-svelte/icons/chevron-right";
 
   let {
     ref = $bindable(null),
