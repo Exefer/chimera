@@ -158,11 +158,10 @@ pub async fn download(
     // `downloaded_bytes` holds the size of the already saved portion
     // Adding these gives the total file size, which is needed for accurate progress, ETA, and speed calculations
     let content_length = downloaded_bytes + content_length;
+    let session_start_offset = downloaded_bytes;
 
     let start_time = Instant::now();
-    // Track the last time we emitted a progress event
     let mut last_progress_emit = Instant::now();
-    let session_start_offset = downloaded_bytes;
 
     if let Some(parent) = dest_path.parent() {
         tokio::fs::create_dir_all(parent).await?;
