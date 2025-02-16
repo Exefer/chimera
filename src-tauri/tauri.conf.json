@@ -16,7 +16,8 @@
         "width": 1200,
         "height": 720,
         "minWidth": 1024,
-        "minHeight": 540
+        "minHeight": 540,
+        "userAgent": "Chimera"
       }
     ],
     "security": {
