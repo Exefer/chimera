@@ -30,7 +30,7 @@
 <footer
   class="fixed bottom-0 z-50 flex w-full justify-between border-y bg-background px-4 py-1 text-xs text-muted-foreground shadow"
 >
-  <a href="/downloads" class="underline-offset-1 hover:underline">
+  <a class="underline-offset-1 hover:underline" href="/downloads">
     {#if currentDownload && currentDownload.status === "progress"}
       {#if currentDownload.eta}
         {$t("bottom_panel.downloading", {
@@ -42,7 +42,7 @@
                 start: 0,
                 end: currentDownload.eta * 1000,
               }),
-              { format: ["minutes", "seconds", "hours", "days", "weeks"] }
+              { format: ["years", "months", "weeks", "days", "hours", "minutes"] }
             ),
             speed: formatBytes(currentDownload.download_speed!),
           },
