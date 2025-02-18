@@ -40,7 +40,9 @@
   });
 </script>
 
-<main class="flex h-[var(--content-height)] flex-col items-center justify-between p-4">
+<main
+  class="flex h-[var(--content-height)] flex-col items-center justify-between overflow-scroll p-4"
+>
   {#if $isTyping}
     <p class="text-muted-foreground">{$t("search.typing")}</p>
   {:else if searchResults?.length > 0}
@@ -52,7 +54,7 @@
       bind:page={currentPage}
     >
       {#snippet children({ pages, currentPage })}
-        <p>
+        <p class="mt-2">
           {$t("search.displaying", {
             values: {
               range: `${startIndex === 0 ? 1 : $number(startIndex)}-${$number(endIndex)}`,
