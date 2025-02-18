@@ -2,6 +2,7 @@
   import * as Sidebar from "@ui/sidebar";
   import { constructGameUrl } from "@/helpers";
   import { games } from "@/stores";
+  import * as Types from "@/types";
   import { page } from "$app/state";
   import { t } from "svelte-i18n";
   import Book from "lucide-svelte/icons/book";
@@ -39,7 +40,15 @@
   ]);
 
   let search = $state("");
+  const favoriteGames = $derived($games.filter(game => game.favorite));
 </script>
+
+{#snippet library_item(game: Types.Game, props: Record<string, unknown>)}
+  <a href={constructGameUrl(game.remote_id, game.title)} {...props}>
+    <img src={game.icon_url} width="20" alt={game.title} class="rounded-md" />
+    <span class={[game.executable_path && "font-bold"]}>{game.title}</span>
+  </a>
+{/snippet}
 
 <Sidebar.Root>
   <Sidebar.Content>
@@ -63,6 +72,24 @@
         </Sidebar.Menu>
       </Sidebar.GroupContent>
     </Sidebar.Group>
+    {#if favoriteGames.length > 0}
+      <Sidebar.Group>
+        <Sidebar.GroupLabel>{$t("sidebar.favorites")}</Sidebar.GroupLabel>
+        <Sidebar.GroupContent>
+          <Sidebar.Menu>
+            {#each favoriteGames.toSorted( (a, b) => a.title.localeCompare(b.title) ) as game (game.title)}
+              <Sidebar.MenuItem>
+                <Sidebar.MenuButton>
+                  {#snippet child({ props })}
+                    {@render library_item(game, props)}
+                  {/snippet}
+                </Sidebar.MenuButton>
+              </Sidebar.MenuItem>
+            {/each}
+          </Sidebar.Menu>
+        </Sidebar.GroupContent>
+      </Sidebar.Group>
+    {/if}
     <Sidebar.Group>
       <Sidebar.GroupLabel>{$t("common.library")}</Sidebar.GroupLabel>
       <Sidebar.GroupContent>
@@ -78,17 +105,7 @@
             <Sidebar.MenuItem>
               <Sidebar.MenuButton>
                 {#snippet child({ props })}
-                  <a href={constructGameUrl(game.remote_id, game.title)} {...props}>
-                    <img
-                      src={game.icon_url}
-                      width="20"
-                      alt={game.title}
-                      class="rounded-md"
-                    />
-                    <span class={{ "font-bold": !!game.executable_path }}
-                      >{game.title}</span
-                    >
-                  </a>
+                  {@render library_item(game, props)}
                 {/snippet}
               </Sidebar.MenuButton>
             </Sidebar.MenuItem>

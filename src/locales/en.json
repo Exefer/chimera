@@ -34,6 +34,7 @@
   },
   "game": {
     "add_to_library": "Add to library",
+    "added_to_favorites": "Game added to favorites",
     "change_default_download_path": "To change the default path, go to the <settings>Settings</settings> page",
     "check_other_versions": "Check out updates or other versions of this game",
     "choose_pack_to_download": "Choose the pack you want to download",
@@ -74,6 +75,7 @@
     "remove_from_library": "Remove from library",
     "remove_from_library:description": "This will remove {title} from your library",
     "remove_from_library_or_files": "Remove this game from your library or it's files",
+    "removed_from_favorites": "Game removed from favorites",
     "see_downloaded_files": "See downloaded files",
     "see_downloaded_files:error": "Failed to see downloaded files",
     "select_executable": "Select",
@@ -143,6 +145,7 @@
     "sources:title": "Sources"
   },
   "sidebar": {
+    "favorites": "Favorites",
     "filter_by_name": "Filter by name"
   }
 }

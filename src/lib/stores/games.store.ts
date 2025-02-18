@@ -26,6 +26,7 @@ function createGamesStore() {
         launch_options: null,
         size: null,
         running: false,
+        favorite: false,
       });
 
       return state;

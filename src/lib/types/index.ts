@@ -51,6 +51,7 @@ export interface Game {
   created_at: number;
   size: number | null;
   running: boolean;
+  favorite: boolean;
 }
 
 type StatusValues = Exclude<

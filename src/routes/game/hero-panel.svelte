@@ -7,11 +7,13 @@
   import { apps, games } from "@/stores";
   import { formatSeconds } from "@/utils";
   import { date, t } from "svelte-i18n";
+  import { toast } from "svelte-sonner";
   import { formatDistanceToNow } from "date-fns";
   import CirclePause from "lucide-svelte/icons/circle-pause";
   import CirclePlay from "lucide-svelte/icons/circle-play";
   import CirclePlus from "lucide-svelte/icons/circle-plus";
   import DownloadIcon from "lucide-svelte/icons/download";
+  import Heart from "lucide-svelte/icons/heart";
   import SettingsIcon from "lucide-svelte/icons/settings";
 
   const gameContext = getGameContext();
@@ -111,6 +113,22 @@
     </Button>
     {#if local}
       <Separator orientation="vertical" />
+      <Button
+        variant="outline"
+        size="icon"
+        onclick={() => {
+          games.updateGame("remote_id", remoteId, game => ({
+            ...game,
+            favorite: !game.favorite,
+          }));
+
+          if (local.favorite) {
+            toast.success($t("game.added_to_favorites"), { id: "favorited_game" });
+          } else {
+            toast.success($t("game.removed_from_favorites"), { id: "favorited_game" });
+          }
+        }}><Heart class={local.favorite ? "fill-foreground" : "fill-none"} /></Button
+      >
     {/if}
     {#if local || packs.length > 0}
       <Button
