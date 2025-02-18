@@ -119,7 +119,7 @@
               selectedUri!,
               remoteId,
               title,
-              downloadPath,
+              downloadPath!,
               onDownloadStarted
             );
           } catch (e) {

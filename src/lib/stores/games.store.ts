@@ -15,18 +15,16 @@ function createGamesStore() {
   /**
    * Adds a game to the store.
    */
-  const addGame = (
-    game: Omit<
-      Types.Game,
-      "created_at" | "playtime_in_seconds" | "last_played_at" | "running"
-    >
-  ) =>
+  const addGame = (game: Pick<Types.Game, "title" | "remote_id" | "icon_url">) =>
     store.update(state => {
       state.push({
         ...game,
         created_at: Date.now(),
         playtime_in_seconds: 0,
-        last_played_at: 0,
+        executable_path: null,
+        last_played_at: null,
+        launch_options: null,
+        size: null,
         running: false,
       });
 

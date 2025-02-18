@@ -8,7 +8,7 @@ export const ITEMS_PER_PAGE = 16;
 
 export const DEFAULT_APP_SETTINGS: Types.AppSettings = {
   general: {
-    downloads_path: "",
+    downloads_path: null,
     theme: "system",
     locale: "en",
     notifications: {

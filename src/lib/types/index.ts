@@ -1,13 +1,13 @@
 import type { AppLocale, Downloader } from "@/constants";
 import type { DownloadEvent } from "@/specta-bindings";
 
-export type { LocaleEntry, AppLocale } from "@/constants";
+export type { AppLocale, LocaleEntry } from "@/constants";
 
 export type AppTheme = "light" | "dark" | "system";
 
 export interface AppSettings {
   general: {
-    downloads_path: string;
+    downloads_path: string | null;
     theme: AppTheme;
     locale: AppLocale;
     notifications: {
@@ -43,13 +43,13 @@ export interface Pack extends SourceDownload {
 export interface Game {
   title: string;
   remote_id: string;
-  executable_path?: string;
-  launch_options?: string;
-  icon_url?: string;
+  executable_path: string | null;
+  launch_options: string | null;
+  icon_url: string | null;
   playtime_in_seconds: number;
-  last_played_at: number;
+  last_played_at: number | null;
   created_at: number;
-  size?: number;
+  size: number | null;
   running: boolean;
 }
 
