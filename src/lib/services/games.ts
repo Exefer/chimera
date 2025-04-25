@@ -1,4 +1,4 @@
-import { db } from "@/database";
+import { gameDetailsCache } from "@/database";
 import { settings } from "@/stores";
 import { t } from "svelte-i18n";
 import { toast } from "svelte-sonner";
@@ -6,7 +6,7 @@ import { get } from "svelte/store";
 import { getSteamAppDetails } from "./steam";
 
 export const getGameDetails = async (remoteId: string) => {
-  const cached = await db.gameDetailsCache.where("remoteId").equals(remoteId).first();
+  const cached = await gameDetailsCache.get(remoteId);
   const currentLocale = get(settings).general.locale;
 
   if (cached && cached.locale === currentLocale) {
@@ -22,15 +22,9 @@ export const getGameDetails = async (remoteId: string) => {
   }
 
   if (cached) {
-    await db.gameDetailsCache
-      .where("remoteId")
-      .equals(remoteId)
-      .modify(entry => {
-        entry.locale = currentLocale;
-        entry.data = data;
-      });
+    await gameDetailsCache.update(remoteId, { locale: currentLocale, data });
   } else {
-    await db.gameDetailsCache.add({
+    await gameDetailsCache.add({
       locale: currentLocale,
       remoteId,
       data,

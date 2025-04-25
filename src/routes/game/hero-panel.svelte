@@ -22,8 +22,8 @@
 
 <div class="sticky top-[72px] flex justify-between border-y bg-background p-4 text-sm">
   <div class="flex flex-col justify-center">
-    {#if !local}
-      {@const [updatedAt] = packs
+    {#if !local && $packs}
+      {@const [updatedAt] = $packs
         .map(pack => new Date(pack.uploadDate))
         .toSorted((a, b) => b.valueOf() - a.valueOf())}
       {#if updatedAt}
@@ -33,10 +33,10 @@
           })}
         </p>
       {/if}
-      {#if packs.length > 0}
+      {#if $packs.length > 0}
         <p>
           {$t("game.count_download_options", {
-            values: { count: packs.length },
+            values: { count: $packs.length },
           })}
         </p>
       {:else}
@@ -76,7 +76,7 @@
     <Button
       variant="outline"
       disabled={local?.running ||
-        (local && packs.length === 0) ||
+        (local && $packs && $packs.length === 0) ||
         (download && download!.status === "progress")}
       onclick={() => {
         if (!local) {
@@ -130,7 +130,7 @@
         }}><Heart class={local.favorite ? "fill-foreground" : "fill-none"} /></Button
       >
     {/if}
-    {#if local || packs.length > 0}
+    {#if local || ($packs && $packs.length > 0)}
       <Button
         variant="outline"
         onclick={() => {

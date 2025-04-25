@@ -22,6 +22,7 @@
       <Input
         type="text"
         name="downloads-path"
+        placeholder={$t("settings.general.no_downloads_path")}
         value={$settings.general.downloads_path}
         readonly
       />

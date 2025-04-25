@@ -1,6 +1,7 @@
 {
   "bottom_panel": {
     "calculating_eta": "Downloading {title}… ({percentage}% complete) - Calculating remaining time…",
+    "count_downloads_in_progress": "{count} downloads in progress",
     "downloading": "Downloading {title}… ({percentage}% complete) - Completion in {eta} - {speed}/s",
     "no_downloads_in_progress": "No downloads in progress"
   },
@@ -116,6 +117,7 @@
     "general": {
       "downloads_path": "Downloads path",
       "language": "Language",
+      "no_downloads_path": "No path selected",
       "notifications": {
         "when_download_complete": "When a download is complete"
       },

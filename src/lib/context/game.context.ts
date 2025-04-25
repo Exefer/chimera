@@ -1,6 +1,8 @@
+import type { PackEntry } from "@/database";
 import * as Types from "@/types";
 import * as Steam from "@/types/steam.types";
 import { getContext, setContext } from "svelte";
+import type { Observable } from "dexie";
 
 export const GameContext = Symbol("GameContext");
 
@@ -8,7 +10,7 @@ interface GameContext {
   title: string;
   remoteId: string;
   local: Types.Game | undefined;
-  packs: Types.Pack[];
+  packs: Observable<PackEntry[]>;
   download: Types.Download | undefined;
   details: Steam.AppDetails | null;
   showDownloadOptionsModal: boolean;

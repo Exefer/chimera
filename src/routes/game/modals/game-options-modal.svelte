@@ -40,7 +40,7 @@
         <Input
           type="text"
           placeholder={$t("game.select_executable:none_selected")}
-          value="{local?.executable_path};"
+          value={local?.executable_path}
           readonly
         />
         <Button
@@ -108,7 +108,7 @@
       <div class="flex gap-2">
         <Button
           variant="outline"
-          disabled={packs.length === 0 || !!download}
+          disabled={($packs && $packs.length === 0) || !!download}
           onclick={() => {
             gameContext.showDownloadOptionsModal = true;
           }}>{$t("game.open_download_options")}</Button

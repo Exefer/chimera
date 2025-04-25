@@ -1,6 +1,7 @@
 {
   "bottom_panel": {
     "calculating_eta": "Scaricando {title}… ({percentage}% completo) - Calcolando tempo rimanente…",
+    "count_downloads_in_progress": "{count} download in corso",
     "downloading": "Scaricando {title}… ({percentage}% completo) - Completamento in {eta} - {speed}/s",
     "no_downloads_in_progress": "Nessun download in corso"
   },
@@ -39,7 +40,7 @@
     "check_other_versions": "Scopri altre versioni o aggiornamenti di questo gioco",
     "choose_pack_to_download": "Scegli un pack da scaricare",
     "clear": "Clear",
-    "count_download_options": "{count} opzioni di download",
+    "count_download_options": "{count} {count, plural, =1 {opzione} other {opzioni}} di download",
     "create_desktop_shortcut": "Crea collegamento al desktop",
     "create_desktop_shortcut:error": "Impossibile creare il collegamento al desktop",
     "create_desktop_shortcut:success": "Collegamento al desktop creato con successo",
@@ -116,6 +117,7 @@
     "general": {
       "downloads_path": "Percorso dei download",
       "language": "Lingua",
+      "no_downloads_path": "Nessun percorso selezionato",
       "notifications": {
         "when_download_complete": "Quando un download è completo"
       },

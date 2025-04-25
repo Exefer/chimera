@@ -1,5 +1,6 @@
 import * as Types from "@/types";
 import { LazyStore } from "@tauri-apps/plugin-store";
+import type { Source } from "./sources.store";
 
 const store = new LazyStore("store.json", { autoSave: true });
 
@@ -18,8 +19,8 @@ export const games = {
 };
 
 export const sources = {
-  get: () => store.get<string[]>("sources") ?? [],
-  set: async (value: string[]) => {
+  get: () => store.get<Source[]>("sources") ?? [],
+  set: async (value: Source[]) => {
     await store.set("sources", value);
   },
 };

@@ -17,17 +17,7 @@
     { "identifier": "fs:allow-remove", "allow": [{ "path": "**/*" }] },
     {
       "identifier": "http:default",
-      "allow": [
-        {
-          "url": "https://store.steampowered.com/api/*"
-        },
-        {
-          "url": "https://api.steampowered.com/ISteamApps/Getapps/v2/"
-        },
-        {
-          "url": "https://hydra-api*/*"
-        }
-      ]
+      "allow": [{ "url": "https://*:*" }]
     }
   ]
 }

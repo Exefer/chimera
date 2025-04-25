@@ -2,8 +2,8 @@
   import { Button } from "@ui/button";
   import { t } from "svelte-i18n";
   import Behavior from "./settings-behavior.svelte";
+  import DownloadSources from "./settings-download-sources.svelte";
   import General from "./settings-general.svelte";
-  import Sources from "./settings-sources.svelte";
 
   const tabs = [
     {
@@ -16,7 +16,7 @@
     },
     {
       name: () => $t("settings.sources:title"),
-      component: Sources,
+      component: DownloadSources,
     },
   ];
 
