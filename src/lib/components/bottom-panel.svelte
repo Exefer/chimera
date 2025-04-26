@@ -60,5 +60,11 @@
     {/if}
   </a>
 
-  <p>Version: {__APP_VERSION__}</p>
+  <p>
+    {$t("bottom_panel.app_version", {
+      values: {
+        version: __APP_VERSION__,
+      },
+    })}
+  </p>
 </footer>

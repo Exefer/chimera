@@ -1,5 +1,6 @@
 {
   "bottom_panel": {
+    "app_version": "Versione: {version}",
     "calculating_eta": "Scaricando {title}… ({percentage}% completo) - Calcolando tempo rimanente…",
     "count_downloads_in_progress": "{count} download in corso",
     "downloading": "Scaricando {title}… ({percentage}% completo) - Completamento in {eta} - {speed}/s",
