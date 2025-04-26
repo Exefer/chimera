@@ -18,7 +18,7 @@
 
   let { open = $bindable(false) }: GameOptionsModalProps = $props();
   const gameContext = getGameContext();
-  const { title, remoteId, local, packs, download } = $derived(gameContext);
+  const { title, remoteId, game, packs, download } = $derived(gameContext);
 </script>
 
 <Dialog.Root bind:open>
@@ -40,7 +40,7 @@
         <Input
           type="text"
           placeholder={$t("game.select_executable:none_selected")}
-          value={local?.executable_path}
+          value={game?.executable_path}
           readonly
         />
         <Button
@@ -64,7 +64,7 @@
           <File />
           {$t("game.select_executable")}
         </Button>
-        {#if local?.executable_path}
+        {#if game?.executable_path}
           <Button
             variant="outline"
             onclick={() => {
@@ -79,16 +79,16 @@
       <div class="flex gap-2">
         <Button
           variant="outline"
-          disabled={!local?.executable_path}
+          disabled={!game?.executable_path}
           onclick={() => {
-            revealItemInDir(local?.executable_path!);
+            revealItemInDir(game?.executable_path!);
           }}>{$t("game.open_folder")}</Button
         >
         <Button
           variant="outline"
-          disabled={!local?.executable_path}
+          disabled={!game?.executable_path}
           onclick={async () => {
-            const result = await commands.createShortcut(local?.executable_path!);
+            const result = await commands.createShortcut(game?.executable_path!);
             if (result.status === "ok") {
               toast.success($t("game.create_desktop_shortcut:success"));
             } else {
@@ -164,7 +164,7 @@
             {#snippet child({ props })}
               <Button
                 variant="destructive"
-                disabled={!local?.executable_path}
+                disabled={!game?.executable_path}
                 onclick={() => {
                   // Should remove files
                 }}

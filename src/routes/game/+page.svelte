@@ -22,7 +22,7 @@
 
   const title = $derived(page.url.searchParams.get("title")!);
   const remoteId = $derived(page.url.searchParams.get("id")!);
-  const local = $derived($games.find(game => game.remote_id === remoteId));
+  const game = $derived($games.find(game => game.remote_id === remoteId));
   const download = $derived($downloads.find(download => download.remote_id === remoteId));
   const packs = $derived.by(() => {
     remoteId;
@@ -48,7 +48,7 @@
       details = null;
     };
   });
-  /* END OF TESTING */
+
   setGameContext({
     get title() {
       return title;
@@ -56,8 +56,8 @@
     get remoteId() {
       return remoteId;
     },
-    get local() {
-      return local;
+    get game() {
+      return game;
     },
     get download() {
       return download;

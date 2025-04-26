@@ -30,7 +30,7 @@
     onClose,
   }: DownloadSettingsModalProps = $props();
   const gameContext = getGameContext();
-  const { title, remoteId, local, download } = $derived(gameContext);
+  const { title, remoteId, game, download } = $derived(gameContext);
   let selectedUri = $derived<string | null>(selectedPackDownload?.uris?.[0] ?? null);
   let downloadPath = $state($settings.general.downloads_path);
 </script>
@@ -99,7 +99,7 @@
       <Button
         disabled={!selectedUri || !downloadPath}
         onclick={async () => {
-          if (!local) {
+          if (!game) {
             games.addGame({
               title,
               remote_id: remoteId,

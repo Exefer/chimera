@@ -17,12 +17,12 @@
   import SettingsIcon from "lucide-svelte/icons/settings";
 
   const gameContext = getGameContext();
-  const { local, packs, title, remoteId, download } = $derived(gameContext);
+  const { game, packs, title, remoteId, download } = $derived(gameContext);
 </script>
 
 <div class="sticky top-[72px] flex justify-between border-y bg-background p-4 text-sm">
   <div class="flex flex-col justify-center">
-    {#if !local && $packs}
+    {#if !game && $packs}
       {@const [updatedAt] = $packs
         .map(pack => new Date(pack.uploadDate))
         .toSorted((a, b) => b.valueOf() - a.valueOf())}
@@ -42,24 +42,24 @@
       {:else}
         <p>{$t("game.no_downloads")}</p>
       {/if}
-    {:else if local?.running}
+    {:else if game?.running}
       <p>{$t("game.playing_now")}</p>
-    {:else if local?.playtime_in_seconds}
+    {:else if game?.playtime_in_seconds}
       <p>
         {$t("game.played_for_time", {
-          values: { time: formatSeconds(local.playtime_in_seconds) },
+          values: { time: formatSeconds(game.playtime_in_seconds) },
         })}
       </p>
-      {#if local.last_played_at && !local.running}
+      {#if game.last_played_at && !game.running}
         <p>
           {$t("game.last_time_played", {
             values: {
-              time: formatDistanceToNow(local.last_played_at, { addSuffix: true }),
+              time: formatDistanceToNow(game.last_played_at, { addSuffix: true }),
             },
           })}
         </p>
       {/if}
-    {:else if !local?.running && !local?.playtime_in_seconds}
+    {:else if !game?.running && !game?.playtime_in_seconds}
       <p>{$t("game.not_played_yet", { values: { title } })}</p>
     {/if}
 
@@ -75,11 +75,11 @@
   <div class="flex gap-4">
     <Button
       variant="outline"
-      disabled={local?.running ||
-        (local && $packs && $packs.length === 0) ||
+      disabled={game?.running ||
+        (game && $packs && $packs.length === 0) ||
         (download && download!.status === "progress")}
       onclick={() => {
-        if (!local) {
+        if (!game) {
           games.addGame({
             title,
             remote_id: remoteId,
@@ -88,30 +88,30 @@
               $apps.find(app => app.id === remoteId)?.clientIcon!
             ),
           });
-        } else if (!local.executable_path) {
+        } else if (!game.executable_path) {
           gameContext.showDownloadOptionsModal = true;
-        } else if (local.executable_path && !local.running) {
-          commands.runExecutable(local.executable_path);
-        } else if (local.running) {
+        } else if (game.executable_path && !game.running) {
+          commands.runExecutable(game.executable_path);
+        } else if (game.running) {
           // Should close
         }
       }}
     >
-      {#if !local}
+      {#if !game}
         <CirclePlus />
         {$t("game.add_to_library")}
-      {:else if local?.running}
+      {:else if game?.running}
         <CirclePause />
         {$t("game.stop")}
-      {:else if local?.executable_path}
+      {:else if game?.executable_path}
         <CirclePlay />
         {$t("game.play")}
-      {:else if !local?.executable_path}
+      {:else if !game?.executable_path}
         <DownloadIcon />
         {$t("game.download")}
       {/if}
     </Button>
-    {#if local}
+    {#if game}
       <Separator orientation="vertical" />
       <Button
         variant="outline"
@@ -122,26 +122,26 @@
             favorite: !game.favorite,
           }));
 
-          if (local.favorite) {
+          if (game.favorite) {
             toast.success($t("game.added_to_favorites"), { id: "favorited_game" });
           } else {
             toast.success($t("game.removed_from_favorites"), { id: "favorited_game" });
           }
-        }}><Heart class={local.favorite ? "fill-foreground" : "fill-none"} /></Button
+        }}><Heart class={game.favorite ? "fill-foreground" : "fill-none"} /></Button
       >
     {/if}
-    {#if local || ($packs && $packs.length > 0)}
+    {#if game || ($packs && $packs.length > 0)}
       <Button
         variant="outline"
         onclick={() => {
-          if (local) {
+          if (game) {
             gameContext.showGameOptionsModal = true;
           } else {
             gameContext.showDownloadOptionsModal = true;
           }
         }}
       >
-        {#if local}
+        {#if game}
           <SettingsIcon />
           {$t("game.options")}
         {:else}

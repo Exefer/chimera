@@ -9,7 +9,7 @@ export const GameContext = Symbol("GameContext");
 interface GameContext {
   title: string;
   remoteId: string;
-  local: Types.Game | undefined;
+  game: Types.Game | undefined;
   packs: Observable<PackEntry[]>;
   download: Types.Download | undefined;
   details: Steam.AppDetails | null;
