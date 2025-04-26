@@ -100,6 +100,10 @@
     "hot": "🔥 Hot",
     "weekly": "📅 Top games of the week"
   },
+  "notifications": {
+    "download_complete:description": "Your game is ready to play",
+    "download_complete:title": "Download complete"
+  },
   "search": {
     "displaying": "{range} of {total}",
     "next_page": "Next",

@@ -1,9 +1,12 @@
+import DownloadCompleteToast from "@/components/toasts/download-complete-toast.svelte";
 import { Downloader, DOWNLOADER_NAME } from "@/constants";
 import { GofileApi } from "@/services/hosters/gofile";
 import { commands, events } from "@/specta-bindings";
+import { games, settings } from "@/stores";
 import * as Types from "@/types";
 import { getDownloaderFromUrl, transformDownloadUrl } from "@/utils";
 import { exists, remove, stat } from "@tauri-apps/plugin-fs";
+import type { ComponentType } from "svelte";
 import { t } from "svelte-i18n";
 import { toast } from "svelte-sonner";
 import { get, writable } from "svelte/store";
@@ -142,6 +145,15 @@ function createDownloadsStore() {
 
           return state;
         });
+
+        if (get(settings).general.notifications.when_download_complete) {
+          const download = get(store).find(download => download.url === data.url);
+          const game = get(games).find(game => game.remote_id === download?.remote_id);
+
+          toast(DownloadCompleteToast as unknown as ComponentType, {
+            componentProps: { title: game?.title, iconUrl: game?.icon_url },
+          });
+        }
         break;
       }
       case "paused": {
