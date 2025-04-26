@@ -1,6 +1,6 @@
 <script lang="ts">
+  import { Button } from "@ui/button";
   import GameCard from "@/components/game-card.svelte";
-  import Button from "@/components/ui/button/button.svelte";
   import { CatalogueCategory } from "@/constants";
   import { HydraApi } from "@/services/hydra";
   import * as Steam from "@/types/steam.types";

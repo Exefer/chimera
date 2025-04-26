@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Button from "@ui/button/button.svelte";
+  import { Button } from "@ui/button";
   import * as Dialog from "@ui/dialog";
   import { Separator } from "@ui/separator";
   import { getGameContext } from "@/context";
