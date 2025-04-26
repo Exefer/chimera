@@ -1,6 +1,9 @@
 import { CHAR_MAP, Downloader } from "@/constants/";
+import { locale } from "svelte-i18n";
+import { get } from "svelte/store";
 import { type ClassValue, clsx } from "clsx";
-import { addSeconds, differenceInHours, differenceInMinutes } from "date-fns";
+import { addSeconds, formatDistanceStrict, type Locale } from "date-fns";
+import { enUS, it } from "date-fns/locale";
 import { twMerge } from "tailwind-merge";
 
 export const cn = (...inputs: ClassValue[]) => twMerge(clsx(inputs));
@@ -87,16 +90,22 @@ export const formatBytes = (size: number) => {
   return `${size.toFixed(1)} ${units[unitIndex]}`;
 };
 
+const localeMap: Record<string, Locale> = {
+  it,
+};
+
+export const getDateFNSLocale = (appLocale: string): Locale => {
+  const shortCode = appLocale.split("-")[0]; // 'en-US' → 'en'
+  return localeMap[shortCode] || enUS;
+};
+
 export const formatSeconds = (seconds: number) => {
   const now = new Date();
   const futureDate = addSeconds(now, seconds);
 
-  const hours = differenceInHours(futureDate, now);
-  const minutes = differenceInMinutes(futureDate, now);
-
-  if (hours > 0) {
-    return `${hours} hour${hours !== 1 ? "s" : ""}`;
-  }
-
-  return `${minutes} minute${minutes !== 1 ? "s" : ""}`;
+  return formatDistanceStrict(now, futureDate, {
+    unit: seconds >= 3600 ? "hour" : "minute",
+    roundingMethod: "floor",
+    locale: getDateFNSLocale(get(locale)!),
+  });
 };
