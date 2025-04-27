@@ -5,7 +5,7 @@
 //! - Pausing/resuming downloads
 //! - Aborting downloads
 //! - Custom headers
-use crate::{AppState, Error};
+use crate::{Error, HttpDownloaderState};
 use futures::StreamExt;
 use serde::{Deserialize, Serialize};
 use specta::Type;
@@ -69,7 +69,7 @@ const DEFAULT_USER_AGENT: &str = "chimera";
 #[tauri::command]
 #[specta::specta]
 pub async fn download(
-    state: State<'_, Mutex<AppState>>,
+    state: State<'_, Mutex<HttpDownloaderState>>,
     app: AppHandle,
     url: &str,
     dest_path: &str,
@@ -102,11 +102,10 @@ pub async fn download(
         .unwrap();
     // This can occur with Gofile when the storage cap of 1000GB is reached
     if response.status() == StatusCode::TOO_MANY_REQUESTS {
-        DownloadEvent::RateLimitExceeded {
+        let _ = DownloadEvent::RateLimitExceeded {
             url: url.to_string(),
         }
-        .emit(&app)
-        .ok();
+        .emit(&app);
         return Err(Error::HttpClient("Too many requests".to_string()));
     }
     // If the content type is text-based (e.g., "text/html"), the request likely failed
@@ -176,13 +175,12 @@ pub async fn download(
     );
     let mut stream = response.bytes_stream();
 
-    DownloadEvent::Started {
+    let _ = DownloadEvent::Started {
         url: url.to_string(),
         path: dest_path.display().to_string(),
         content_length,
     }
-    .emit(&app)
-    .ok();
+    .emit(&app);
 
     while let Some(chunk) = stream.next().await {
         let chunk = chunk?;
@@ -198,11 +196,10 @@ pub async fn download(
                 if abort_download == url {
                     writer.shutdown().await?;
                     tokio::fs::remove_file(dest_path).await?;
-                    DownloadEvent::Aborted {
+                    let _ = DownloadEvent::Aborted {
                         url: url.to_string(),
                     }
-                    .emit(&app)
-                    .ok();
+                    .emit(&app);
                     break;
                 }
             }
@@ -223,15 +220,14 @@ pub async fn download(
             };
             let progress_percentage = downloaded_bytes as f64 / content_length as f64 * 100.0;
 
-            DownloadEvent::Progress {
+            let _ = DownloadEvent::Progress {
                 url: url.to_string(),
                 progress_percentage,
                 downloaded_bytes,
                 download_speed,
                 eta,
             }
-            .emit(&app)
-            .ok();
+            .emit(&app);
 
             // Update last emit time
             last_progress_emit = Instant::now();
@@ -240,11 +236,10 @@ pub async fn download(
             if let Some(pause_download) = &state.pause_download {
                 if pause_download == url {
                     writer.shutdown().await?;
-                    DownloadEvent::Paused {
+                    let _ = DownloadEvent::Paused {
                         url: url.to_string(),
                     }
-                    .emit(&app)
-                    .ok();
+                    .emit(&app);
                     break;
                 }
             }
@@ -254,11 +249,10 @@ pub async fn download(
     let mut state = state.lock().await;
 
     if state.abort_download.is_none() && state.pause_download.is_none() {
-        DownloadEvent::Completed {
+        let _ = DownloadEvent::Completed {
             url: url.to_string(),
         }
-        .emit(&app)
-        .ok();
+        .emit(&app);
     }
     // Reset abort and pause for the next download
     state.abort_download = None;
@@ -269,7 +263,10 @@ pub async fn download(
 
 #[tauri::command]
 #[specta::specta]
-pub async fn abort_download(state: State<'_, Mutex<AppState>>, url: String) -> Result<(), Error> {
+pub async fn abort_download(
+    state: State<'_, Mutex<HttpDownloaderState>>,
+    url: String,
+) -> Result<(), Error> {
     let mut state = state.lock().await;
     state.abort_download = Some(url);
     Ok(())
@@ -277,7 +274,10 @@ pub async fn abort_download(state: State<'_, Mutex<AppState>>, url: String) -> R
 
 #[tauri::command]
 #[specta::specta]
-pub async fn pause_download(state: State<'_, Mutex<AppState>>, url: String) -> Result<(), Error> {
+pub async fn pause_download(
+    state: State<'_, Mutex<HttpDownloaderState>>,
+    url: String,
+) -> Result<(), Error> {
     let mut state = state.lock().await;
     state.pause_download = Some(url);
     Ok(())

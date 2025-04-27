@@ -9,7 +9,7 @@ use tauri::Manager;
 use tokio::sync::Mutex;
 
 #[derive(Default)]
-pub struct AppState {
+pub struct HttpDownloaderState {
     abort_download: Option<String>,
     pause_download: Option<String>,
 }
@@ -120,10 +120,10 @@ fn main() {
         .expect("Failed to export typescript bindings");
     tauri::Builder::default()
         .plugin(tauri_plugin_single_instance::init(|app, _args, _cwd| {
-            app.get_webview_window("main")
-                .expect("no main window")
-                .set_focus()
-                .expect("failed to focus main window");
+            if let Some(window) = app.get_webview_window("main") {
+                let _ = window.show();
+                let _ = window.set_focus();
+            }
         }))
         .plugin(tauri_plugin_store::Builder::new().build())
         .plugin(tauri_plugin_dialog::init())
@@ -133,9 +133,12 @@ fn main() {
         .invoke_handler(builder.invoke_handler())
         .setup(move |app| {
             builder.mount_events(app);
+
+            app.manage(Mutex::new(HttpDownloaderState::default()));
+
             Ok(())
         })
-        .manage(Mutex::new(AppState::default()))
+        .manage(Mutex::new(HttpDownloaderState::default()))
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
