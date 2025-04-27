@@ -94,7 +94,7 @@ const localeMap: Record<string, Locale> = {
   it,
 };
 
-export const getDateFNSLocale = (appLocale: string): Locale => {
+export const getDateFnsLocale = (appLocale: string): Locale => {
   const shortCode = appLocale.split("-")[0]; // 'en-US' → 'en'
   return localeMap[shortCode] || enUS;
 };
@@ -106,6 +106,6 @@ export const formatSeconds = (seconds: number) => {
   return formatDistanceStrict(now, futureDate, {
     unit: seconds >= 3600 ? "hour" : "minute",
     roundingMethod: "floor",
-    locale: getDateFNSLocale(get(locale)!),
+    locale: getDateFnsLocale(get(locale)!),
   });
 };

@@ -30,7 +30,7 @@
 <footer
   class="fixed bottom-0 z-50 flex w-full justify-between border-y bg-background px-4 py-1 text-xs text-muted-foreground shadow"
 >
-  <a class="underline-offset-1 hover:underline" href="/downloads">
+  <a href="/downloads" class="underline-offset-1 hover:underline">
     {#if currentDownload && currentDownload.status === "progress"}
       {#if currentDownload.eta}
         {$t("bottom_panel.downloading", {
