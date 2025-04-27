@@ -95,12 +95,12 @@ function createDownloadsStore() {
       case Downloader.PixelDrain: {
         const id = url.split("/").pop()!;
         const link = `https://cdn.pd5-gamedriveorg.workers.dev/api/file/${id}`;
-        let fileName = title.replace(/\s/g, "-");
+        const fileName = title.replace(/\s/g, "-");
 
         return commands.download(link, `${path}/${fileName}`, null);
       }
       case Downloader.BuzzHeavier: {
-        let fileName = title.replace(/\s/g, "-");
+        const fileName = title.replace(/\s/g, "-");
 
         return commands.download(url, `${path}/${fileName}`, null);
       }
