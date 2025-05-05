@@ -1,24 +1,29 @@
 <script lang="ts" module>
-  import * as Steam from "@/types/steam.types";
+  import type { SteamGame } from "@/types/steam.types";
   import type { HTMLAttributes } from "svelte/elements";
 
   export type GameCardProps = HTMLAttributes<HTMLAnchorElement> & {
-    game: Omit<Steam.App, "clientIcon">;
+    game: Omit<SteamGame, "clientIcon">;
   };
 </script>
 
 <script lang="ts">
+  import { Badge } from "@/components/ui/badge";
   import { constructGameUrl } from "@/helpers";
-  import { usePacks } from "@/hooks/use-packs";
+  import { usePacks } from "@/hooks";
   import { steamImageBuilder } from "@/services/steam";
   import { cn } from "@/utils";
   import { t } from "svelte-i18n";
-  import Badge from "./badge.svelte";
 
   let { class: className, game, ...restProps }: GameCardProps = $props();
 
-  const { getPacksForRemoteId } = usePacks();
-  const packs = getPacksForRemoteId(game.id);
+  const { getPacksForObjectId } = usePacks();
+
+  const packs = getPacksForObjectId(game.id);
+  const packers = Array.from(new Set(packs.map(pack => pack.packer)));
+
+  const firstThreePackers = packers.slice(0, 3);
+  const remainingPackers = packers.length - firstThreePackers.length;
 </script>
 
 <a
@@ -36,21 +41,27 @@
     alt={game.name}
   />
   <div
-    class="absolute top-0 flex size-full items-end pb-2 pl-4 shadow-[inset_0_-40px_60px_20px_rgba(0,0,0,0.95)]"
+    class="absolute top-0 flex size-full items-end pb-2 pl-4 shadow-[inset_0_-35px_60px_15px_rgba(0,0,0,0.95)]"
   >
     <div class="flex flex-col gap-1">
-      <p class="font-bold text-white">{game.name}</p>
+      <p class="font-bold text-primary-foreground dark:text-primary/95">
+        {game.name}
+      </p>
       <ul class="flex flex-wrap gap-1">
-        {#await packs then packs}
-          {@const packers = new Set(packs.map(pack => pack.packer))}
-          {#each packers as packer}
-            <li><Badge>{packer}</Badge></li>
-          {:else}
-            <li class="text-muted-foreground font-semibold text-sm">
-              {$t("game.no_downloads")}
-            </li>
-          {/each}
-        {/await}
+        {#each firstThreePackers as packer}
+          <li>
+            <Badge>{packer}</Badge>
+          </li>
+        {:else}
+          <li class="text-muted-foreground font-semibold text-sm">
+            {$t("game.no_downloads")}
+          </li>
+        {/each}
+        {#if remainingPackers > 0}
+          <li>
+            <Badge>+{remainingPackers}</Badge>
+          </li>
+        {/if}
       </ul>
     </div>
   </div>

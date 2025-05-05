@@ -30,12 +30,12 @@
 </script>
 
 <script lang="ts">
-  import * as Tooltip from "@ui/tooltip";
+  import * as Tooltip from "@/components/ui/tooltip";
   import { cn } from "@/utils";
   import type { ComponentProps, Snippet } from "svelte";
   import type { HTMLAttributes } from "svelte/elements";
   import { mergeProps, type WithElementRef, type WithoutChildrenOrChild } from "bits-ui";
-  import { useSidebar } from "./context.svelte.js";
+  import { useSidebar } from "./context.svelte";
 
   let {
     ref = $bindable(null),

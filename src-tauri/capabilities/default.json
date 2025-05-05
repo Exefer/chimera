@@ -12,12 +12,39 @@
     "opener:default",
     "http:default",
     "fs:default",
-    { "identifier": "fs:allow-stat", "allow": [{ "path": "**/*" }] },
-    { "identifier": "fs:allow-exists", "allow": [{ "path": "**/*" }] },
-    { "identifier": "fs:allow-remove", "allow": [{ "path": "**/*" }] },
+    {
+      "identifier": "fs:allow-stat",
+      "allow": [
+        {
+          "path": "**/*"
+        }
+      ]
+    },
+    {
+      "identifier": "fs:allow-exists",
+      "allow": [
+        {
+          "path": "**/*"
+        }
+      ]
+    },
+    {
+      "identifier": "fs:allow-remove",
+      "allow": [
+        {
+          "path": "**/*"
+        }
+      ]
+    },
     {
       "identifier": "http:default",
-      "allow": [{ "url": "https://*:*" }]
-    }
+      "allow": [
+        {
+          "url": "https://*:*"
+        }
+      ]
+    },
+    "shell:default",
+    "os:default"
   ]
 }

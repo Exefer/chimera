@@ -1,14 +1,13 @@
 <script lang="ts">
-  import * as Sidebar from "@ui/sidebar";
+  import * as Sidebar from "@/components/ui/sidebar";
   import { constructGameUrl } from "@/helpers";
-  import { games } from "@/stores";
-  import * as Types from "@/types";
+  import { library } from "@/stores";
+  import type { Game } from "@/types";
   import { page } from "$app/state";
   import { t } from "svelte-i18n";
   import Book from "lucide-svelte/icons/book";
   import DownloadIcon from "lucide-svelte/icons/download";
   import House from "lucide-svelte/icons/house";
-  import LayoutGrid from "lucide-svelte/icons/layout-grid";
   import SettingsIcon from "lucide-svelte/icons/settings";
 
   const items = $derived([
@@ -28,11 +27,6 @@
       icon: Book,
     },
     {
-      title: $t("common.catalog"),
-      href: "/catalog",
-      icon: LayoutGrid,
-    },
-    {
       title: $t("common.settings"),
       href: "/settings",
       icon: SettingsIcon,
@@ -40,13 +34,14 @@
   ]);
 
   let search = $state("");
-  const favoriteGames = $derived($games.filter(game => game.favorite));
+
+  const favoriteGames = $derived($library.filter(game => game.favorite));
 </script>
 
-{#snippet library_item(game: Types.Game, props: Record<string, unknown>)}
-  <a href={constructGameUrl(game.remote_id, game.title)} {...props}>
-    <img src={game.icon_url} width="20" alt={game.title} class="rounded-md" />
-    <span class={[game.executable_path && "font-bold"]}>{game.title}</span>
+{#snippet library_item(game: Game, props: Record<string, unknown>)}
+  <a href={constructGameUrl(game.objectId, game.title)} {...props}>
+    <img src={game.iconUrl} width="20" alt={game.title} class="rounded-md" />
+    <span class={[game.executablePath && "font-bold"]}>{game.title}</span>
   </a>
 {/snippet}
 
@@ -99,7 +94,7 @@
           bind:value={search}
         />
         <Sidebar.Menu class="mt-2">
-          {#each $games
+          {#each $library
             .filter(game => game.title.toLowerCase().includes(search.toLowerCase()))
             .toSorted((a, b) => a.title.localeCompare(b.title)) as game (game.title)}
             <Sidebar.MenuItem>

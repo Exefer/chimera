@@ -8,7 +8,7 @@
   const [currentDownload] = $derived(
     $downloads
       .filter(download => download.status === "progress")
-      .toSorted((a, b) => b.progress_percentage! - a.progress_percentage!)
+      .toSorted((a, b) => b.progress! - a.progress!)
   );
 
   const window = getCurrentWindow();
@@ -17,7 +17,7 @@
     if (currentDownload && currentDownload.status === "progress") {
       window.setProgressBar({
         status: ProgressBarStatus.Normal,
-        progress: Math.trunc(currentDownload.progress_percentage!),
+        progress: Math.trunc(currentDownload.progress!),
       });
     } else {
       window.setProgressBar({
@@ -36,7 +36,7 @@
         {$t("bottom_panel.downloading", {
           values: {
             title: currentDownload.title,
-            percentage: currentDownload.progress_percentage?.toFixed(1),
+            percentage: currentDownload.progress?.toFixed(1),
             eta: formatDuration(
               intervalToDuration({
                 start: 0,
@@ -44,14 +44,14 @@
               }),
               { format: ["years", "months", "weeks", "days", "hours", "minutes"] }
             ),
-            speed: formatBytes(currentDownload.download_speed!),
+            speed: formatBytes(currentDownload.downloadSpeed!),
           },
         })}
       {:else}
         {$t("bottom_panel.calculating_eta", {
           values: {
             title: currentDownload.title,
-            percentage: currentDownload.progress_percentage?.toFixed(1),
+            percentage: currentDownload.progress?.toFixed(1),
           },
         })}
       {/if}

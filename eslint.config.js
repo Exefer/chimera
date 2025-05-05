@@ -13,14 +13,27 @@ export default ts.config(
   includeIgnoreFile(gitignorePath),
   js.configs.recommended,
   ...ts.configs.recommended,
-  ...svelte.configs.recommended,
+  ...svelte.configs["flat/recommended"],
   prettier,
-  ...svelte.configs.prettier,
+  ...svelte.configs["flat/prettier"],
   {
     languageOptions: {
       globals: { ...globals.browser, ...globals.node },
     },
-    rules: { "no-undef": "off" },
+    rules: {
+      "no-undef": "off",
+      "svelte/require-each-key": "off",
+      "svelte/no-at-html-tags": "off",
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+        },
+      ],
+    },
   },
   {
     files: ["**/*.svelte", "**/*.svelte.ts", "**/*.svelte.js"],
@@ -32,5 +45,17 @@ export default ts.config(
         svelteConfig,
       },
     },
+  },
+  {
+    ignores: [
+      "src-tauri/",
+      "target/",
+      ".github",
+      ".vscode",
+      "**/eslint.config.js",
+      "**/commitlint.config.js",
+      "**/svelte.config.js",
+      "**/specta-bindings.ts",
+    ],
   }
 );

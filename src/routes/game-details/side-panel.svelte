@@ -1,12 +1,13 @@
 <script lang="ts">
-  import * as Accordion from "@ui/accordion";
-  import { getGameContext } from "@/context";
-  import * as Steam from "@/types/steam.types";
+  import * as Accordion from "@/components/ui/accordion";
+  import { getGameDetailsContext } from "@/context";
+  import type { SteamAppDetails } from "@/types/steam.types";
   import { t } from "svelte-i18n";
 
-  const gameContext = getGameContext();
-  const { details } = $derived(gameContext);
-  let selectedRequirement = $state<keyof Steam.AppDetails["pc_requirements"]>("minimum");
+  const gameDetailsContext = getGameDetailsContext();
+  const { details } = $derived(gameDetailsContext);
+
+  let selectedRequirement = $state<keyof SteamAppDetails["pc_requirements"]>("minimum");
 </script>
 
 <Accordion.Root

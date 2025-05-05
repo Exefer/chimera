@@ -1,40 +1,40 @@
 <script lang="ts">
-  import * as DropdownMenu from "@ui/dropdown-menu";
-  import Badge from "@/components/badge.svelte";
+  import { Badge } from "@/components/ui/badge";
+  import * as DropdownMenu from "@/components/ui/dropdown-menu";
   import { DOWNLOADER_NAME } from "@/constants";
+  import type { DownloadEntry } from "@/database";
   import { constructGameUrl } from "@/helpers";
+  import { useDownload } from "@/hooks";
   import { steamImageBuilder } from "@/services/steam";
-  import { downloads } from "@/stores";
-  import * as Types from "@/types";
   import { formatBytes } from "@/utils";
   import { t } from "svelte-i18n";
-  import { toast } from "svelte-sonner";
   import CirclePlay from "lucide-svelte/icons/circle-play";
   import CircleX from "lucide-svelte/icons/circle-x";
-  import DownloadIcon from "lucide-svelte/icons/download";
   import MenuIcon from "lucide-svelte/icons/menu";
   import PauseIcon from "lucide-svelte/icons/pause";
 
   interface DownloadGroupProps {
     title: string;
-    items: Types.Download[];
-    openDeleteDownloadModal: (download: Types.Download) => void;
+    items: DownloadEntry[];
+    openDeleteDownloadModal: (download: DownloadEntry) => void;
   }
 
   let { title, items, openDeleteDownloadModal }: DownloadGroupProps = $props();
 
-  const getDownloadActions = (download: Types.Download) => {
+  const { abortDownload, pauseDownload, resumeDownload } = useDownload();
+
+  const getDownloadActions = (download: DownloadEntry) => {
     switch (download.status) {
       case "paused":
         return [
           {
             label: $t("downloads.resume"),
-            onClick: () => downloads.resumeDownload(download.url),
+            onClick: () => resumeDownload(download.originalUrl),
             icon: CirclePlay,
           },
           {
             label: $t("downloads.abort"),
-            onClick: () => downloads.abortDownload(download.url),
+            onClick: () => abortDownload(download.url),
             icon: CircleX,
           },
         ];
@@ -42,22 +42,22 @@
         return [
           {
             label: $t("downloads.pause"),
-            onClick: () => downloads.pauseDownload(download.url),
+            onClick: () => pauseDownload(download.url),
             icon: PauseIcon,
           },
           {
             label: $t("downloads.abort"),
-            onClick: () => downloads.abortDownload(download.url),
+            onClick: () => abortDownload(download.url),
             icon: CircleX,
           },
         ];
       case "completed":
         return [
-          {
+          /*           {
             label: $t("downloads.install"),
             onClick: () => toast.info($t("common.not_implemented")),
             icon: DownloadIcon,
-          },
+          }, */
           {
             label: $t("downloads.remove_installer"),
             onClick: () => openDeleteDownloadModal(download),
@@ -87,7 +87,7 @@
         <li class="relative flex h-40 flex-row rounded-md border">
           <div class="relative w-[300px]">
             <img
-              src={steamImageBuilder.library(download.remote_id)}
+              src={steamImageBuilder.library(download.objectId)}
               alt={download.title}
               class="size-full rounded-l-md border-r object-fill"
             />
@@ -95,17 +95,17 @@
           </div>
           <div class="flex w-2/3 flex-col justify-center gap-2 p-4">
             <a
-              href={constructGameUrl(download.remote_id, download.title)}
+              href={constructGameUrl(download.objectId, download.title)}
               class="text-lg font-medium hover:underline"
             >
               {download.title}
             </a>
             <div class="text-sm text-muted-foreground">
               {#if download.status === "progress"}
-                <p>{download.progress_percentage?.toFixed(1)}%</p>
+                <p>{download.progress?.toFixed(1)}%</p>
                 <p>
-                  {formatBytes(download.downloaded_bytes!)} / {formatBytes(
-                    download.content_length
+                  {formatBytes(download.downloadedBytes!)} / {formatBytes(
+                    download.fileSize
                   )}
                 </p>
               {:else if download.status === "paused"}

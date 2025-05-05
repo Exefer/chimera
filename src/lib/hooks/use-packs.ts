@@ -1,12 +1,12 @@
 import { packsTable } from "@/database";
-import { liveQuery } from "dexie";
+import { packs, setPacks } from "@/stores";
+import { get } from "svelte/store";
 
 export function usePacks() {
-  const getPacksForRemoteId = (remoteId: string) =>
-    packsTable.filter(pack => pack.remoteIds.includes(remoteId)).toArray();
+  const getPacksForObjectId = (objectId: string) =>
+    get(packs).filter(pack => pack.objectIds.includes(objectId));
 
-  const getObservablePacksForRemoteId = (remoteId: string) =>
-    liveQuery(() => getPacksForRemoteId(remoteId));
+  const updatePacks = () => packsTable.toArray().then(packs => setPacks(packs));
 
-  return { getPacksForRemoteId, getObservablePacksForRemoteId };
+  return { getPacksForObjectId, updatePacks };
 }

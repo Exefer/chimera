@@ -1,20 +1,20 @@
 <script lang="ts">
-  import { Button } from "@ui/button";
   import GameCard from "@/components/game-card.svelte";
+  import { Button } from "@/components/ui/button";
   import { CatalogueCategory } from "@/constants";
   import { HydraApi } from "@/services/hydra";
-  import * as Steam from "@/types/steam.types";
+  import type { SteamGame } from "@/types/steam.types";
   import { onMount } from "svelte";
   import { t } from "svelte-i18n";
   import Hero from "./hero.svelte";
 
-  let catalogue = $state<Record<CatalogueCategory, Omit<Steam.App, "clientIcon">[]>>({
+  let catalogue = $state<Record<CatalogueCategory, Omit<SteamGame, "clientIcon">[]>>({
     [CatalogueCategory.Hot]: [],
     [CatalogueCategory.Weekly]: [],
     [CatalogueCategory.Achievements]: [],
   });
   let currentCatalogueCategory = $state<CatalogueCategory>(CatalogueCategory.Hot);
-  let featuredGame = $state<Omit<Steam.App, "clientIcon"> | null>(null);
+  let featuredGame = $state<Omit<SteamGame, "clientIcon"> | null>(null);
 
   const getCatalogue = async (category: CatalogueCategory) => {
     currentCatalogueCategory = category;

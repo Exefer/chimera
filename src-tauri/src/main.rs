@@ -1,9 +1,8 @@
-// Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
-//! Chimera - A game launcher built with Tauri
-//!
-//! This is the main entry point for the Tauri application.
+
+mod cloud_sync;
 mod exec_handler;
+mod fs_utils;
 mod http_downloader;
 use tauri::Manager;
 use tokio::sync::Mutex;
@@ -75,7 +74,12 @@ impl From<tauri_plugin_http::reqwest::Error> for Error {
     }
 }
 
-// we must manually implement serde::Serialize
+impl From<unrar::error::UnrarError> for Error {
+    fn from(source: unrar::error::UnrarError) -> Self {
+        Self::Other(source.to_string())
+    }
+}
+
 impl serde::Serialize for Error {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -85,28 +89,21 @@ impl serde::Serialize for Error {
     }
 }
 
-/// Main entry point for the Tauri application.
-///
-///
-/// # Panics:
-///
-/// Will panic if:
-///
-/// - Failed to build the main window
-/// - Failed to focus the main window
-/// - Failed to manage the app state
 fn main() {
     let builder = tauri_specta::Builder::<tauri::Wry>::new()
         .commands(tauri_specta::collect_commands![
-            exec_handler::run_executable,
+            exec_handler::start_process,
             exec_handler::create_shortcut,
+            exec_handler::kill_process,
+            exec_handler::is_process_running,
             http_downloader::download,
             http_downloader::abort_download,
             http_downloader::pause_download,
+            fs_utils::extract_archive,
         ])
         .events(tauri_specta::collect_events![
             http_downloader::DownloadEvent,
-            exec_handler::ExecutableEvent
+            exec_handler::ProcessEvent
         ]);
 
     #[cfg(debug_assertions)]
@@ -119,6 +116,8 @@ fn main() {
         )
         .expect("Failed to export typescript bindings");
     tauri::Builder::default()
+        .plugin(tauri_plugin_os::init())
+        .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_single_instance::init(|app, _args, _cwd| {
             if let Some(window) = app.get_webview_window("main") {
                 let _ = window.show();
@@ -138,7 +137,6 @@ fn main() {
 
             Ok(())
         })
-        .manage(Mutex::new(HttpDownloaderState::default()))
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

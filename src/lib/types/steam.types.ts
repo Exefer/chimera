@@ -1,29 +1,29 @@
-export interface Genre {
+export interface SteamGenre {
   id: string;
   name: string;
 }
 
-export interface Screenshot {
+export interface SteamScreenshot {
   id: number;
   path_thumbnail: string;
   path_full: string;
 }
 
-export interface VideoSource {
+export interface SteamVideoSource {
   max: string;
   "480": string;
 }
 
-export interface Movies {
+export interface SteamMovies {
   id: number;
-  mp4: VideoSource;
-  webm: VideoSource;
+  mp4: SteamVideoSource;
+  webm: SteamVideoSource;
   thumbnail: string;
   name: string;
   highlight: boolean;
 }
 
-export interface PackageGroup {
+interface PackageGroup {
   name: string;
   title: string;
   description: string;
@@ -34,7 +34,7 @@ export interface PackageGroup {
   subs: Subscription[];
 }
 
-export interface Subscription {
+interface Subscription {
   packageid: number;
   percent_savings_text: string;
   percent_savings: number;
@@ -51,36 +51,36 @@ export interface Platform {
   linux: boolean;
 }
 
-export interface Metacritic {
+interface Metacritic {
   score: number;
   url: string;
 }
 
-export interface Category {
+interface Category {
   id: number;
   description: string;
 }
 
-export interface Recommendations {
+interface Recommendations {
   total: number;
 }
 
-export interface SupportInfo {
+interface SupportInfo {
   url: string;
   email: string;
 }
 
-export interface Ratings {
+interface Ratings {
   usk: RatingDetail;
   dejus: ExtendedRatingDetail;
   steam_germany: ExtendedRatingDetail;
 }
 
-export interface RatingDetail {
+interface RatingDetail {
   rating: string;
 }
 
-export interface ExtendedRatingDetail extends RatingDetail {
+interface ExtendedRatingDetail extends RatingDetail {
   rating_generated: string;
   required_age: string;
   banned: string;
@@ -88,13 +88,13 @@ export interface ExtendedRatingDetail extends RatingDetail {
   descriptors: string;
 }
 
-export interface App {
+export interface SteamGame {
   name: string;
   id: string;
   clientIcon: string;
 }
 
-export interface AppDetails {
+export interface SteamAppDetails {
   name: string;
   type: string;
   steam_appid: number;
@@ -110,9 +110,9 @@ export interface AppDetails {
   website: string | null;
   developers: string[];
   publishers: string[];
-  genres: Genre[];
-  movies?: Movies[];
-  screenshots?: Screenshot[];
+  genres: SteamGenre[];
+  movies?: SteamMovies[];
+  screenshots?: SteamScreenshot[];
   packages: number[];
   package_groups: PackageGroup[];
   pc_requirements: {
@@ -145,9 +145,9 @@ export interface AppDetails {
   ratings: Ratings;
 }
 
-export interface AppDetailsResponse {
+export interface SteamAppDetailsResponse {
   [key: string]: {
     success: boolean;
-    data: AppDetails;
+    data: SteamAppDetails;
   };
 }

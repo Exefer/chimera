@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Label } from "@ui/label";
+  import { Label } from "@/components/ui/label";
   import { cn } from "@/utils";
   import type { WithoutChild } from "bits-ui";
   import * as FormPrimitive from "formsnap";

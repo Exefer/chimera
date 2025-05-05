@@ -2,7 +2,7 @@
 name = "chimera"
 version = "0.1.0"
 description = "Chimera is a game launcher made with Tauri and SvelteKit"
-authors = ["Aryxst"]
+authors = ["Exefer"]
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -26,6 +26,10 @@ futures = "0.3.31"
 tokio = "1.43.0"
 thiserror = "2.0.11"
 tauri-plugin-fs = "2"
+unrar = "0.5.8"
+tauri-plugin-shell = "2"
+sysinfo = "0.34.2"
+tauri-plugin-os = "2"
 
 [profile.release]
 panic = "abort"   # Strip expensive panic clean-up logic

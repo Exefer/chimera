@@ -1,9 +1,9 @@
 <script lang="ts">
   import GameCard from "@/components/game-card.svelte";
-  import * as Steam from "@/types/steam.types";
+  import type { SteamGame } from "@/types/steam.types";
 
   interface SearchResultsProps {
-    results: Steam.App[];
+    results: SteamGame[];
   }
 
   let { results }: SearchResultsProps = $props();

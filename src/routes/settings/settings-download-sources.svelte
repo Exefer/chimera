@@ -1,17 +1,16 @@
 <script lang="ts">
-  import { Button } from "@ui/button";
-  import { Input } from "@ui/input";
+  import { Button } from "@/components/ui/button";
+  import { Input } from "@/components/ui/input";
   import { downloadSourcesTable } from "@/database";
-  import { deleteDownloadSource } from "@/services/sources";
+  import { deleteDownloadSource, syncDownloadSources } from "@/services/download-sources";
+  import { dexieStore } from "@/utils";
   import { t } from "svelte-i18n";
   import { fade, slide } from "svelte/transition";
-  import { liveQuery } from "dexie";
   import CircleMinus from "lucide-svelte/icons/circle-minus";
   import RefreshCcw from "lucide-svelte/icons/refresh-ccw";
   import AddDownloadSourceModal from "./add-download-source-modal.svelte";
 
-  const downloadSources = liveQuery(() => downloadSourcesTable.toArray());
-
+  const downloadSources = dexieStore(() => downloadSourcesTable.toArray());
   let isRefreshing = $state(false);
 </script>
 
@@ -26,36 +25,39 @@
       disabled={($downloadSources && $downloadSources.length === 0) || isRefreshing}
       onclick={async () => {
         isRefreshing = true;
-        // Should refresh
-        isRefreshing = false;
+        await syncDownloadSources();
+        setTimeout(() => {
+          isRefreshing = false;
+        }, 500);
       }}
       ><RefreshCcw class={isRefreshing ? "animate-spin" : ""} />{$t(
         "settings.sources.sync_sources"
       )}</Button
     >
-    <AddDownloadSourceModal
-      hasDownloadSourceUrl={url => !!$downloadSources.find(entry => entry.url === url)}
-    />
+    <AddDownloadSourceModal />
   </div>
 
   <ul class="space-y-4">
-    {#each $downloadSources as source (source.id)}
-      <li class="space-y-2 rounded-lg border p-4 shadow-sm" out:fade in:slide>
-        <h1 class="text-lg font-bold">{source.name}</h1>
+    {#each $downloadSources as downloadSource (downloadSource.id)}
+      <li class="space-y-2 rounded-lg border p-4 shadow-sm" in:slide out:fade>
+        <h1 class="text-lg font-bold">{downloadSource.name}</h1>
         <small
           >{$t("settings.sources.count_download_options", {
-            values: { count: source.downloadCount },
+            values: { count: downloadSource.downloadCount },
           })}</small
         >
         <p class="text-sm text-muted-foreground">
           {$t("settings.sources.download_source_url")}
         </p>
         <div class="flex justify-between gap-4">
-          <Input value={source.url} readonly />
+          <Input value={downloadSource.url} readonly />
           <Button
             variant="outline"
-            onclick={() => {
-              deleteDownloadSource(source.id);
+            disabled={isRefreshing}
+            onclick={async () => {
+              isRefreshing = true;
+              await deleteDownloadSource(downloadSource.id);
+              isRefreshing = false;
             }}><CircleMinus />{$t("settings.sources.remove")}</Button
           >
         </div>

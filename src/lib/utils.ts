@@ -1,9 +1,10 @@
 import { CHAR_MAP, Downloader } from "@/constants/";
 import { locale } from "svelte-i18n";
-import { get } from "svelte/store";
+import { get, type Readable } from "svelte/store";
 import { type ClassValue, clsx } from "clsx";
 import { addSeconds, formatDistanceStrict, type Locale } from "date-fns";
 import { enUS, it } from "date-fns/locale";
+import { liveQuery } from "dexie";
 import { twMerge } from "tailwind-merge";
 
 export const cn = (...inputs: ClassValue[]) => twMerge(clsx(inputs));
@@ -58,7 +59,7 @@ export const formatTitle = pipe<string>(
 
 export const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-export const getDownloaderFromUrl = (url: string): Downloader => {
+export const getDownloaderForUrl = (url: string): Downloader => {
   if (/https:\/\/.*gofile.io/.test(url)) return Downloader.Gofile;
   if (url.startsWith("magnet:")) return Downloader.Torrent;
   if (url.startsWith("https://1fichier.com")) return Downloader.RealDebrid;
@@ -69,7 +70,7 @@ export const getDownloaderFromUrl = (url: string): Downloader => {
 };
 
 export const transformDownloadUrl = (url: string) => {
-  switch (getDownloaderFromUrl(url)) {
+  switch (getDownloaderForUrl(url)) {
     case Downloader.BuzzHeavier:
       if (!url.endsWith("/download")) url += "/download";
       return url;
@@ -108,4 +109,13 @@ export const formatSeconds = (seconds: number) => {
     roundingMethod: "floor",
     locale: getDateFnsLocale(get(locale)!),
   });
+};
+
+export const dexieStore = <T>(querier: () => T | Promise<T>): Readable<T> => {
+  const dexieObservable = liveQuery(querier);
+  return {
+    subscribe(run, invalidate) {
+      return dexieObservable.subscribe(run, invalidate).unsubscribe;
+    },
+  };
 };

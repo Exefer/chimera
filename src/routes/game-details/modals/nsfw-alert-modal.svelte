@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { Button } from "@ui/button";
-  import * as Dialog from "@ui/dialog";
-  import { Separator } from "@ui/separator";
-  import { getGameContext } from "@/context";
+  import { Button } from "@/components/ui/button";
+  import * as Dialog from "@/components/ui/dialog";
+  import { Separator } from "@/components/ui/separator";
+  import { getGameDetailsContext } from "@/context";
   import { t } from "svelte-i18n";
 
   interface NsfwAlertModalProps {
@@ -11,8 +11,9 @@
   }
 
   let { onCancel, onConfirm }: NsfwAlertModalProps = $props();
-  const gameContext = getGameContext();
-  const { title, hasNSFWContentBlocked } = $derived(gameContext);
+
+  const gameDetailsContext = getGameDetailsContext();
+  const { title, hasNSFWContentBlocked } = $derived(gameDetailsContext);
 </script>
 
 <Dialog.Root open={hasNSFWContentBlocked}>

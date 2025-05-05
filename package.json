@@ -24,8 +24,11 @@
     "@tauri-apps/plugin-fs": "^2.2.0",
     "@tauri-apps/plugin-http": "~2",
     "@tauri-apps/plugin-opener": "^2",
+    "@tauri-apps/plugin-os": "^2.2.1",
+    "@tauri-apps/plugin-shell": "^2.2.1",
     "@tauri-apps/plugin-store": "~2",
-    "bits-ui": "^1.0.0-next.78",
+    "bits-ui": "^1.4.3",
+    "comlink": "^4.4.2",
     "date-fns": "^4.1.0",
     "dexie": "^4.0.11",
     "ky": "^1.7.4",
@@ -69,7 +72,8 @@
     "tailwindcss-animate": "^1.0.7",
     "typescript": "~5.6.2",
     "typescript-eslint": "^8.20.0",
-    "vite": "^6.0.7"
+    "vite": "^6.3.4",
+    "vite-plugin-comlink": "^5.1.0"
   },
   "lint-staged": {
     "*.{js,ts,json,svelte,md,css}": [

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Input } from "@ui/input";
+  import { Input } from "@/components/ui/input";
   import { SEARCH_DEBOUNCE } from "@/constants/";
   import { isTyping, search } from "@/stores";
   import { beforeNavigate, goto } from "$app/navigation";
@@ -20,7 +20,7 @@
         return $t("common.settings");
       case "/catalog":
         return $t("common.catalog");
-      case "/game":
+      case "/game-details":
         return page.url.searchParams.get("title")!;
       default:
         return document.title;

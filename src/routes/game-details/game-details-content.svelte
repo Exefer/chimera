@@ -1,25 +1,26 @@
 <script lang="ts">
-  import { getGameContext } from "@/context";
+  import { getGameDetailsContext } from "@/context";
   import { steamImageBuilder } from "@/services/steam";
   import { t } from "svelte-i18n";
   import HeroPanel from "./hero-panel.svelte";
   import SidePanel from "./side-panel.svelte";
 
-  const gameContext = getGameContext();
-  const { title, remoteId, details, hasNSFWContentBlocked } = $derived(gameContext);
+  const gameDetailsContext = getGameDetailsContext();
+  const { title, objectId, details, hasNSFWContentBlocked } =
+    $derived(gameDetailsContext);
 </script>
 
-<div class={{ "blur-lg": hasNSFWContentBlocked }}>
+<div class={[hasNSFWContentBlocked && "blur-lg"]}>
   <div class="relative">
     <img
-      src={steamImageBuilder.libraryHero(remoteId)}
+      src={steamImageBuilder.libraryHero(objectId)}
       alt={title}
       class="max-h-[300px] min-h-[300px] min-w-full object-cover xl:max-h-[350px]"
       fetchpriority="high"
     />
     <div class="absolute bottom-4 left-4">
       <img
-        src={steamImageBuilder.logo(remoteId)}
+        src={steamImageBuilder.logo(objectId)}
         alt={title}
         fetchpriority="high"
         class="w-[300px]"

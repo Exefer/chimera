@@ -1,28 +1,33 @@
 param(
-    [Parameter(Mandatory=$true)]
+    [Parameter(Mandatory = $true)]
     [string]$TargetPath,
     
-    [Parameter(Mandatory=$true)]
+    [Parameter(Mandatory = $true)]
     [string]$ShortcutName,
     
-    [Parameter(Mandatory=$false)]
+    [Parameter(Mandatory = $true)]
+    [string]$ShortcutLocation,
+
+    [Parameter(Mandatory = $false)]
     [string]$IconPath = $TargetPath,
     
-    [Parameter(Mandatory=$false)]
+    [Parameter(Mandatory = $false)]
     [string]$Description,
 
-    [Parameter(Mandatory=$false)]
+    [Parameter(Mandatory = $false)]
     [string]$Arguments
 )
 
 
 # Create a WScript Shell object to create the shortcut
 $WshShell = New-Object -ComObject WScript.Shell
-# Get the desktop path
-$DesktopPath = [System.Environment]::GetFolderPath('Desktop')
+# Get the shortcut location path
+$ShortcutLocation = if ($ShortcutLocation -eq "desktop") { [System.Environment]::GetFolderPath('Desktop') } else {
+    "$([System.Environment]::GetFolderPath('StartMenu'))\Programs"
+}
 
 # Create the full path for the shortcut
-$ShortcutFullPath = Join-Path -Path $DesktopPath -ChildPath $ShortcutName
+$ShortcutFullPath = Join-Path -Path $ShortcutLocation -ChildPath $ShortcutName
 
 # Create the shortcut object
 $Shortcut = $WshShell.CreateShortcut($ShortcutFullPath)

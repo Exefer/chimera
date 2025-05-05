@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { type Props, buttonVariants } from "@ui/button";
+  import { type Props, buttonVariants } from "@/components/ui/button";
   import { cn } from "@/utils";
   import { Pagination as PaginationPrimitive } from "bits-ui";
 

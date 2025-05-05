@@ -1,10 +1,15 @@
 <script lang="ts">
+  import { type DownloadEntry } from "@/database";
+  import { useDownload } from "@/hooks";
   import { downloads } from "@/stores";
-  import * as Types from "@/types";
   import { t } from "svelte-i18n";
   import DownloadIcon from "lucide-svelte/icons/download";
   import DeleteDownloadModal from "./delete-download-modal.svelte";
   import DownloadGroup from "./download-group.svelte";
+
+  const { abortDownload } = useDownload();
+
+  let downloadToDelete: DownloadEntry | null = $state(null);
 
   const downloadGroups = $derived([
     {
@@ -20,9 +25,8 @@
       items: $downloads.filter(download => download.status === "completed"),
     },
   ]);
-  let downloadToDelete: Types.Download | null = $state(null);
 
-  const handleDownloadDelete = (download: Types.Download) => {
+  const setDownloadToDelete = (download: DownloadEntry) => {
     downloadToDelete = download;
   };
 </script>
@@ -36,7 +40,7 @@
   {#if $downloads.length > 0}
     <div class="flex w-full flex-col gap-4">
       {#each downloadGroups as group}
-        <DownloadGroup {...group} openDeleteDownloadModal={handleDownloadDelete} />
+        <DownloadGroup {...group} openDeleteDownloadModal={setDownloadToDelete} />
       {/each}
     </div>
   {:else}
@@ -54,8 +58,8 @@
     onCancel={() => {
       downloadToDelete = null;
     }}
-    onConfirm={() => {
-      downloads.removeDownload(downloadToDelete!.url);
+    onConfirm={async () => {
+      abortDownload(downloadToDelete!.url);
       downloadToDelete = null;
     }}
   />

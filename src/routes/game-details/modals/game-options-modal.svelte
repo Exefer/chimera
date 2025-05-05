@@ -1,11 +1,10 @@
 <script lang="ts">
-  import { Button, buttonVariants } from "@ui/button";
-  import * as Dialog from "@ui/dialog";
-  import { Input } from "@ui/input";
-  import { Separator } from "@ui/separator";
-  import { getGameContext } from "@/context";
-  import { commands } from "@/specta-bindings";
-  import { games } from "@/stores";
+  import { Button, buttonVariants } from "@/components/ui/button";
+  import * as Dialog from "@/components/ui/dialog";
+  import { Input } from "@/components/ui/input";
+  import { Separator } from "@/components/ui/separator";
+  import { getGameDetailsContext } from "@/context";
+  import { LibraryManager } from "@/services/library-manager";
   import { open as openDialog } from "@tauri-apps/plugin-dialog";
   import { revealItemInDir } from "@tauri-apps/plugin-opener";
   import { t } from "svelte-i18n";
@@ -17,8 +16,9 @@
   }
 
   let { open = $bindable(false) }: GameOptionsModalProps = $props();
-  const gameContext = getGameContext();
-  const { title, remoteId, game, packs, download } = $derived(gameContext);
+
+  const gameDetailsContext = getGameDetailsContext();
+  const { title, objectId, game, packs, download } = $derived(gameDetailsContext);
 </script>
 
 <Dialog.Root bind:open>
@@ -40,7 +40,7 @@
         <Input
           type="text"
           placeholder={$t("game.select_executable:none_selected")}
-          value={game?.executable_path}
+          value={game?.executablePath}
           readonly
         />
         <Button
@@ -55,23 +55,18 @@
               ],
             });
             if (!selected) return;
-            games.updateGame("remote_id", remoteId, game => ({
-              ...game,
-              executable_path: selected,
-            }));
+
+            LibraryManager.updateExecutablePath(objectId, selected);
           }}
         >
           <File />
           {$t("game.select_executable")}
         </Button>
-        {#if game?.executable_path}
+        {#if game?.executablePath}
           <Button
             variant="outline"
             onclick={() => {
-              games.updateGame("remote_id", remoteId, game => ({
-                ...game,
-                executable_path: "",
-              }));
+              LibraryManager.updateExecutablePath(objectId, null);
             }}>{$t("game.clear")}</Button
           >
         {/if}
@@ -79,22 +74,30 @@
       <div class="flex gap-2">
         <Button
           variant="outline"
-          disabled={!game?.executable_path}
+          disabled={!game?.executablePath}
           onclick={() => {
-            revealItemInDir(game?.executable_path!);
+            if (!game?.executablePath) return;
+
+            revealItemInDir(game.executablePath);
           }}>{$t("game.open_folder")}</Button
         >
         <Button
           variant="outline"
-          disabled={!game?.executable_path}
+          disabled={!game?.executablePath}
           onclick={async () => {
-            const result = await commands.createShortcut(game?.executable_path!);
-            if (result.status === "ok") {
-              toast.success($t("game.create_desktop_shortcut:success"));
-            } else {
-              toast.error($t("game.create_desktop_shortcut:error"));
-            }
+            if (!game?.executablePath) return;
+
+            LibraryManager.createGameShortcut(objectId, "desktop");
           }}>{$t("game.create_desktop_shortcut")}</Button
+        >
+        <Button
+          variant="outline"
+          disabled={!game?.executablePath}
+          onclick={() => {
+            if (!game?.executablePath) return;
+
+            LibraryManager.createGameShortcut(objectId, "shell");
+          }}>{$t("game.create_shell_shortcut")}</Button
         >
       </div>
       <div class="space-y-2">
@@ -108,9 +111,9 @@
       <div class="flex gap-2">
         <Button
           variant="outline"
-          disabled={($packs && $packs.length === 0) || !!download}
+          disabled={packs.length === 0 || !!download}
           onclick={() => {
-            gameContext.showDownloadOptionsModal = true;
+            gameDetailsContext.showDownloadOptionsModal = true;
           }}>{$t("game.open_download_options")}</Button
         >
         <Button
@@ -118,7 +121,7 @@
           disabled={!download}
           onclick={async () => {
             if (!download) return;
-            revealItemInDir(download.path!).catch(() => {
+            revealItemInDir(download.downloadPath!).catch(() => {
               toast.error($t("game.see_downloaded_files:error"));
             });
           }}>{$t("game.see_downloaded_files")}</Button
@@ -151,7 +154,8 @@
               <Dialog.Close
                 class={buttonVariants({ variant: "outline" })}
                 onclick={() => {
-                  games.removeGame(remoteId);
+                  LibraryManager.removeGameFromLibrary(objectId);
+
                   open = false;
                 }}>{$t("common.confirm")}</Dialog.Close
               >
@@ -164,7 +168,7 @@
             {#snippet child({ props })}
               <Button
                 variant="destructive"
-                disabled={!game?.executable_path}
+                disabled={!game?.executablePath}
                 onclick={() => {
                   // Should remove files
                 }}

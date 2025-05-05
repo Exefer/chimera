@@ -1,9 +1,9 @@
 <script lang="ts">
-  import * as Dialog from "@ui/dialog";
-  import { Input } from "@ui/input";
-  import { Separator } from "@ui/separator";
-  import Badge from "@/components/badge.svelte";
-  import { getGameContext } from "@/context";
+  import { Badge } from "@/components/ui/badge";
+  import * as Dialog from "@/components/ui/dialog";
+  import { Input } from "@/components/ui/input";
+  import { Separator } from "@/components/ui/separator";
+  import { getGameDetailsContext } from "@/context";
   import type { PackEntry } from "@/database";
   import { date, t } from "svelte-i18n";
 
@@ -13,7 +13,10 @@
   }
 
   let { open = $bindable(false), onPackSelected }: DownloadOptionsModalProps = $props();
-  const { packs, download } = getGameContext();
+
+  const gameDetailsContext = getGameDetailsContext();
+  const { packs, download } = $derived(gameDetailsContext);
+
   let filter = $state("");
 </script>
 
@@ -24,9 +27,9 @@
     </Dialog.Header>
     <Separator />
     <Input type="text" bind:value={filter} placeholder={$t("game.filter_packs")} />
-    <div class="flex max-h-80 flex-col gap-2 overflow-y-scroll">
-      {#if $packs}
-        {#each $packs.filter(pack => {
+    <div class="flex h-80 flex-col gap-2 overflow-y-scroll">
+      {#if packs}
+        {#each packs.filter(pack => {
           const lowercaseFilter = filter.toLowerCase();
           return pack.title.toLowerCase().includes(lowercaseFilter) || pack.packer
               .toLowerCase()
@@ -37,7 +40,7 @@
             onclick={() => onPackSelected(pack)}
           >
             <p class="text-wrap text-sm">{pack.title}</p>
-            {#if download && pack.uris.find( uri => download!.original_url.startsWith(uri) )}
+            {#if download && pack.uris.some(uri => download!.originalUrl.startsWith(uri))}
               <div>
                 <Badge variant="transparent">{$t("game.last_downloaded_option")}</Badge>
               </div>

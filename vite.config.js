@@ -1,13 +1,17 @@
 import { sveltekit } from "@sveltejs/kit/vite";
 import { execSync } from "child_process";
 import { defineConfig } from "vite";
+import comlink from "vite-plugin-comlink";
 import pkg from "./package.json" with { type: "json" };
 
 const host = process.env.TAURI_DEV_HOST;
 
 // https://vitejs.dev/config/
 export default defineConfig(async () => ({
-  plugins: [sveltekit()],
+  plugins: [sveltekit(), comlink()],
+  worker: {
+    plugins: () => [comlink()],
+  },
   define: {
     __APP_VERSION__: JSON.stringify(pkg.version),
     __APP_REVISION__: JSON.stringify(execSync("git rev-parse --short HEAD").toString()),

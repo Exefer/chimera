@@ -17,7 +17,6 @@ It's a work in progress and it's not ready for production.
 - [Features](#features)
 - [Contributing](#contributing)
 - [Roadmap](#roadmap)
-  - [Current goals](#current-goals)
   - [Implemented](#implemented)
   - [Planned](#planned)
 - [Join the community](#join-the-community)
@@ -46,25 +45,22 @@ See [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ## Roadmap
 
-### Current goals
-
-- [ ] Torrent downloads
-- [ ] Game launch arguments
-- [ ] Improve game details load times with caching
-- [ ] Use [Dexie(IndexedDB)](https://dexie.org/) instead of Svelte stores
-
 ### Implemented
 
 - [x] Direct downloads
 - [x] Desktop shortcut creation
 - [x] Pausing and resuming downloads
-- [x] Reduce NSFW content blurring time
+- [x] Add NSFW content blurring based on user settings
+- [x] Use [Dexie(IndexedDB)](https://dexie.org/) instead of Svelte stores
+- [x] Improve game details load times with caching
+- [ ] Game launch arguments
 
 ### Planned
 
 - [ ] Cloud saves with RClone and Ludusavi
 - [ ] Gamepad support
-- [ ] UI Overhaul
+- [ ] UI Improvements
+- [ ] Torrent downloads
 
 ## Join the community
 

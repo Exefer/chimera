@@ -1,7 +1,7 @@
 <script lang="ts">
-  import * as Pagination from "@ui/pagination";
+  import * as Pagination from "@/components/ui/pagination";
   import { ITEMS_PER_PAGE } from "@/constants/";
-  import { apps, isTyping, search } from "@/stores";
+  import { isTyping, search, steamGames } from "@/stores";
   import { number, t } from "svelte-i18n";
   import uFuzzy from "@leeoniya/ufuzzy";
   import SearchResults from "./search-results.svelte";
@@ -11,7 +11,7 @@
     intraMode: 0,
     intraIns: 1,
     interIns: Infinity,
-    intraChars: "[a-z\d\' ]",
+    intraChars: "[a-z\\d]",
     interChars: ".",
     interLft: 0,
     interRgt: 0,
@@ -20,12 +20,12 @@
     intraDel: 1,
   });
 
-  const haystack = $apps.map(app => app.name);
+  const haystack = $steamGames.map(app => app.name);
   const searchResults = $derived.by(() => {
     if (!$search) return [];
     const idxs = uf.filter(haystack, $search)!;
 
-    return idxs.map(index => $apps[index]);
+    return idxs.map(index => $steamGames[index]);
   });
   let currentPage = $state<number>(1);
   const totalPages = $derived(Math.ceil(searchResults.length / ITEMS_PER_PAGE));

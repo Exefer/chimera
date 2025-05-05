@@ -1,27 +1,11 @@
-import * as Types from "@/types";
-
 export { CHAR_MAP } from "./char-map";
 
 export const SEARCH_DEBOUNCE = 250;
 
 export const ITEMS_PER_PAGE = 16;
 
-export const DEFAULT_APP_SETTINGS: Types.AppSettings = {
-  general: {
-    downloads_path: null,
-    theme: "system",
-    locale: "en",
-    notifications: {
-      when_download_complete: false,
-    },
-  },
-  behavior: {
-    launch_minimized: false,
-    launch_on_startup: false,
-    minimize_to_tray: false,
-    disable_nsfw_alert: false,
-  },
-};
+export const STEAM_GAMES_URL =
+  "https://raw.githubusercontent.com/hydralauncher/hydra/refs/heads/main/seeds/steam-games.json";
 
 export const APP_LANGUAGES = {
   en: { name: "English", localizedName: "English", flag: "🇺🇸" },
@@ -45,6 +29,11 @@ export enum SteamContentDescriptor {
   AdultOnlySexualContent = 3,
   FrequentNudityOrSexualContent = 4,
   GeneralMatureContent = 5,
+}
+
+export enum DownloadSourceStatus {
+  UpToDate,
+  Errored,
 }
 
 export enum CatalogueCategory {

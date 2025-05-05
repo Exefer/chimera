@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Input } from "@ui/input";
+  import { Input } from "@/components/ui/input";
   import { cn } from "@/utils";
   import type { ComponentProps } from "svelte";
 

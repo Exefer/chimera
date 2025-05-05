@@ -37,14 +37,16 @@
   "game": {
     "add_to_library": "Aggiungi alla libreria",
     "added_to_favorites": "Gioco aggiunto ai preferiti",
+    "automatically_extract_files": "Estrai automaticamente i file scaricati",
     "change_default_download_path": "Per cambiare il percorso di default, vai alla pagina <settings>Impostazioni</settings>",
     "check_other_versions": "Scopri altre versioni o aggiornamenti di questo gioco",
     "choose_pack_to_download": "Scegli un pack da scaricare",
     "clear": "Clear",
     "count_download_options": "{count} {count, plural, =1 {opzione} other {opzioni}} di download",
     "create_desktop_shortcut": "Crea collegamento al desktop",
-    "create_desktop_shortcut:error": "Impossibile creare il collegamento al desktop",
-    "create_desktop_shortcut:success": "Collegamento al desktop creato con successo",
+    "create_shell_shortcut": "Crea collegamento al menu Start",
+    "create_shortcut:error": "Impossibile creare il collegamento",
+    "create_shortcut:success": "Collegamento creato con successo",
     "danger_zone": "Zona di pericolo",
     "download": "Scarica",
     "download_in_progress": "Download in corso",
@@ -90,6 +92,9 @@
     "system_requirements:recommended": "Consigliati",
     "updated_at": "Aggiornato il {date}"
   },
+  "game_card": {
+    "no_downloads": "Nessun download disponibile"
+  },
   "header": {
     "search": "Cerca",
     "search_results": "Risultati della ricerca"
@@ -102,7 +107,9 @@
   },
   "notifications": {
     "download_complete:description": "It tuo gioco è pronto per essere avviato",
-    "download_complete:title": "Download completato"
+    "download_complete:title": "Download completato",
+    "extraction_complete:description": "{title} estratto con successo",
+    "extraction_complete:title": "Estrazione completa"
   },
   "search": {
     "displaying": "{range} di {total}",
@@ -112,29 +119,18 @@
     "typing": "Digitando..."
   },
   "settings": {
-    "behavior": {
-      "disable_nsfw_alert": "Disabilita avviso per contenuti inappropriati",
-      "launch_minimized": "Avvia Chimera minimizzato",
-      "launch_on_startup": "Avvia Chimera all'avvio del sistema",
-      "minimize_to_tray": "Minimizza Chimera a tray di sistema"
-    },
     "behavior:title": "Comportamento",
-    "general": {
-      "downloads_path": "Percorso dei download",
-      "language": "Lingua",
-      "no_downloads_path": "Nessun percorso selezionato",
-      "notifications": {
-        "when_download_complete": "Quando un download è completo"
-      },
-      "notifications:title": "Notifiche",
-      "theme": {
-        "dark": "Scuro",
-        "light": "Chiaro",
-        "system": "Sistema"
-      },
-      "theme:title": "Tema"
-    },
+    "disable_nsfw_alert": "Disabilita avviso per contenuti inappropriati",
+    "download_notifications": "Quando un download è completo",
+    "downloads_path": "Percorso dei download",
+    "extract_files_by_default": "Estrai i file scaricati di default",
     "general:title": "Generale",
+    "language": "Lingua",
+    "launch_minimized": "Avvia Chimera minimizzato",
+    "minimize_to_tray": "Minimizza Chimera a tray di sistema",
+    "no_downloads_path": "Nessun percorso selezionato",
+    "notifications:title": "Notifiche",
+    "run_at_startup": "Avvia Chimera all'avvio del sistema",
     "sources": {
       "add_source": "Aggiungi fonte",
       "already_added": "Fonte gia aggiunta!",
@@ -143,13 +139,19 @@
       "found_download_options": "Trovate {count} opzioni di download",
       "import": "Importa",
       "insert_json_url": "Inserisci l'URL del file .json",
-      "invalid_json_url": "Non è un file .json valido",
+      "insert_valid_url": "Inserisci un URL valido",
       "remove": "Rimuovi",
       "sync_sources": "Sincronizza fonti",
       "validate": "Convalida"
     },
     "sources:description": "Chimera scaricherà i link di queste fonti. L'URL della fonte deve essere un link diretto a un file .json contenente i link di download.",
-    "sources:title": "Fonti"
+    "sources:title": "Fonti",
+    "theme": {
+      "dark": "Scuro",
+      "light": "Chiaro",
+      "system": "Sistema"
+    },
+    "theme:title": "Tema"
   },
   "sidebar": {
     "favorites": "Preferiti",

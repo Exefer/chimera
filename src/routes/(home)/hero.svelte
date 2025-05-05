@@ -1,19 +1,18 @@
 <script lang="ts">
   import { constructGameUrl } from "@/helpers";
-  import { getGameDetails } from "@/services/games";
-  import { steamImageBuilder } from "@/services/steam";
-  import * as Steam from "@/types/steam.types";
+  import { getSteamAppDetails, steamImageBuilder } from "@/services/steam";
+  import type { SteamGame } from "@/types/steam.types";
 
   interface HeroProps {
-    game: Omit<Steam.App, "clientIcon">;
+    game: Omit<SteamGame, "clientIcon">;
   }
 
   let { game }: HeroProps = $props();
   let description = $state<string | null>(null);
 
   $effect(() => {
-    getGameDetails(game.id).then(data => {
-      description = data?.short_description!;
+    getSteamAppDetails(game.id).then(data => {
+      description = data!.short_description;
     });
   });
 </script>
@@ -33,7 +32,7 @@
     alt={game.name}
   />
   <div
-    class="absolute top-0 flex size-full items-end pb-8 pl-6 shadow-[inset_0_-50px_100px_60px_rgba(0,0,0,0.95)]"
+    class="absolute top-0 flex size-full items-end pb-4 pl-4 shadow-[inset_0_-50px_100px_60px_rgba(0,0,0,0.95)]"
   >
     <p class="max-w-2xl text-sm text-white dark:text-muted-foreground">
       {@html description}

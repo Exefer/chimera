@@ -6,25 +6,25 @@ export type { AppLocale, LocaleEntry } from "@/constants";
 export type AppTheme = "light" | "dark" | "system";
 
 export interface AppSettings {
-  general: {
-    downloads_path: string | null;
-    theme: AppTheme;
-    locale: AppLocale;
-    notifications: {
-      when_download_complete: boolean;
-    };
-  };
-  behavior: {
-    launch_minimized: boolean;
-    launch_on_startup: boolean;
-    minimize_to_tray: boolean;
-    disable_nsfw_alert: boolean;
-  };
+  downloadsPath: string | null;
+  theme: AppTheme;
+  locale: AppLocale;
+  downloadNotificationsEnabled: boolean;
+  launchMinimized: boolean;
+  runAtStartp: boolean;
+  minimizeToTray: boolean;
+  disableNsfwAlert: boolean;
+  extractFilesByDefault: boolean;
 }
 
-export interface Source {
+export interface DownloadSourceValidationResult {
   name: string;
-  url: string;
+  etag: string;
+  downloadCount: number;
+}
+
+export interface DownloadSource {
+  name: string;
   downloads: SourceDownload[];
 }
 
@@ -37,18 +37,17 @@ export interface SourceDownload {
 
 export interface Pack extends SourceDownload {
   packer: string;
-  remoteIds: string[];
+  objectIds: string[];
 }
 
 export interface Game {
   title: string;
-  remote_id: string;
-  executable_path: string | null;
-  launch_options: string | null;
-  icon_url: string | null;
-  playtime_in_seconds: number;
-  last_played_at: number | null;
-  created_at: number;
+  objectId: string;
+  executablePath: string | null;
+  launchOptions: string | null;
+  iconUrl: string | null;
+  playtimeInSeconds: number;
+  lastPlayedAt: number | null;
   size: number | null;
   running: boolean;
   favorite: boolean;
@@ -58,14 +57,28 @@ type StatusValues = Exclude<
   DownloadEvent extends { type: infer T } ? T : never,
   "started"
 >;
-type ProgressEvent = Extract<DownloadEvent, { type: "progress" }>;
-export interface Download extends Partial<ProgressEvent["data"]> {
+
+export interface Download {
   title: string;
+  originalUrl: string;
   url: string;
-  original_url: string;
-  remote_id: string;
+  objectId: string;
+  downloadPath: string;
   downloader: Downloader;
-  content_length: number;
   status: StatusValues;
-  path?: string;
+  queued: boolean;
+  extracting: boolean;
+  automaticallyExtract: boolean;
+  progress: number;
+  downloadedBytes: number;
+  fileSize: number;
+  downloadSpeed: number;
+  eta: number | null;
 }
+
+export type StartGameDownloadPayload = Pick<
+  Download,
+  "url" | "title" | "objectId" | "downloadPath" | "downloader" | "automaticallyExtract"
+>;
+
+export type SteamGamesByLetter = Record<string, Array<{ name: string; id: string }>>;

@@ -1,17 +1,24 @@
-import { DEFAULT_APP_SETTINGS } from "@/constants/";
-import * as Types from "@/types";
+import type { AppSettings } from "@/types";
 import { writable } from "svelte/store";
 import * as Persistent from "./persistent";
 
+const initialState: AppSettings = {
+  downloadsPath: null,
+  theme: "system",
+  locale: "en",
+  downloadNotificationsEnabled: false,
+  launchMinimized: false,
+  runAtStartp: false,
+  minimizeToTray: false,
+  disableNsfwAlert: false,
+  extractFilesByDefault: true,
+};
+
 function createSettingsStore() {
-  const store = writable<Types.AppSettings>(DEFAULT_APP_SETTINGS);
+  const store = writable<AppSettings>(initialState);
 
   Persistent.settings.get().then(settings => {
-    if (settings)
-      store.update(state => ({
-        general: { ...state.general, ...settings.general },
-        behavior: { ...state.behavior, ...settings.behavior },
-      }));
+    if (settings) store.update(state => ({ ...state, ...settings }));
     store.subscribe(async settings => {
       await Persistent.settings.set(settings);
     });

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { buttonVariants } from "@ui/button";
+  import { buttonVariants } from "@/components/ui/button";
   import { cn } from "@/utils";
   import { t } from "svelte-i18n";
   import { Pagination as PaginationPrimitive } from "bits-ui";

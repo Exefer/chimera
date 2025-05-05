@@ -14,10 +14,8 @@ export class HydraApi {
       skip: "0",
     });
 
-    return this.instance
-      .get<
-        Array<{ title: string; shop: "steam" | "epic"; objectId: string }>
-      >(`catalogue/${category}?${searchParams.toString()}`)
-      .json();
+    return this.instance<
+      Array<{ title: string; shop: "steam" | "epic"; objectId: string }>
+    >(`catalogue/${category}?${searchParams.toString()}`).json();
   }
 }

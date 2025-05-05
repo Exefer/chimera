@@ -37,14 +37,16 @@
   "game": {
     "add_to_library": "Add to library",
     "added_to_favorites": "Game added to favorites",
+    "automatically_extract_files": "Automatically extract downloaded files",
     "change_default_download_path": "To change the default path, go to the <settings>Settings</settings> page",
     "check_other_versions": "Check out updates or other versions of this game",
     "choose_pack_to_download": "Choose the pack you want to download",
     "clear": "Clear",
     "count_download_options": "{count} download options",
     "create_desktop_shortcut": "Create desktop shortcut",
-    "create_desktop_shortcut:error": "Failed to create desktop shortcut",
-    "create_desktop_shortcut:success": "Shortcut created successfully",
+    "create_shell_shortcut": "Create Start Menu shortcut",
+    "create_shortcut:error": "Failed to create shortcut",
+    "create_shortcut:success": "Shortcut created successfully",
     "danger_zone": "Danger Zone",
     "download": "Download",
     "download_in_progress": "Download in progress",
@@ -90,6 +92,9 @@
     "system_requirements:recommended": "Recommended",
     "updated_at": "Updated {date}"
   },
+  "game_card": {
+    "no_downloads": "No downloads available"
+  },
   "header": {
     "search": "Search",
     "search_results": "Search results"
@@ -102,7 +107,9 @@
   },
   "notifications": {
     "download_complete:description": "Your game is ready to play",
-    "download_complete:title": "Download complete"
+    "download_complete:title": "Download complete",
+    "extraction_complete:description": "{title} extracted successfully",
+    "extraction_complete:title": "Extraction complete"
   },
   "search": {
     "displaying": "{range} of {total}",
@@ -112,29 +119,18 @@
     "typing": "Typing..."
   },
   "settings": {
-    "behavior": {
-      "disable_nsfw_alert": "Disable NSFW content alert",
-      "launch_minimized": "Launch Chimera minimized",
-      "launch_on_startup": "Launch Chimera on system startup",
-      "minimize_to_tray": "Minimize Chimera to the system tray"
-    },
     "behavior:title": "Behavior",
-    "general": {
-      "downloads_path": "Downloads path",
-      "language": "Language",
-      "no_downloads_path": "No path selected",
-      "notifications": {
-        "when_download_complete": "When a download is complete"
-      },
-      "notifications:title": "Notifications",
-      "theme": {
-        "dark": "Dark",
-        "light": "Light",
-        "system": "System"
-      },
-      "theme:title": "Theme"
-    },
+    "disable_nsfw_alert": "Disable NSFW content alert",
+    "download_notifications": "When a download is complete",
+    "downloads_path": "Downloads path",
+    "extract_files_by_default": "Extract downloaded files by default",
     "general:title": "General",
+    "language": "Language",
+    "launch_minimized": "Launch Chimera minimized",
+    "minimize_to_tray": "Minimize Chimera to the system tray",
+    "no_downloads_path": "No path selected",
+    "notifications:title": "Notifications",
+    "run_at_startup": "Launch Chimera on system startup",
     "sources": {
       "add_source": "Add source",
       "already_added": "Source already added!",
@@ -143,13 +139,19 @@
       "found_download_options": "Found {count} download options",
       "import": "Import",
       "insert_json_url": "Insert the URL of the .json file",
-      "invalid_json_url": "Not a valid .json file",
+      "insert_valid_url": "Please insert a valid URL",
       "remove": "Remove",
       "sync_sources": "Sync sources",
       "validate": "Validate"
     },
     "sources:description": "Chimera will fetch the download links from these sources. The source URL must be a direct link to a .json file containing the download links.",
-    "sources:title": "Sources"
+    "sources:title": "Sources",
+    "theme": {
+      "dark": "Dark",
+      "light": "Light",
+      "system": "System"
+    },
+    "theme:title": "Theme"
   },
   "sidebar": {
     "favorites": "Favorites",

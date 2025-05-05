@@ -1,69 +1,85 @@
 <script lang="ts">
-  import * as Sidebar from "@ui/sidebar";
+  import { initSteamGamesStores } from "@/bootstrap";
   import AppSidebar from "@/components/app-sidebar.svelte";
   import BottomPanel from "@/components/bottom-panel.svelte";
   import Header from "@/components/header.svelte";
+  import * as Sidebar from "@/components/ui/sidebar";
+  import { Toaster } from "@/components/ui/sonner";
+  import { useDownload, usePacks } from "@/hooks";
+  import { useLibrary } from "@/hooks/use-library";
+  import {
+    onDownloadCompleted,
+    onDownloadProgress,
+    onDownloadRateLimitExceeded,
+  } from "@/services/download/download-manager.events";
+  import { onProcessFinished, onProcessStarted } from "@/services/library-manager.events";
   import { events } from "@/specta-bindings";
-  import { apps, appsByLetter, games, settings } from "@/stores";
-  import { formatTitle } from "@/utils";
+  import { settings } from "@/stores";
   import { dev } from "$app/environment";
   import { onMount, untrack } from "svelte";
   import { init, locale, register } from "svelte-i18n";
-  import { Toaster } from "svelte-sonner";
-  import ky from "ky";
   import { ModeWatcher } from "mode-watcher";
   import "../app.css";
 
   let { children } = $props();
 
-  const STEAM_GAMES_URL =
-    "https://raw.githubusercontent.com/hydralauncher/hydra/refs/heads/main/seeds/steam-games.json";
+  const { updateLibrary } = useLibrary();
+  const { updatePacks } = usePacks();
+  const { updateDownloads } = useDownload();
 
   onMount(() => {
-    ky<Array<{ name: string; id: number; clientIcon: string }>>(STEAM_GAMES_URL)
-      .then(response => response.json())
-      .then(data =>
-        data.map(app => ({
-          name: app.name,
-          id: String(app.id),
-          clientIcon: app.clientIcon,
-        }))
-      )
-      .then(data => {
-        apps.set(data);
-        appsByLetter.set(
-          data.reduce<Record<string, Array<{ name: string; id: string }>>>((acc, app) => {
-            if (!app.name) return acc;
-            const formattedTitle = formatTitle(app.name);
-            const [firstLetter] = formattedTitle;
+    updateLibrary();
+    updatePacks();
+    updateDownloads();
 
-            if (!acc[firstLetter]) acc[firstLetter] = [];
+    initSteamGamesStores();
 
-            acc[firstLetter].push({ name: formattedTitle, id: app.id });
-            return acc;
-          }, {})
-        );
-      });
-    events.executableEvent.listen(({ payload: { data, type } }) => {
+    // TODO: Refactor
+    events.processEvent.listen(({ payload: { data, type } }) => {
       switch (type) {
         case "started": {
-          games.updateGame("executable_path", data.path, state => ({
-            ...state,
-            running: true,
-          }));
+          onProcessStarted(data);
           break;
         }
         case "finished": {
-          games.updateGame("executable_path", data.path, state => ({
-            ...state,
-            last_played_at: Date.now(),
-            playtime_in_seconds: state.playtime_in_seconds + data.execution_time,
-            running: false,
-          }));
+          onProcessFinished(data);
           break;
         }
       }
     });
+    //
+
+    events.downloadEvent.listen(({ payload: { type, data } }) => {
+      switch (type) {
+        case "progress": {
+          onDownloadProgress(data);
+          break;
+        }
+        case "completed": {
+          onDownloadCompleted(data);
+          break;
+        }
+        case "rate_limit_exceeded": {
+          onDownloadRateLimitExceeded(data);
+          break;
+        }
+        case "paused": {
+          break;
+        }
+        case "aborted": {
+          break;
+        }
+      }
+    });
+
+    // Scoped broadcast channels
+    {
+      const channel = new BroadcastChannel("download_sources:sync");
+
+      channel.onmessage = () => {
+        updatePacks();
+      };
+    }
   });
 
   $effect.pre(() => {
@@ -72,20 +88,21 @@
 
     init({
       fallbackLocale: "en",
-      initialLocale: $settings.general.locale,
+      initialLocale: $settings.locale,
       ignoreTag: false,
     });
 
-    untrack(() => locale.set($settings.general.locale));
+    untrack(() => locale.set($settings.locale));
   });
 </script>
 
-<Toaster theme={$settings.general.theme} />
+<Toaster theme={$settings.theme} />
+
 <ModeWatcher />
 
 <Sidebar.Provider>
   <AppSidebar />
-  <div class="w-full">
+  <div class="w-full bg-background">
     <Header />
     {@render children()}
   </div>

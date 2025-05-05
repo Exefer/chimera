@@ -5,21 +5,27 @@
 
 
 export const commands = {
-async runExecutable(path: string) : Promise<Result<null, Error>> {
+async startProcess(path: string, events: boolean) : Promise<Result<null, Error>> {
     try {
-    return { status: "ok", data: await TAURI_INVOKE("run_executable", { path }) };
+    return { status: "ok", data: await TAURI_INVOKE("start_process", { path, events }) };
 } catch (e) {
     if(e instanceof Error) throw e;
     else return { status: "error", error: e  as any };
 }
 },
-async createShortcut(targetPath: string) : Promise<Result<null, Error>> {
+async createShortcut(targetPath: string, shortcutLocation: ShortcutLocation) : Promise<Result<null, Error>> {
     try {
-    return { status: "ok", data: await TAURI_INVOKE("create_shortcut", { targetPath }) };
+    return { status: "ok", data: await TAURI_INVOKE("create_shortcut", { targetPath, shortcutLocation }) };
 } catch (e) {
     if(e instanceof Error) throw e;
     else return { status: "error", error: e  as any };
 }
+},
+async killProcess(path: string) : Promise<void> {
+    await TAURI_INVOKE("kill_process", { path });
+},
+async isProcessRunning(path: string) : Promise<boolean> {
+    return await TAURI_INVOKE("is_process_running", { path });
 },
 async download(url: string, destPath: string, headers: ([string, string])[] | null) : Promise<Result<null, Error>> {
     try {
@@ -44,6 +50,14 @@ async pauseDownload(url: string) : Promise<Result<null, Error>> {
     if(e instanceof Error) throw e;
     else return { status: "error", error: e  as any };
 }
+},
+async extractArchive(filePath: string, destPath: string | null) : Promise<Result<null, Error>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("extract_archive", { filePath, destPath }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
 }
 }
 
@@ -52,10 +66,10 @@ async pauseDownload(url: string) : Promise<Result<null, Error>> {
 
 export const events = __makeEvents__<{
 downloadEvent: DownloadEvent,
-executableEvent: ExecutableEvent
+processEvent: ProcessEvent
 }>({
 downloadEvent: "download-event",
-executableEvent: "executable-event"
+processEvent: "process-event"
 })
 
 /** user-defined constants **/
@@ -64,7 +78,7 @@ executableEvent: "executable-event"
 
 /** user-defined types **/
 
-export type DownloadEvent = { type: "started"; data: { url: string; path: string; content_length: number } } | { type: "progress"; data: { url: string; progress_percentage: number; downloaded_bytes: number; download_speed: number; eta: number } } | { type: "paused"; data: { url: string } } | { type: "completed"; data: { url: string } } | { type: "aborted"; data: { url: string } } | { type: "rate_limit_exceeded"; data: { url: string } }
+export type DownloadEvent = { type: "started"; data: { url: string; downloadPath: string; fileSize: number } } | { type: "progress"; data: { url: string; progress: number; downloadedBytes: number; downloadSpeed: number; eta: number } } | { type: "paused"; data: { url: string } } | { type: "completed"; data: { url: string } } | { type: "aborted"; data: { url: string } } | { type: "rate_limit_exceeded"; data: { url: string } }
 export type Error = 
 /**
  * IO errors
@@ -86,7 +100,8 @@ export type Error =
  * Other errors
  */
 { Other: string }
-export type ExecutableEvent = { type: "started"; data: { path: string } } | { type: "finished"; data: { path: string; execution_time: number } }
+export type ProcessEvent = { type: "started"; data: { path: string } } | { type: "finished"; data: { path: string; executionTime: number } }
+export type ShortcutLocation = "desktop" | "shell"
 
 /** tauri-specta globals **/
 

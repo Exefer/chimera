@@ -1,10 +1,8 @@
 <script lang="ts">
-  import { Button } from "@ui/button";
-  import { Separator } from "@ui/separator";
-  import { getGameContext } from "@/context";
-  import { steamImageBuilder } from "@/services/steam";
-  import { commands } from "@/specta-bindings";
-  import { apps, games } from "@/stores";
+  import { Button } from "@/components/ui/button";
+  import { Separator } from "@/components/ui/separator";
+  import { getGameDetailsContext } from "@/context";
+  import { LibraryManager } from "@/services/library-manager";
   import { formatSeconds } from "@/utils";
   import { date, t } from "svelte-i18n";
   import { toast } from "svelte-sonner";
@@ -16,27 +14,25 @@
   import Heart from "lucide-svelte/icons/heart";
   import SettingsIcon from "lucide-svelte/icons/settings";
 
-  const gameContext = getGameContext();
-  const { game, packs, title, remoteId, download } = $derived(gameContext);
+  const gameDetailsContext = getGameDetailsContext();
+  const { game, packs, title, objectId, download } = $derived(gameDetailsContext);
 </script>
 
 <div class="sticky top-[72px] flex justify-between border-y bg-background p-4 text-sm">
   <div class="flex flex-col justify-center">
-    {#if !game && $packs}
-      {@const [updatedAt] = $packs
-        .map(pack => new Date(pack.uploadDate))
-        .toSorted((a, b) => b.valueOf() - a.valueOf())}
-      {#if updatedAt}
+    {#if !game}
+      {#if packs.length > 0}
+        {@const [updatedAt] = packs
+          .map(pack => new Date(pack.uploadDate))
+          .toSorted((a, b) => b.valueOf() - a.valueOf())}
         <p>
           {$t("game.updated_at", {
             values: { date: $date(updatedAt) },
           })}
         </p>
-      {/if}
-      {#if $packs.length > 0}
         <p>
           {$t("game.count_download_options", {
-            values: { count: $packs.length },
+            values: { count: packs.length },
           })}
         </p>
       {:else}
@@ -44,22 +40,22 @@
       {/if}
     {:else if game?.running}
       <p>{$t("game.playing_now")}</p>
-    {:else if game?.playtime_in_seconds}
+    {:else if game?.playtimeInSeconds}
       <p>
         {$t("game.played_for_time", {
-          values: { time: formatSeconds(game.playtime_in_seconds) },
+          values: { time: formatSeconds(game.playtimeInSeconds) },
         })}
       </p>
-      {#if game.last_played_at && !game.running}
+      {#if game.lastPlayedAt && !game.running}
         <p>
           {$t("game.last_time_played", {
             values: {
-              time: formatDistanceToNow(game.last_played_at, { addSuffix: true }),
+              time: formatDistanceToNow(game.lastPlayedAt, { addSuffix: true }),
             },
           })}
         </p>
       {/if}
-    {:else if !game?.running && !game?.playtime_in_seconds}
+    {:else if !game?.running && !game?.playtimeInSeconds}
       <p>{$t("game.not_played_yet", { values: { title } })}</p>
     {/if}
 
@@ -68,32 +64,24 @@
         <a href="/downloads" class="underline underline-offset-1">
           {$t("game.download_in_progress")}
         </a>
-        <span class="text-xs">{download.progress_percentage?.toFixed(1)}%</span>
+        <span class="text-xs">{download.progress?.toFixed(1)}%</span>
       </div>
     {/if}
   </div>
   <div class="flex gap-4">
     <Button
       variant="outline"
-      disabled={game?.running ||
-        (game && $packs && $packs.length === 0) ||
-        (download && download!.status === "progress")}
+      disabled={(download && download.status === "progress") ||
+        (game && !game.executablePath && packs.length === 0)}
       onclick={() => {
         if (!game) {
-          games.addGame({
-            title,
-            remote_id: remoteId,
-            icon_url: steamImageBuilder.icon(
-              remoteId,
-              $apps.find(app => app.id === remoteId)?.clientIcon!
-            ),
-          });
-        } else if (!game.executable_path) {
-          gameContext.showDownloadOptionsModal = true;
-        } else if (game.executable_path && !game.running) {
-          commands.runExecutable(game.executable_path);
+          LibraryManager.addGameToLibrary(objectId, title);
+        } else if (!game.executablePath) {
+          gameDetailsContext.showDownloadOptionsModal = true;
+        } else if (game.executablePath && !game.running) {
+          LibraryManager.openGame(objectId);
         } else if (game.running) {
-          // Should close
+          LibraryManager.closeGame(objectId);
         }
       }}
     >
@@ -103,10 +91,10 @@
       {:else if game?.running}
         <CirclePause />
         {$t("game.stop")}
-      {:else if game?.executable_path}
+      {:else if game?.executablePath}
         <CirclePlay />
         {$t("game.play")}
-      {:else if !game?.executable_path}
+      {:else if !game?.executablePath}
         <DownloadIcon />
         {$t("game.download")}
       {/if}
@@ -117,27 +105,24 @@
         variant="outline"
         size="icon"
         onclick={() => {
-          games.updateGame("remote_id", remoteId, game => ({
-            ...game,
-            favorite: !game.favorite,
-          }));
-
           if (game.favorite) {
+            LibraryManager.removeGameFromFavorites(game.objectId);
             toast.success($t("game.added_to_favorites"), { id: "favorited_game" });
           } else {
+            LibraryManager.addGameToFavorites(game.objectId);
             toast.success($t("game.removed_from_favorites"), { id: "favorited_game" });
           }
         }}><Heart class={game.favorite ? "fill-foreground" : "fill-none"} /></Button
       >
     {/if}
-    {#if game || ($packs && $packs.length > 0)}
+    {#if game || packs.length > 0}
       <Button
         variant="outline"
         onclick={() => {
           if (game) {
-            gameContext.showGameOptionsModal = true;
+            gameDetailsContext.showGameOptionsModal = true;
           } else {
-            gameContext.showDownloadOptionsModal = true;
+            gameDetailsContext.showDownloadOptionsModal = true;
           }
         }}
       >
@@ -154,7 +139,7 @@
     <progress
       max="100"
       class="absolute bottom-0 left-0 h-1 w-full"
-      value={Math.trunc(download.progress_percentage!)}
+      value={Math.trunc(download.progress!)}
     ></progress>
   {/if}
 </div>

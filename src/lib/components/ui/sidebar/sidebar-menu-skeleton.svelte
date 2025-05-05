@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Skeleton } from "@ui/skeleton";
+  import { Skeleton } from "@/components/ui/skeleton";
   import { cn } from "@/utils";
   import type { HTMLAttributes } from "svelte/elements";
   import type { WithElementRef } from "bits-ui";

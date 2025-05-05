@@ -2,29 +2,31 @@
   import { z } from "zod";
 
   const schema = z.object({
-    url: z.string().url("Please enter a valid URL"),
+    url: z.string().url().nonempty(),
   });
 </script>
 
 <script lang="ts">
-  import { Button, buttonVariants } from "@ui/button";
-  import * as Dialog from "@ui/dialog";
-  import * as Form from "@ui/form";
-  import { Input } from "@ui/input";
-  import { Separator } from "@ui/separator";
-  import { importDownloadSource } from "@/services/sources";
-  import * as Types from "@/types";
-  import { fetch } from "@tauri-apps/plugin-http";
+  import { Button, buttonVariants } from "@/components/ui/button";
+  import * as Dialog from "@/components/ui/dialog";
+  import * as Form from "@/components/ui/form";
+  import { Input } from "@/components/ui/input";
+  import { Separator } from "@/components/ui/separator";
+  import { downloadSourcesTable } from "@/database";
+  import {
+    importDownloadSource,
+    validateDownloadSource,
+  } from "@/services/download-sources";
+  import type { DownloadSourceValidationResult } from "@/types";
   import { t } from "svelte-i18n";
   import { zodClient } from "sveltekit-superforms/adapters";
   import { superForm } from "sveltekit-superforms/client";
   import CirclePlus from "lucide-svelte/icons/circle-plus";
+  import RefreshCcw from "lucide-svelte/icons/refresh-ccw";
 
-  interface AddDownloadSourceModalProps {
-    hasDownloadSourceUrl: (source: string) => boolean;
-  }
-
-  let { hasDownloadSourceUrl }: AddDownloadSourceModalProps = $props();
+  let validationResult = $state.raw<DownloadSourceValidationResult | null>(null);
+  let isLoading = $state(false);
+  let open = $state(false);
 
   const form = superForm(
     { url: "" },
@@ -32,40 +34,43 @@
       SPA: true,
       validators: zodClient(schema),
       onSubmit: async () => {
-        const url = $formData.url;
-        if (hasDownloadSourceUrl(url)) {
+        const existingDownloadSource = await downloadSourcesTable
+          .where({ url: $formData.url })
+          .first();
+
+        if (existingDownloadSource) {
           $errors.url = [$t("settings.sources.already_added")];
           return;
         }
 
-        fetch(url)
-          .then(response => {
-            etag = response.headers.get("etag");
-            return response.json();
-          })
-          .then(data => {
-            source = { ...data, url };
-          })
-          .catch(() => {
-            $errors.url = [$t("settings.sources.invalid_json_url")];
-          });
+        if ($errors.url && $errors.url.length > 0) return;
+
+        try {
+          validationResult = await validateDownloadSource($formData.url);
+        } catch {
+          $errors.url = [$t("settings.sources.insert_valid_url")];
+        }
       },
     }
   );
 
-  let source = $state.raw<Types.Source | null>(null);
-  let etag = $state<string | null>(null);
-  let isLoading = $state(false);
-  let open = $state(false);
-
   const { form: formData, errors, enhance } = form;
 </script>
 
-<Dialog.Root bind:open>
+<Dialog.Root
+  bind:open
+  onOpenChange={open => {
+    if (!open) validationResult = null;
+  }}
+>
   <Dialog.Trigger class={buttonVariants({ variant: "outline" })}
     ><CirclePlus />{$t("settings.sources.add_source")}</Dialog.Trigger
   >
-  <Dialog.Content>
+  <Dialog.Content
+    interactOutsideBehavior={isLoading ? "ignore" : "close"}
+    escapeKeydownBehavior="ignore"
+    hideCloseButton={isLoading}
+  >
     <Dialog.Header>
       <Dialog.Title>{$t("settings.sources.add_source")}</Dialog.Title>
       <Dialog.Description>{$t("settings.sources:description")}</Dialog.Description>
@@ -84,7 +89,7 @@
                   autocomplete="off"
                   {...props}
                 />
-                <Form.Button variant="outline"
+                <Form.Button variant="outline" disabled={!!validationResult}
                   >{$t("settings.sources.validate")}</Form.Button
                 >
               </div>
@@ -94,13 +99,13 @@
         </Form.Field>
       </form>
 
-      {#if source}
+      {#if validationResult}
         <div class="flex items-center justify-between">
           <div>
-            <p>{source.name}</p>
+            <p>{validationResult.name}</p>
             <small
               >{$t("settings.sources.found_download_options", {
-                values: { count: source.downloads.length },
+                values: { count: validationResult.downloadCount },
               })}</small
             >
           </div>
@@ -108,12 +113,16 @@
             disabled={isLoading}
             onclick={async () => {
               isLoading = true;
-              await importDownloadSource(source!, etag!);
+              await importDownloadSource($formData.url);
               isLoading = false;
               open = false;
-              source = null;
-              etag = null;
-            }}>{$t("settings.sources.import")}</Button
+              validationResult = null;
+            }}
+          >
+            {#if isLoading}
+              <RefreshCcw class={isLoading ? "animate-spin" : ""} />
+            {/if}
+            {$t("settings.sources.import")}</Button
           >
         </div>
       {/if}

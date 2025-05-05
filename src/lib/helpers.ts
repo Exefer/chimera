@@ -4,5 +4,5 @@ export const constructGameUrl = (id: string, title: string) => {
     title,
   });
 
-  return `/game?${searchParams.toString()}`;
+  return `/game-details?${searchParams.toString()}`;
 };
